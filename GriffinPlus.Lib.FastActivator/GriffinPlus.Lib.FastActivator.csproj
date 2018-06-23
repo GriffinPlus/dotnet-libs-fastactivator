@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>GriffinPlus.Lib.FastActivator</AssemblyName>
+    <RootNamespace>GriffinPlus.Lib</RootNamespace>
+    <Company>Griffin+</Company>
+    <Authors>Sascha Falk &lt;ravenpride@griffin.plus&gt;</Authors>
+    <Product>Griffin+ Common Libraries</Product>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>2018 Sascha Falk &lt;ravenpride@griffin.plus&gt;</Copyright>
+    <PackageProjectUrl>https://griffin.plus</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageTags></PackageTags>
+    <PackageLicenseUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator/blob/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+  </ItemGroup>
+
+</Project>
