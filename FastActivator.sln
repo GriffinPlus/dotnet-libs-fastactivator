@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GriffinPlus.Lib.FastActivat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GriffinPlus.Lib.FastActivator", "GriffinPlus.Lib.FastActivator\GriffinPlus.Lib.FastActivator.csproj", "{E5994742-599B-4536-AD4A-B98484E4646B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{1B41BD77-4DB3-4658-920F-2DC474EE2F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GriffinPlus.Lib.FastActivator.Benchmark", "GriffinPlus.Lib.FastActivator.Benchmark\GriffinPlus.Lib.FastActivator.Benchmark.csproj", "{1B41BD77-4DB3-4658-920F-2DC474EE2F9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
