@@ -160,7 +160,7 @@ namespace GriffinPlus.Lib
 		}
 
 		/// <summary>
-		/// Calls the specified creater delegate dynamically passing the specified arguments to the constructor.
+		/// Calls the specified creator delegate dynamically passing the specified arguments to the constructor.
 		/// </summary>
 		/// <param name="creator">Creator delegate to call.</param>
 		/// <param name="args">Arguments to pass to the constructor of the object to create.</param>
