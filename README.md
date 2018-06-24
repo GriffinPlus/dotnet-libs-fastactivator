@@ -1,5 +1,7 @@
 # Griffin+ Fast Activator
 
+[![Build status](https://ci.appveyor.com/api/projects/status/1kdebht6cre074no/branch/master?svg=true)](https://ci.appveyor.com/project/ravenpride/dotnet-libs-fastactivator/branch/master)
+
 ## Overview
 
 The *Fast Activator* is part of the Griffin+ Common Library Suite. It replaces some of the functions of the .NET `System.Activator` class. `System.Activator` is the standard tool for dynamic instantiation of types (classes/structures) under .NET. It is used, if you do not know which specific type must be instantiated at the time of compilation. Instantiating classes/structures in the same process is part of this functionality, but an immensely important part. All serialization mechanisms require this functionality to generate instances of certain types when deserializing objects.
@@ -246,4 +248,4 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 12508ms (7.85x)     | 12341ms (8.01x)
 | object FastActivator.CreateInstance<...>(...)                          | **2994ms (32.79x)** | 3127ms (31.61x)
 |      T FastActivator<T>.CreateInstance<...>(...)                       | 4876ms (20.13x)     | **2130mx (46.41x)**
-  
+
