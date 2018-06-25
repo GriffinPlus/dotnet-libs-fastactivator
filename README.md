@@ -93,17 +93,17 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 
 ### No Constructor Parameters (Generic)
 
-| Method                              | Class           | Struct
-|-------------------------------------|-----------------|-------------------
-| T Activator.CreateInstance<T>()     | 2233ms          | 1926ms
-| T FastActivator.CreateInstance<T>() | 738ms (3.03x)   | 237ms (8.13x)
+| Method                              | Class             | Struct
+|-------------------------------------|-------------------|-------------------
+| T Activator.CreateInstance<T>()     | 2233ms            | 1926ms
+| T FastActivator<T>.CreateInstance() | **738ms (3.03x)** | **237ms (8.13x)**
 
 ### No Constructor Parameters (Non-Generic)
 
-| Method                                    | Class           | Struct
-|-------------------------------------------|-----------------|-------------------
-| object Activator.CreateInstance(Type)     | 2188ms          | 1934ms
-| object FastActivator.CreateInstance(Type) | 1512ms (1.45x)  | 1444ms (1.34x)
+| Method                                    | Class              | Struct
+|-------------------------------------------|--------------------|-------------------
+| object Activator.CreateInstance(Type)     | 2188ms             | 1934ms
+| object FastActivator.CreateInstance(Type) | **1512ms (1.45x)** | **1444ms (1.34x)**
 
 ### 1 Constructor Parameter
 
