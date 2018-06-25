@@ -2,11 +2,17 @@
 #      general configuration      #
 #---------------------------------#
 
-version: '1.0.1.{build}'
+# version: '1.0.0.{build}'
 
 branches:
   only:
     - master
+
+install:
+  - choco install gitversion.portable -pre -y
+
+assembly_info:
+  patch: false
 
 #---------------------------------#
 #    environment configuration    #
@@ -15,14 +21,14 @@ branches:
 image:
 - Visual Studio 2017
 
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
+#dotnet_csproj:
+#  patch: true
+#  file: '**\*.csproj'
+#  version: '{version}'
+#  package_version: '{version}'
+#  assembly_version: '{version}'
+#  file_version: '{version}'
+#  informational_version: '{version}'
 
 #---------------------------------#
 #       build configuration       #
@@ -36,6 +42,15 @@ configuration:
 
 before_build:
   - nuget restore
+  - ps: gitversion /l console /output buildserver /updateAssemblyInfo
+
+build:
+  project: FastActivator.sln
+
+after_build:
+  - cmd: ECHO nuget pack GriffinPlus.Lib.FastActivator\obj\%CONFIGURATION%\GriffinPlus.Lib.FastActivator.1.0.0.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
+  - cmd: nuget pack GriffinPlus.Lib.FastActivator\obj\%CONFIGURATION%\GriffinPlus.Lib.FastActivator.1.0.0.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
+  - cmd: appveyor PushArtifact "GriffinPlus.Lib.FastActivator.%GitVersion_NuGetVersion%.nupkg"
 
 #---------------------------------#
 #       tests configuration       #
@@ -51,7 +66,7 @@ test:
 #---------------------------------#
 
 artifacts:
-  - path: '**\*.nupkg'
+  - path: '*\*.nupkg'
 
 #---------------------------------#
 #     deployment configuration    #
