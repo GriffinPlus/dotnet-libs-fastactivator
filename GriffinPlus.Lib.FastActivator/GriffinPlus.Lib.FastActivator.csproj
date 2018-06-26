@@ -12,8 +12,11 @@
     <Copyright>2018 Sascha Falk</Copyright>
     <PackageProjectUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
+    <Version></Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <PackageVersion>1.0.0.0</PackageVersion>
+    <InformationalVersion>1.0.0.0</InformationalVersion>
     <PackageTags></PackageTags>
     <PackageLicenseUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://github.com/GriffinPlus/griffinplus.github.io/blob/master/img/griffin%2B_logo.svg</PackageIconUrl>
