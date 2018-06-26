@@ -1,0 +1,74 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+branches:
+  only:
+    - master
+
+install:
+  - choco install gitversion.portable -y
+  - ps: gitversion /l console /output buildserver
+  - ps: Update-AppveyorBuild -Version $GitVersion_FullSemVer
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: $(GitVersion_MajorMinorPatch)
+  package_version: $(GitVersion_NuGetVersionV2)
+  assembly_version: $(GitVersion_AssemblySemVer)
+  file_version: $(GitVersion_AssemblySemFileVer)
+  informational_version: $(GitVersion_InformationalVersion)
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+image:
+- Visual Studio 2017
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+platform:
+  - Any CPU
+
+configuration:
+  - Release
+
+before_build:
+  - nuget restore
+
+build:
+  project: FastActivator.sln
+
+after_build:
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+test:
+  assemblies:
+    only:
+      - '**\*.Tests.dll'
+
+#---------------------------------#
+#      packaging artifacts        #
+#---------------------------------#
+
+artifacts:
+  - path: '**\*.nupkg'
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+deploy:
+  - provider: NuGet
+    api_key:
+      secure: OkWXkTuGyjQQ5m5jQ2aI1ant3mAtLYCE0n6zAqHDpFwLUvPMH9eRMSyI1YXsz9+1
+    skip_symbols: true
+    artifact: /.*\.nupkg/
+    on:
+      APPVEYOR_REPO_TAG: true

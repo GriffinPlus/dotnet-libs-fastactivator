@@ -22,5 +22,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-setversion" Version="1.*" />
+  </ItemGroup>
 
 </Project>
