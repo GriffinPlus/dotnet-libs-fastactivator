@@ -30,8 +30,7 @@ namespace GriffinPlus.Lib
 		private static Dictionary<Type, Dictionary<Type, Delegate>> sCreatorsByCreatorTypeMap = new Dictionary<Type, Dictionary<Type, Delegate>>();
 		private static Dictionary<Type, Delegate> sParameterlessCreatorsByCreatorType = new Dictionary<Type, Delegate>();
 		private static Dictionary<Type, ArrayCreatorDelegate> sArrayCreatorsByTypeMap = new Dictionary<Type, ArrayCreatorDelegate>();
-		private static Dictionary<Type, IFastActivatorFuncTypeMap> sResultToCreatorFuncMap;
-		private static FastActivatorFuncTypeMap<object> sObjectResultCreatorFuncMap; // maps constructor argument types to a Func<...,object> type that is used for keying purposes
+		private static FastActivatorFuncTypeMap sObjectResultCreatorFuncMap = new FastActivatorFuncTypeMap();
 		private static object sSync = new object();
 
 		/// <summary>
@@ -39,9 +38,7 @@ namespace GriffinPlus.Lib
 		/// </summary>
 		static FastActivator()
 		{
-			sObjectResultCreatorFuncMap = new FastActivatorFuncTypeMap<object>();
-			sResultToCreatorFuncMap = new Dictionary<Type, IFastActivatorFuncTypeMap>();
-			sResultToCreatorFuncMap.Add(typeof(object), sObjectResultCreatorFuncMap);
+
 		}
 
 		#region Checking Type Constructor
@@ -49,6 +46,7 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Checks whether the specified type can be created using the specified specified parameters.
 		/// </summary>
+		/// <param name="type">Type to check.</param>
 		/// <param name="constructorParameterTypes">Types of constructor parameters to check for.</param>
 		/// <returns>
 		/// true, if the specified type has a constructor that takes the specified parameters;
@@ -1088,75 +1086,6 @@ namespace GriffinPlus.Lib
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sArrayCreatorsByTypeMap = arrayCreatorsByTypeMap;
 			}
-		}
-
-		/// <summary>
-		/// Creates a generic Func<> type from the specified parameter types.
-		/// </summary>
-		/// <param name="returnType">Return type of the creator function.</param>
-		/// <param name="parameterTypes">Parameter types to create the Func<> type from.</param>
-		/// <param name="count">Number of parameter types to consider.</param>
-		/// <returns>The generated Func<> type.</returns>
-		internal static Type MakeGenericCreatorFuncType(Type returnType, Type[] parameterTypes, int count)
-		{
-			Type funcType = null;
-			Type[] pt = parameterTypes;
-			switch (count)
-			{
-				case 0:
-					funcType = typeof(Func<>).MakeGenericType(returnType);
-					break;
-				case 1:
-					funcType = typeof(Func<,>).MakeGenericType(pt[0], returnType);
-					break;
-				case 2:
-					funcType = typeof(Func<,,>).MakeGenericType(pt[0], pt[1], returnType);
-					break;
-				case 3:
-					funcType = typeof(Func<,,,>).MakeGenericType(pt[0], pt[1], pt[2], returnType);
-					break;
-				case 4:
-					funcType = typeof(Func<,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], returnType);
-					break;
-				case 5:
-					funcType = typeof(Func<,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], returnType);
-					break;
-				case 6:
-					funcType = typeof(Func<,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], returnType);
-					break;
-				case 7:
-					funcType = typeof(Func<,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], returnType);
-					break;
-				case 8:
-					funcType = typeof(Func<,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], returnType);
-					break;
-				case 9:
-					funcType = typeof(Func<,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], returnType);
-					break;
-				case 10:
-					funcType = typeof(Func<,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], returnType);
-					break;
-				case 11:
-					funcType = typeof(Func<,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], returnType);
-					break;
-				case 12:
-					funcType = typeof(Func<,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], returnType);
-					break;
-				case 13:
-					funcType = typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], returnType);
-					break;
-				case 14:
-					funcType = typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], returnType);
-					break;
-				case 15:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], returnType);
-					break;
-				case 16:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], pt[15], returnType);
-					break;
-			}
-
-			return funcType;
 		}
 
 		#endregion

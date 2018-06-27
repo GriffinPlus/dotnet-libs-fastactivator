@@ -45,7 +45,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its default constructor.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <returns>An instance of the specified type.</returns>
 		public static T CreateInstance()
 		{
@@ -62,7 +61,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG">Type of the constructor argument.</typeparam>
 		/// <param name="arg">The constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
@@ -83,7 +81,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
@@ -106,7 +103,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -131,7 +127,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -158,7 +153,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -187,7 +181,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -218,7 +211,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -251,7 +243,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -286,7 +277,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -323,7 +313,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -362,7 +351,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -403,7 +391,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -446,7 +433,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -491,7 +477,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -538,7 +523,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -587,7 +571,6 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="T">Type to instantiate.</typeparam>
 		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
 		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
 		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
@@ -650,7 +633,7 @@ namespace GriffinPlus.Lib
 				Expression body = Expression.New(typeof(T));
 
 				// compile creator
-				Type creatorType = MakeGenericCreatorFuncType(typeof(T), Type.EmptyTypes);
+				Type creatorType = FastActivatorFuncTypeMap.MakeGenericCreatorFuncType(typeof(T), Type.EmptyTypes, 0);
 				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
 				Delegate creator = lambda.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
@@ -682,81 +665,13 @@ namespace GriffinPlus.Lib
 				}
 
 				// compile creator
-				Type creatorType = MakeGenericCreatorFuncType(typeof(T), constructorParameterTypes);
+				Type creatorType = FastActivatorFuncTypeMap.MakeGenericCreatorFuncType(typeof(T), constructorParameterTypes, constructorParameterTypes.Length);
 				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
 				Delegate creator = lambda.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
 			}
 
 			return creatorTypeToCreatorMap;
-		}
-
-		/// <summary>
-		/// Creates a generic Func<> type from the specified parameter types.
-		/// </summary>
-		/// <param name="returnType">Return type of the creator function.</param>
-		/// <param name="parameterTypes">Parameter types to create the Func<> type from.</param>
-		/// <returns>The generated Func<> type.</returns>
-		private static Type MakeGenericCreatorFuncType(Type returnType, Type[] parameterTypes)
-		{
-			Type funcType = null;
-			Type[] pt = parameterTypes;
-			switch (parameterTypes.Length)
-			{
-				case 0:
-					funcType = typeof(Func<>).MakeGenericType(returnType);
-					break;
-				case 1:
-					funcType = typeof(Func<,>).MakeGenericType(pt[0], returnType);
-					break;
-				case 2:
-					funcType = typeof(Func<,,>).MakeGenericType(pt[0], pt[1], returnType);
-					break;
-				case 3:
-					funcType = typeof(Func<,,,>).MakeGenericType(pt[0], pt[1], pt[2], returnType);
-					break;
-				case 4:
-					funcType = typeof(Func<,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], returnType);
-					break;
-				case 5:
-					funcType = typeof(Func<,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], returnType);
-					break;
-				case 6:
-					funcType = typeof(Func<,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], returnType);
-					break;
-				case 7:
-					funcType = typeof(Func<,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], returnType);
-					break;
-				case 8:
-					funcType = typeof(Func<,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], returnType);
-					break;
-				case 9:
-					funcType = typeof(Func<,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], returnType);
-					break;
-				case 10:
-					funcType = typeof(Func<,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], returnType);
-					break;
-				case 11:
-					funcType = typeof(Func<,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], returnType);
-					break;
-				case 12:
-					funcType = typeof(Func<,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], returnType);
-					break;
-				case 13:
-					funcType = typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], returnType);
-					break;
-				case 14:
-					funcType = typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], returnType);
-					break;
-				case 15:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], returnType);
-					break;
-				case 16:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], pt[15], returnType);
-					break;
-			}
-
-			return funcType;
 		}
 
 	}

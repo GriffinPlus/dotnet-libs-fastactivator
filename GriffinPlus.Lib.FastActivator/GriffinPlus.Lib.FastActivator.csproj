@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>GriffinPlus.Lib.FastActivator</AssemblyName>
     <RootNamespace>GriffinPlus.Lib</RootNamespace>
-    <Company>Team Griffin+</Company>
+    <Company>Griffin+</Company>
     <Authors>Sascha Falk</Authors>
-    <Product>Griffin+ Common Libraries</Product>
+    <Product>Griffin+ Common Library Suite</Product>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>2018 Sascha Falk</Copyright>
+    <Copyright>© 2018 - Sascha Falk</Copyright>
     <PackageProjectUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Version></Version>
@@ -17,17 +17,23 @@
     <FileVersion>1.0.0.0</FileVersion>
     <PackageVersion>1.0.0.0</PackageVersion>
     <InformationalVersion>1.0.0.0</InformationalVersion>
-    <PackageTags></PackageTags>
+    <PackageTags>activation activator</PackageTags>
     <PackageLicenseUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/GriffinPlus/griffinplus.github.io/blob/master/img/griffin%2B_logo.svg</PackageIconUrl>
+    <PackageIconUrl>https://github.com/GriffinPlus/griffinplus.github.io/blob/master/img/nuget_icon.png</PackageIconUrl>
+    <Description>A fast replacement for System.Activator when instanciating local classes/structs is required.
+Part of the Griffin+ Common Library Suite.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\GriffinPlus.Lib.FastActivator.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-setversion" Version="1.*" />
   </ItemGroup>
 
 </Project>

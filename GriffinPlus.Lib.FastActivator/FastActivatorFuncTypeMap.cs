@@ -16,29 +16,11 @@ using System.Collections.Generic;
 
 namespace GriffinPlus.Lib
 {
-	internal interface IFastActivatorFuncTypeMap
-	{
-		/// <summary>
-		/// Trys to get the creator type corresponding to the specified constructor parameter types.
-		/// </summary>
-		/// <param name="constructorParameterTypes">Constructor parameter types to get the corresponding creator type for.</param>
-		/// <param name="creatorFuncType">Receives the requested creator type.</param>
-		/// <returns>true, if the creator type was found; otherwise false.</returns>
-		bool TryGet(Type[] constructorParameterTypes, out Type creatorFuncType);
-
-		/// <summary>
-		/// Gets or creates the creator function type for the specified constructor parameter types.
-		/// </summary>
-		/// <param name="constructorParameterTypes">Constructor parameter types to get/create the corresponding creator type for.</param>
-		/// <returns>The requested creator function type.</returns>
-		Type Set(Type[] constructorParameterTypes);
-	}
-
 	/// <summary>
 	/// Helper class mapping constructor parameter types to the corresponding function type that
 	/// is used as a key when accessing creators.
 	/// </summary>
-	internal class FastActivatorFuncTypeMap<RESULT> : IFastActivatorFuncTypeMap
+	internal class FastActivatorFuncTypeMap
 	{
 		private struct Node
 		{
@@ -83,11 +65,11 @@ namespace GriffinPlus.Lib
 		private List<Node> mData = new List<Node>();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FastActivatorFuncTypeMap{RESULT}"/> class.
+		/// Initializes a new instance of the <see cref="FastActivatorFuncTypeMap"/> class.
 		/// </summary>
 		public FastActivatorFuncTypeMap()
 		{
-				
+
 		}
 
 		/// <summary>
@@ -99,7 +81,7 @@ namespace GriffinPlus.Lib
 		public bool TryGet(Type[] constructorParameterTypes, out Type creatorFuncType)
 		{
 			if (constructorParameterTypes.Length == 0) {
-				creatorFuncType = typeof(Func<RESULT>);
+				creatorFuncType = typeof(Func<object>);
 				return true;
 			}
 
@@ -126,7 +108,7 @@ namespace GriffinPlus.Lib
 		public Type Set(Type[] constructorParameterTypes)
 		{
 			if (constructorParameterTypes.Length == 0) {
-				return typeof(Func<RESULT>);
+				return typeof(Func<object>);
 			}
 
 			Node node = new Node();
@@ -140,10 +122,79 @@ namespace GriffinPlus.Lib
 			{
 				node = new Node();
 				node.ConstructorParameterTypes = constructorParameterTypes;
-				node.FuncType = FastActivator.MakeGenericCreatorFuncType(typeof(RESULT), constructorParameterTypes, constructorParameterTypes.Length);
+				node.FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length);
 				mData.Insert(~index, node);
 				return node.FuncType;
 			}
+		}
+
+		/// <summary>
+		/// Creates a generic function type from the specified parameter types.
+		/// </summary>
+		/// <param name="returnType">Return type of the creator function.</param>
+		/// <param name="parameterTypes">Parameter types to create the function type from.</param>
+		/// <param name="count">Number of parameters to consider.</param>
+		/// <returns>The generated function type.</returns>
+		public static Type MakeGenericCreatorFuncType(Type returnType, Type[] parameterTypes, int count)
+		{
+			Type funcType = null;
+			Type[] pt = parameterTypes;
+			switch (count)
+			{
+				case 0:
+					funcType = typeof(Func<>).MakeGenericType(returnType);
+					break;
+				case 1:
+					funcType = typeof(Func<,>).MakeGenericType(pt[0], returnType);
+					break;
+				case 2:
+					funcType = typeof(Func<,,>).MakeGenericType(pt[0], pt[1], returnType);
+					break;
+				case 3:
+					funcType = typeof(Func<,,,>).MakeGenericType(pt[0], pt[1], pt[2], returnType);
+					break;
+				case 4:
+					funcType = typeof(Func<,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], returnType);
+					break;
+				case 5:
+					funcType = typeof(Func<,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], returnType);
+					break;
+				case 6:
+					funcType = typeof(Func<,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], returnType);
+					break;
+				case 7:
+					funcType = typeof(Func<,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], returnType);
+					break;
+				case 8:
+					funcType = typeof(Func<,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], returnType);
+					break;
+				case 9:
+					funcType = typeof(Func<,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], returnType);
+					break;
+				case 10:
+					funcType = typeof(Func<,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], returnType);
+					break;
+				case 11:
+					funcType = typeof(Func<,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], returnType);
+					break;
+				case 12:
+					funcType = typeof(Func<,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], returnType);
+					break;
+				case 13:
+					funcType = typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], returnType);
+					break;
+				case 14:
+					funcType = typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], returnType);
+					break;
+				case 15:
+					funcType = typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], returnType);
+					break;
+				case 16:
+					funcType = typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], pt[15], returnType);
+					break;
+			}
+
+			return funcType;
 		}
 	}
 }
