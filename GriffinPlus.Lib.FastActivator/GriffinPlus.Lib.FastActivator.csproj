@@ -19,7 +19,7 @@
     <InformationalVersion>1.0.0.0</InformationalVersion>
     <PackageTags>activation activator</PackageTags>
     <PackageLicenseUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/GriffinPlus/griffinplus.github.io/blob/master/img/nuget_icon.png</PackageIconUrl>
+    <PackageIconUrl>https://griffin.plus/img/nuget_icon.png</PackageIconUrl>
     <Description>A fast replacement for System.Activator when instanciating local classes/structs is required.
 Part of the Griffin+ Common Library Suite.</Description>
   </PropertyGroup>
