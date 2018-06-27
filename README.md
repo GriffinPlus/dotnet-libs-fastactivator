@@ -1,6 +1,11 @@
 # Griffin+ Fast Activator
 
-[![Build status](https://ci.appveyor.com/api/projects/status/1kdebht6cre074no/branch/master?svg=true)](https://ci.appveyor.com/project/ravenpride/dotnet-libs-fastactivator/branch/master)
+[![Build (master)](https://img.shields.io/appveyor/ci/ravenpride/dotnet-libs-fastactivator/master.svg?logo=appveyor)](https://ci.appveyor.com/project/ravenpride/dotnet-libs-fastactivator/branch/master)
+[![Tests (master)](https://img.shields.io/appveyor/tests/ravenpride/dotnet-libs-fastactivator/master.svg?logo=appveyor)](https://ci.appveyor.com/project/ravenpride/dotnet-libs-fastactivator/branch/master)
+[![NuGet Version](https://img.shields.io/nuget/v/GriffinPlus.Lib.FastActivator.svg)](https://www.nuget.org/packages/GriffinPlus.Lib.FastActivator)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/GriffinPlus.Lib.FastActivator.svg)](https://www.nuget.org/packages/GriffinPlus.Lib.FastActivator)
+
+
 
 ## Overview
 
