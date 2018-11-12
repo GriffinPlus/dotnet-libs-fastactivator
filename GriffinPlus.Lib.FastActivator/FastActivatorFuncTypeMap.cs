@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace GriffinPlus.Lib
 {
@@ -73,58 +74,42 @@ namespace GriffinPlus.Lib
 		}
 
 		/// <summary>
-		/// Trys to get the creator type corresponding to the specified constructor parameter types.
-		/// </summary>
-		/// <param name="constructorParameterTypes">Constructor parameter types to get the corresponding creator type for.</param>
-		/// <param name="creatorFuncType">Receives the requested creator type.</param>
-		/// <returns>true, if the creator type was found; otherwise false.</returns>
-		public bool TryGet(Type[] constructorParameterTypes, out Type creatorFuncType)
-		{
-			if (constructorParameterTypes.Length == 0) {
-				creatorFuncType = typeof(Func<object>);
-				return true;
-			}
-
-			Node node = new Node();
-			node.ConstructorParameterTypes = constructorParameterTypes;
-			int index = mData.BinarySearch(node, sComparer);
-			if (index >= 0)
-			{
-				creatorFuncType = mData[index].FuncType;
-				return true;
-			}
-			else
-			{
-				creatorFuncType = null;
-				return false;
-			}
-		}
-
-		/// <summary>
 		/// Gets or creates the creator function type for the specified constructor parameter types.
 		/// </summary>
 		/// <param name="constructorParameterTypes">Constructor parameter types to get/create the corresponding creator type for.</param>
 		/// <returns>The requested creator function type.</returns>
-		public Type Set(Type[] constructorParameterTypes)
+		public Type Get(Type[] constructorParameterTypes)
 		{
 			if (constructorParameterTypes.Length == 0) {
 				return typeof(Func<object>);
 			}
 
-			Node node = new Node();
-			node.ConstructorParameterTypes = constructorParameterTypes;
-			int index = mData.BinarySearch(node, sComparer);
-			if (index >= 0)
+			// get snapshot of function type map (is replaced atomically when changed)
+			while (true)
 			{
-				return mData[index].FuncType;
-			}
-			else
-			{
-				node = new Node();
+				// get current version of the map
+				var data = mData;
+				Thread.MemoryBarrier();
+
+				// query for the appropriate type; create new type, if not found
+				Node node = new Node();
 				node.ConstructorParameterTypes = constructorParameterTypes;
-				node.FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length);
-				mData.Insert(~index, node);
-				return node.FuncType;
+				int index = data.BinarySearch(node, sComparer);
+				if (index >= 0)
+				{
+					return data[index].FuncType;
+				}
+				else
+				{
+					var newData = new List<Node>(data);
+					node = new Node();
+					node.ConstructorParameterTypes = constructorParameterTypes;
+					node.FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length);
+					newData.Insert(~index, node);
+					if (Interlocked.CompareExchange(ref mData, newData, data) == data) {
+						return node.FuncType;
+					}
+				}
 			}
 		}
 

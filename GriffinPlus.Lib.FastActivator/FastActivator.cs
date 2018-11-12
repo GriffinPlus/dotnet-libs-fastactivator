@@ -55,10 +55,7 @@ namespace GriffinPlus.Lib
 		public static bool IsCreatable(Type type, Type[] constructorParameterTypes)
 		{
 			// convert constructor parameters into the corresponding creator function type
-			Type creatorType;
-			if (!sObjectResultCreatorFuncMap.TryGet(constructorParameterTypes, out creatorType)) {
-				creatorType = sObjectResultCreatorFuncMap.Set(constructorParameterTypes);
-			}
+			Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
 
 			// query the creator cache
 			Dictionary<Type, Delegate> creatorsByCreatorType;
@@ -131,11 +128,7 @@ namespace GriffinPlus.Lib
 				}
 			}
 
-			Type creatorType;
-			if (!sObjectResultCreatorFuncMap.TryGet(constructorParameterTypes, out creatorType))
-			{
-				creatorType = sObjectResultCreatorFuncMap.Set(constructorParameterTypes);
-			}
+			Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
 
 			// query the creator cache
 			Dictionary<Type, Delegate> creatorsByCreatorType;
@@ -996,11 +989,7 @@ namespace GriffinPlus.Lib
 					Expression body = Expression.Convert(Expression.New(type), typeof(object));
 
 					// get creator function type
-					Type creatorType;
-					if (!sObjectResultCreatorFuncMap.TryGet(Type.EmptyTypes, out creatorType))
-					{
-						creatorType = sObjectResultCreatorFuncMap.Set(Type.EmptyTypes);
-					}
+					Type creatorType = sObjectResultCreatorFuncMap.Get(Type.EmptyTypes);
 
 					// compile creator
 					LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
@@ -1035,11 +1024,7 @@ namespace GriffinPlus.Lib
 					}
 
 					// get creator function type
-					Type creatorType;
-					if (!sObjectResultCreatorFuncMap.TryGet(constructorParameterTypes, out creatorType))
-					{
-						creatorType = sObjectResultCreatorFuncMap.Set(constructorParameterTypes);
-					}
+					Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
 
 					// compile creator
 					LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
