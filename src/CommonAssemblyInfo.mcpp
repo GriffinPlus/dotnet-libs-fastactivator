@@ -2,4 +2,4 @@
 
 [assembly: AssemblyCompany("Griffin+")];
 [assembly: AssemblyProduct("Griffin+ Common Library")];
-[assembly: AssemblyCopyright("Copyright (c) Sascha Falk 2019")];
+[assembly: AssemblyCopyright("Copyright (c) 2019 Sascha Falk")];
