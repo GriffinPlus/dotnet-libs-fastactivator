@@ -11,7 +11,7 @@
 // the specific language governing permissions and limitations under the License.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace GriffinPlus.Lib.Tests
+namespace UnitTests
 {
 	public struct TestStruct<T>
 	{

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata minClientVersion="3.3">
+    <id>GriffinPlus.Lib.FastActivator</id>
+    <version>$version$</version>
+    <authors>Sascha Falk</authors>
+    <copyright>Copyright (c) 2019 Sascha Falk</copyright>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>A fast replacement for System.Activator when instanciating local classes/structs is required.
+Part of the Griffin+ Common Library Suite.</description>
+    <licenseUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator</projectUrl>
+    <iconUrl>https://griffin.plus/img/nuget_icon.png</iconUrl>
+    <tags>activation activator</tags>
+  </metadata>
+  <files>
+    <file src="..\..\..\_build\FastActivator.AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0"/>
+    <file src="..\..\..\_build\FastActivator.AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0"/>
+  </files>
+</package>

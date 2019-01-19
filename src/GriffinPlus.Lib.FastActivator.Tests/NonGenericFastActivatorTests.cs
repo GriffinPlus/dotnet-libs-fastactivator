@@ -11,12 +11,13 @@
 // the specific language governing permissions and limitations under the License.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using GriffinPlus.Lib;
 using System;
 using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace GriffinPlus.Lib.Tests
+namespace UnitTests
 {
 	public class NonGenericFastActivatorTests_Fixture
 	{

@@ -7,18 +7,7 @@ branches:
     - master
 
 install:
-  - choco install gitversion.portable -y
-  - ps: gitversion /l console /output buildserver
-  - ps: Update-AppveyorBuild -Version $GitVersion_FullSemVer
-
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: $(GitVersion_MajorMinorPatch)
-  package_version: $(GitVersion_NuGetVersionV2)
-  assembly_version: $(GitVersion_AssemblySemVer)
-  file_version: $(GitVersion_AssemblySemFileVer)
-  informational_version: $(GitVersion_InformationalVersion)
+  - git submodule update --init --recursive
 
 #---------------------------------#
 #    environment configuration    #
@@ -31,28 +20,15 @@ image:
 #       build configuration       #
 #---------------------------------#
 
-platform:
-  - Any CPU
-
-configuration:
-  - Release
-
-before_build:
-  - nuget restore
-
-build:
-  project: FastActivator.sln
-
-after_build:
+build_script:
+  - powershell -file Build.ps1 -buildserver
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 
-test:
-  assemblies:
-    only:
-      - '**\*.Tests.dll'
+test_script:
+  - vstest.console "_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.Tests.dll"
 
 #---------------------------------#
 #      packaging artifacts        #
