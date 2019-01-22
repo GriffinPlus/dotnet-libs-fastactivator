@@ -22,13 +22,14 @@ image:
 
 build_script:
   - powershell -file Build.ps1 -buildserver
+  - ps: Update-AppveyorBuild -Version $GitVersion_FullSemVer
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 
 test_script:
-  - vstest.console "_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.Tests.dll"
+  - vstest.console "%APPVEYOR_BUILD_FOLDER%\_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.Tests.dll"
 
 #---------------------------------#
 #      packaging artifacts        #
