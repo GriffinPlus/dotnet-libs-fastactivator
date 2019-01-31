@@ -12,12 +12,18 @@
 		<projectUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator</projectUrl>
 		<iconUrl>https://griffin.plus/img/nuget_icon.png</iconUrl>
 		<tags>activation activator</tags>
+		<dependencies>
+			<group targetFramework="net461">
+				<dependency id="Microsoft.CSharp" version="4.5.0" />
+			</group>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Microsoft.CSharp" version="4.5.0" />
+			</group>
+		</dependencies>
 	</metadata>
 	<files>
 		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0"/>
 		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netcoreapp2.0"/>
-		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netcoreapp2.0"/>
 		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.dll" target="lib\net461"/>
 		<file src="..\..\..\_build\FastActivator.AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.xml" target="lib\net461"/>
 	</files>

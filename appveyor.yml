@@ -29,6 +29,7 @@ build_script:
 #---------------------------------#
 
 test_script:
+  - vstest.console "%APPVEYOR_BUILD_FOLDER%\_build\FastActivator.AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.Tests.dll"
   - vstest.console "%APPVEYOR_BUILD_FOLDER%\_build\FastActivator.AnyCPU.Release\netcoreapp2.0\GriffinPlus.Lib.FastActivator.Tests.dll"
 
 #---------------------------------#
