@@ -1,7 +1,12 @@
-param([switch]$buildserver)
-
 [String]$ScriptDir = Split-Path $Script:MyInvocation.MyCommand.Path
-Import-Module "$ScriptDir\build.vs\Build+Deploy.psm1"
+$ErrorActionPreference = "Stop"
+
+Import-Module "$ScriptDir\build.vs\GitVersion.psm1"
+Import-Module "$ScriptDir\build.vs\Clean.psm1"
+Import-Module "$ScriptDir\build.vs\RestoreNuGet.psm1"
+Import-Module "$ScriptDir\build.vs\PreBuildWizard.psm1"
+Import-Module "$ScriptDir\build.vs\Build.psm1"
+Import-Module "$ScriptDir\build.vs\PackNuGet.psm1"
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -9,29 +14,41 @@ Import-Module "$ScriptDir\build.vs\Build+Deploy.psm1"
 # configuration
 # #################################
 
-$SolutionPath = "$ScriptDir\FastActivator.sln"
-$MsbuildConfigurations = @('Release')
+[String]  $SolutionPath = "$ScriptDir\FastActivator.sln"
+
+$MsbuildConfigurations = @('Debug','Release')
 $MsbuildPlatforms = @('Any CPU')
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 
-# build all projects
-if ($buildserver)
-{
-	Build `
-		-SolutionPath "$SolutionPath" `
-		-MsbuildConfigurations $MsbuildConfigurations `
-		-MsbuildPlatforms $MsbuildPlatforms
-}
-else
-{
-	Build `
-		-SolutionPath "$SolutionPath" `
-		-MsbuildConfigurations $MsbuildConfigurations `
-		-MsbuildPlatforms $MsbuildPlatforms `
-		-PauseOnError
+# remove old build output
+Clean `
+	-OutputPaths @("$ScriptDir\_build", "$ScriptDir\_deploy") `
+	-PauseOnError
 
-	Read-Host "Press ANY key..."
-}
+# let GitVersion determine the version number from the git history via tags
+GitVersion -PauseOnError
 
+# restore NuGet packages
+RestoreNuGet `
+	-SolutionPath "$SolutionPath" `
+	-PauseOnError
 
+# patch templates and assembly infos with current version number
+# check consistency of NuGet packages
+PreBuildWizard `
+	-SolutionPath "$SolutionPath" `
+	-PauseOnError
+
+# build projects
+Build `
+	-SolutionPath "$SolutionPath" `
+	-MsbuildConfigurations $MsbuildConfigurations `
+	-MsbuildPlatforms $MsbuildPlatforms `
+	-SkipConsistencyCheck `
+	-PauseOnError
+
+# pack nuget packages
+PackNuGet -PauseOnError
+
+Read-Host "Press ANY key..."

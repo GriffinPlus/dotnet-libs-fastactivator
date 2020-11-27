@@ -1,6 +1,12 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
 next-version: 0.1.0
-branches: {}
+tag-prefix: '[vV]'
+branches:
+    master:
+        mode: ContinuousDelivery
+        tag: ''
+        increment: None
+        regex: master$
 ignore:
   sha: []
