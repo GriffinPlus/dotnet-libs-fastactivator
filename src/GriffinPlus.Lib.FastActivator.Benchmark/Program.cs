@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
+// ReSharper disable ConvertClosureToMethodGroup
+
 namespace GriffinPlus.Benchmark
 {
 	class Program
@@ -363,13 +365,13 @@ namespace GriffinPlus.Benchmark
 
 		static void WriteResultLine(string method, double timeMs)
 		{
-			string format = string.Format("{{0,-{0}}}: {{1}} ms", METHOD_FIELD_LENGTH);
+			string format = $"{{0,-{METHOD_FIELD_LENGTH}}}: {{1}} ms";
 			Console.WriteLine(format, method, timeMs);
 		}
 
 		static void WriteResultLine(string method, double timeMs, double speedGain)
 		{
-			string format = string.Format("{{0,-{0}}}: {{1}} ms ({{2:0.00}}x)", METHOD_FIELD_LENGTH);
+			string format = $"{{0,-{METHOD_FIELD_LENGTH}}}: {{1}} ms ({{2:0.00}}x)";
 			Console.WriteLine(format, method, timeMs, speedGain);
 		}
 	}

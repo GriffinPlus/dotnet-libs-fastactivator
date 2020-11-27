@@ -47,22 +47,22 @@ public static object CreateInstanceDynamically(Type type, Type[] constructorPara
 If you need to create an instance of a certain type that is not known at compile time, but whose constructor parameter types are known, you can use one of the following methods:
 
 ```csharp
-public static object CreateInstance<TARG>(Type type, TARG arg);
-public static object CreateInstance<TARG1, TARG2>(Type type, TARG1 arg1, TARG2 arg2);
-public static object CreateInstance<TARG1, TARG2, TARG3>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15);
-public static object CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, TARG16>(Type type, TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15, TARG16 arg16);
+public static object CreateInstance<TArg>(Type type, TArg arg);
+public static object CreateInstance<TArg1, TArg2>(Type type, TArg1 arg1, TArg2 arg2);
+public static object CreateInstance<TArg1, TArg2, TArg3>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15);
+public static object CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16);
 ```
 
 If you need to create a one-dimensional array of a certain type that is not known at compile time, you can use:
@@ -77,22 +77,22 @@ If you need to create an instance of a certain type that is known at compile tim
 
 ```csharp
 public static T CreateInstance();
-public static T CreateInstance<TARG>(TARG arg);
-public static T CreateInstance<TARG1, TARG2>(TARG1 arg1, TARG2 arg2);
-public static T CreateInstance<TARG1, TARG2, TARG3>(TARG1 arg1, TARG2 arg2, TARG3 arg3);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15);
-public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, TARG16>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15, TARG16 arg16);
+public static T CreateInstance<TArg>(TArg arg);
+public static T CreateInstance<TArg1, TArg2>(TArg1 arg1, TArg2 arg2);
+public static T CreateInstance<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15);
+public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16);
 ```
 
 ## Benchmark
@@ -130,8 +130,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 45330ms             | 43688ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 6153ms (7.37x)      | 5689ms (7.68x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2468ms (18.37x)** | 2446ms (17.86x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4125ms (10.99x)     | **1449ms (30.15x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2468ms (18.37x)** | 2446ms (17.86x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4125ms (10.99x)     | **1449ms (30.15x)**
   
 ### 3 Constructor Parameters
 
@@ -139,8 +139,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 49857ms             | 48079ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 6777ms (7.36x)      | 6388ms (7.53x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2590ms (19.25x)** | 2470ms (19.47x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4238ms (11.76x)     | **1629ms (29.51x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2590ms (19.25x)** | 2470ms (19.47x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4238ms (11.76x)     | **1629ms (29.51x)**
   
 ### 4 Constructor Parameters
 
@@ -148,8 +148,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 53605ms             | 52922ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 6741ms (7.95x)      | 6467ms (8.18x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2688ms (19.94x)** | 2768ms (19.12x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4300ms (12.47x)     | **1626ms (32.55x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2688ms (19.94x)** | 2768ms (19.12x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4300ms (12.47x)     | **1626ms (32.55x)**
   
 ### 5 Constructor Parameters
 
@@ -157,8 +157,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 58465ms             | 57936ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 7510ms (7.78x)      | 7190ms (8.06x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2648ms (22.08x)** | 2696ms (21.49x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4244ms (13.78x)     | **1501ms (38.60x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2648ms (22.08x)** | 2696ms (21.49x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4244ms (13.78x)     | **1501ms (38.60x)**
   
 ### 6 Constructor Parameters
 
@@ -166,8 +166,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 63606ms             | 63726ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 7805ms (8.15x)      | 7313ms (8.71x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2629ms (24.19x)** | 2529ms (25.20x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4323ms (14.71x)     | **1536ms (41.49x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2629ms (24.19x)** | 2529ms (25.20x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4323ms (14.71x)     | **1536ms (41.49x)**
   
 ### 7 Constructor Parameters
 
@@ -175,8 +175,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 68450ms             | 67271ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 8734ms (7.84x)      | 8553ms (7.87x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2731ms (25.06x)** | 2770ms (24.29x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4495ms (15.23x)     | **1778ms (37.84x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2731ms (25.06x)** | 2770ms (24.29x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4495ms (15.23x)     | **1778ms (37.84x)**
 
 ### 8 Constructor Parameters
 
@@ -193,8 +193,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 74254ms             | 73808ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 9479ms (7.83x)      | 9236ms (7.99x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2655ms (27.97x)** | 2719ms (27.15x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4399ms (16.88x)     | **1729ms (42.69x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2655ms (27.97x)** | 2719ms (27.15x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4399ms (16.88x)     | **1729ms (42.69x)**
 
 ### 10 Constructor Parameters
 
@@ -202,8 +202,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 77811ms             | 77405ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 9613ms (8.09x)      | 9457ms (8.18x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2690ms (28.93x)** | 2765ms (27.99x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4497ms (17.30x)     | **1767ms (43.81x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2690ms (28.93x)** | 2765ms (27.99x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4497ms (17.30x)     | **1767ms (43.81x)**
 
 ### 11 Constructor Parameters
 
@@ -211,8 +211,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 80367ms             | 80818ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 10330ms (7.78x)     | 10103ms (8.00x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2898ms (27.73x)** | 2952ms (27.38x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4553ms (17.65x)     | **1822ms (44.36x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2898ms (27.73x)** | 2952ms (27.38x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4553ms (17.65x)     | **1822ms (44.36x)**
 
 ### 12 Constructor Parameters
 
@@ -220,8 +220,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 83998ms             | 84513ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 10168ms (8.26x)     | 9969ms (8.48x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2869ms (29.28x)** | 2892ms (29.22x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 5250ms (16.00x)     | **1881ms (44.93x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2869ms (29.28x)** | 2892ms (29.22x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 5250ms (16.00x)     | **1881ms (44.93x)**
 
 ### 13 Constructor Parameters
 
@@ -229,8 +229,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 87693ms             | 88327ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 11084ms (7.91x)     | 10874ms (8.12x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2903ms (30.21x)** | 2804ms (31.50x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 5070ms (17.30x)     | **1951ms (45.27x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2903ms (30.21x)** | 2804ms (31.50x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 5070ms (17.30x)     | **1951ms (45.27x)**
   
 ### 14 Constructor Parameters
 
@@ -238,8 +238,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 91378ms             | 92178ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 11238ms (8.13x)     | 11113ms (8.29x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2949ms (30.99x)** | 2932ms (31.44x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4758ms (19.21x)     | **1951ms (47.25x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2949ms (30.99x)** | 2932ms (31.44x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4758ms (19.21x)     | **1951ms (47.25x)**
   
 ### 15 Constructor Parameters
 
@@ -247,8 +247,8 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 94903ms             | 96048ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 11887ms (7.98x)     | 11679ms (8.22x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2953ms (32.14x)** | 3127ms (30.72x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4872ms (19.48x)     | **2023ms (47.48x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2953ms (32.14x)** | 3127ms (30.72x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4872ms (19.48x)     | **2023ms (47.48x)**
   
 ### 16 Constructor Parameters
 
@@ -256,6 +256,6 @@ The machine the benchmark runs on is a Virtual Box with Windows 10 (64 bit) inst
 |------------------------------------------------------------------------|---------------------|-------------------
 | object Activator.CreateInstance(Type, object[])                        | 98163ms             | 98860ms
 | object FastActivator.CreateInstanceDynamically(Type, Type[], object[]) | 12508ms (7.85x)     | 12341ms (8.01x)
-| object FastActivator.CreateInstance&lt;...&gt;(...)                   | **2994ms (32.79x)** | 3127ms (31.61x)
-|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)          | 4876ms (20.13x)     | **2130mx (46.41x)**
+| object FastActivator.CreateInstance&lt;...&gt;(...)                    | **2994ms (32.79x)** | 3127ms (31.61x)
+|      T FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)           | 4876ms (20.13x)     | **2130mx (46.41x)**
 

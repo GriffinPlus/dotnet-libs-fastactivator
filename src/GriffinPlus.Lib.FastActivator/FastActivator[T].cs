@@ -9,7 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading;
+
+// ReSharper disable CoVariantArrayConversion
 
 namespace GriffinPlus.Lib
 {
@@ -19,6 +20,7 @@ namespace GriffinPlus.Lib
 	/// </summary>
 	public sealed class FastActivator<T>
 	{
+		// ReSharper disable once StaticMemberInGenericType
 		private static readonly Dictionary<Type, Delegate> sCreators;
 		private static readonly Func<T> sParameterlessCreator;
 
@@ -28,10 +30,9 @@ namespace GriffinPlus.Lib
 		static FastActivator()
 		{
 			sCreators = GetCreators();
-			
+
 			// init parameterless creator
-			Delegate creator;
-			sCreators.TryGetValue(typeof(Func<T>), out creator);
+			sCreators.TryGetValue(typeof(Func<T>), out var creator);
 			sParameterlessCreator = (Func<T>)creator;
 		}
 
@@ -47,139 +48,134 @@ namespace GriffinPlus.Lib
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG">Type of the constructor argument.</typeparam>
+		/// <typeparam name="TArg">Type of the constructor argument.</typeparam>
 		/// <param name="arg">The constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG>(TARG arg)
+		public static T CreateInstance<TArg>(TArg arg)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG, T>)creator)(arg);
+			Type creatorType = typeof(Func<TArg, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg, T>)creator)(arg);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2>(TARG1 arg1, TARG2 arg2)
+		public static T CreateInstance<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, T>)creator)(arg1, arg2);
+			Type creatorType = typeof(Func<TArg1, TArg2, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, T>)creator)(arg1, arg2);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3>(TARG1 arg1, TARG2 arg2, TARG3 arg3)
+		public static T CreateInstance<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, T>)creator)(arg1, arg2, arg3);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, T>)creator)(arg1, arg2, arg3);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
 		/// <param name="arg4">The fourth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, T>)creator)(arg1, arg2, arg3, arg4);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, T>)creator)(arg1, arg2, arg3, arg4);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
 		/// <param name="arg4">The fourth constructor argument.</param>
 		/// <param name="arg5">The fifth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, T>)creator)(arg1, arg2, arg3, arg4, arg5);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, T>)creator)(arg1, arg2, arg3, arg4, arg5);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -187,30 +183,29 @@ namespace GriffinPlus.Lib
 		/// <param name="arg5">The fifth constructor argument.</param>
 		/// <param name="arg6">The sixth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -219,31 +214,30 @@ namespace GriffinPlus.Lib
 		/// <param name="arg6">The sixth constructor argument.</param>
 		/// <param name="arg7">The seventh constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -253,32 +247,31 @@ namespace GriffinPlus.Lib
 		/// <param name="arg7">The seventh constructor argument.</param>
 		/// <param name="arg8">The eighth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -289,33 +282,32 @@ namespace GriffinPlus.Lib
 		/// <param name="arg8">The eighth constructor argument.</param>
 		/// <param name="arg9">The ninth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -327,34 +319,33 @@ namespace GriffinPlus.Lib
 		/// <param name="arg9">The ninth constructor argument.</param>
 		/// <param name="arg10">The tenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -367,35 +358,34 @@ namespace GriffinPlus.Lib
 		/// <param name="arg10">The tenth constructor argument.</param>
 		/// <param name="arg11">The eleventh constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
-		/// <typeparam name="TARG12">Type of the twelfth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg12">Type of the twelfth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -409,36 +399,35 @@ namespace GriffinPlus.Lib
 		/// <param name="arg11">The eleventh constructor argument.</param>
 		/// <param name="arg12">The twelfth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
-		/// <typeparam name="TARG12">Type of the twelfth constructor argument.</typeparam>
-		/// <typeparam name="TARG13">Type of the thirteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg12">Type of the twelfth constructor argument.</typeparam>
+		/// <typeparam name="TArg13">Type of the thirteenth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -453,37 +442,36 @@ namespace GriffinPlus.Lib
 		/// <param name="arg12">The twelfth constructor argument.</param>
 		/// <param name="arg13">The thirteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
-		/// <typeparam name="TARG12">Type of the twelfth constructor argument.</typeparam>
-		/// <typeparam name="TARG13">Type of the thirteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG14">Type of the fourteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg12">Type of the twelfth constructor argument.</typeparam>
+		/// <typeparam name="TArg13">Type of the thirteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg14">Type of the fourteenth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -499,38 +487,37 @@ namespace GriffinPlus.Lib
 		/// <param name="arg13">The thirteenth constructor argument.</param>
 		/// <param name="arg14">The fourteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
-		/// <typeparam name="TARG12">Type of the twelfth constructor argument.</typeparam>
-		/// <typeparam name="TARG13">Type of the thirteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG14">Type of the fourteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG15">Type of the fifteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg12">Type of the twelfth constructor argument.</typeparam>
+		/// <typeparam name="TArg13">Type of the thirteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg14">Type of the fourteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg15">Type of the fifteenth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -547,39 +534,38 @@ namespace GriffinPlus.Lib
 		/// <param name="arg14">The fourteenth constructor argument.</param>
 		/// <param name="arg15">The fifteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
 		/// </summary>
-		/// <typeparam name="TARG1">Type of the first constructor argument.</typeparam>
-		/// <typeparam name="TARG2">Type of the second constructor argument.</typeparam>
-		/// <typeparam name="TARG3">Type of the third constructor argument.</typeparam>
-		/// <typeparam name="TARG4">Type of the fourth constructor argument.</typeparam>
-		/// <typeparam name="TARG5">Type of the fifth constructor argument.</typeparam>
-		/// <typeparam name="TARG6">Type of the sixth constructor argument.</typeparam>
-		/// <typeparam name="TARG7">Type of the seventh constructor argument.</typeparam>
-		/// <typeparam name="TARG8">Type of the eighth constructor argument.</typeparam>
-		/// <typeparam name="TARG9">Type of the ninth constructor argument.</typeparam>
-		/// <typeparam name="TARG10">Type of the tenth constructor argument.</typeparam>
-		/// <typeparam name="TARG11">Type of the eleventh constructor argument.</typeparam>
-		/// <typeparam name="TARG12">Type of the twelfth constructor argument.</typeparam>
-		/// <typeparam name="TARG13">Type of the thirteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG14">Type of the fourteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG15">Type of the fifteenth constructor argument.</typeparam>
-		/// <typeparam name="TARG16">Type of the sixteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg1">Type of the first constructor argument.</typeparam>
+		/// <typeparam name="TArg2">Type of the second constructor argument.</typeparam>
+		/// <typeparam name="TArg3">Type of the third constructor argument.</typeparam>
+		/// <typeparam name="TArg4">Type of the fourth constructor argument.</typeparam>
+		/// <typeparam name="TArg5">Type of the fifth constructor argument.</typeparam>
+		/// <typeparam name="TArg6">Type of the sixth constructor argument.</typeparam>
+		/// <typeparam name="TArg7">Type of the seventh constructor argument.</typeparam>
+		/// <typeparam name="TArg8">Type of the eighth constructor argument.</typeparam>
+		/// <typeparam name="TArg9">Type of the ninth constructor argument.</typeparam>
+		/// <typeparam name="TArg10">Type of the tenth constructor argument.</typeparam>
+		/// <typeparam name="TArg11">Type of the eleventh constructor argument.</typeparam>
+		/// <typeparam name="TArg12">Type of the twelfth constructor argument.</typeparam>
+		/// <typeparam name="TArg13">Type of the thirteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg14">Type of the fourteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg15">Type of the fifteenth constructor argument.</typeparam>
+		/// <typeparam name="TArg16">Type of the sixteenth constructor argument.</typeparam>
 		/// <param name="arg1">The first constructor argument.</param>
 		/// <param name="arg2">The second constructor argument.</param>
 		/// <param name="arg3">The third constructor argument.</param>
@@ -597,17 +583,16 @@ namespace GriffinPlus.Lib
 		/// <param name="arg15">The fifteenth constructor argument.</param>
 		/// <param name="arg16">The sixteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, TARG16>(TARG1 arg1, TARG2 arg2, TARG3 arg3, TARG4 arg4, TARG5 arg5, TARG6 arg6, TARG7 arg7, TARG8 arg8, TARG9 arg9, TARG10 arg10, TARG11 arg11, TARG12 arg12, TARG13 arg13, TARG14 arg14, TARG15 arg15, TARG16 arg16)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16)
 		{
 			// create an instance of the type
-			Delegate creator;
-			Type creatorType = typeof(Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, TARG16, T>);
-			if (sCreators.TryGetValue(creatorType, out creator)) {
-				return ((Func<TARG1, TARG2, TARG3, TARG4, TARG5, TARG6, TARG7, TARG8, TARG9, TARG10, TARG11, TARG12, TARG13, TARG14, TARG15, TARG16, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16, T>);
+			if (sCreators.TryGetValue(creatorType, out var creator)) {
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
 			}
 
 			// constructor not found
-			string error = string.Format("The specified type ({0}) does not have the required constructor.", typeof(T).FullName);
+			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
 			throw new ArgumentException(error, nameof(T));
 		}
 
@@ -638,19 +623,14 @@ namespace GriffinPlus.Lib
 				var constructorParameterTypes = constructor.GetParameters().Select(x => x.ParameterType).ToArray();
 				if (constructorParameterTypes.Length > 16) continue;
 
-				ParameterExpression[] parameterExpressions = constructorParameterTypes.Select(x => Expression.Parameter(x)).ToArray();
+				ParameterExpression[] parameterExpressions = constructorParameterTypes.Select(Expression.Parameter).ToArray();
 				Expression body;
 
 				if (typeof(T).IsValueType)
 				{
-					if (parameterExpressions.Length > 0)
-					{
-						body = Expression.New(constructor, parameterExpressions);
-					}
-					else
-					{
-						body = Expression.New(typeof(T));
-					}
+					body = parameterExpressions.Length > 0
+						? Expression.New(constructor, parameterExpressions)
+						: Expression.New(typeof(T));
 				}
 				else
 				{

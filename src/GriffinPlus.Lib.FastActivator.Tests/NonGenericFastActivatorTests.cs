@@ -21,7 +21,7 @@ namespace UnitTests
 			UntypedResultCreateInstanceMethodInfos = typeof(FastActivator)
 				.GetMethods()
 				.Where(mi => mi.Name == "CreateInstance" && mi.ReturnType == typeof(object))
-				.OrderBy(mi => mi.GetParameters().Count())
+				.OrderBy(mi => mi.GetParameters().Length)
 				.ToArray();
 
 			Assert.Equal(17, UntypedResultCreateInstanceMethodInfos.Length);
@@ -35,7 +35,7 @@ namespace UnitTests
 	{
 		#region Member Variables
 
-		private NonGenericFastActivatorTests_Fixture mFixture;
+		private readonly NonGenericFastActivatorTests_Fixture mFixture;
 
 		#endregion
 

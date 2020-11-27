@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+// ReSharper disable EmptyConstructor
+
 namespace GriffinPlus.Lib
 {
 	/// <summary>
@@ -45,8 +47,9 @@ namespace GriffinPlus.Lib
 
 					// the types should be equal at this point, but two types MAY have the same hash code
 					// => check type name to be sure...
-					if (xcpt != ycpt) {
-						int result = xcpt.FullName.CompareTo(ycpt.FullName);
+					if (xcpt != ycpt)
+					{
+						int result = StringComparer.Ordinal.Compare(xcpt.FullName, ycpt.FullName);
 						if (result != 0) return result;
 					}
 				}
@@ -55,7 +58,7 @@ namespace GriffinPlus.Lib
 			}
 		}
 
-		private static NodeComparer sComparer = new NodeComparer();
+		private static readonly NodeComparer sComparer = new NodeComparer();
 		private List<Node> mData = new List<Node>();
 
 		/// <summary>
@@ -85,8 +88,7 @@ namespace GriffinPlus.Lib
 				Thread.MemoryBarrier();
 
 				// query for the appropriate type; create new type, if not found
-				Node node = new Node();
-				node.ConstructorParameterTypes = constructorParameterTypes;
+				Node node = new Node { ConstructorParameterTypes = constructorParameterTypes };
 				int index = data.BinarySearch(node, sComparer);
 				if (index >= 0)
 				{
@@ -95,9 +97,11 @@ namespace GriffinPlus.Lib
 				else
 				{
 					var newData = new List<Node>(data);
-					node = new Node();
-					node.ConstructorParameterTypes = constructorParameterTypes;
-					node.FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length);
+					node = new Node
+					{
+						ConstructorParameterTypes = constructorParameterTypes,
+						FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length)
+					};
 					newData.Insert(~index, node);
 					if (Interlocked.CompareExchange(ref mData, newData, data) == data) {
 						return node.FuncType;

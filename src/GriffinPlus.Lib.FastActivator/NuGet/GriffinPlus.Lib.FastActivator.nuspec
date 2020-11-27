@@ -6,7 +6,7 @@
 		<authors>Sascha Falk</authors>
 		<copyright>Copyright (c) 2020 Sascha Falk and Contributors</copyright>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>A fast replacement for System.Activator when instanciating local classes/structs is required.</description>
+		<description>A fast replacement for System.Activator when instantiating local classes/structs is required.</description>
 		<license type="expression">MIT</license>
 		<projectUrl>https://github.com/GriffinPlus/dotnet-libs-fastactivator</projectUrl>
 		<icon>images/nuget-icon.png</icon>

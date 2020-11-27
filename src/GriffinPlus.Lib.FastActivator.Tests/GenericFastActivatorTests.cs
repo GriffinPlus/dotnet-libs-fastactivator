@@ -22,13 +22,13 @@ namespace UnitTests
 			TypedResultCreateInstanceMethodInfos_TestClass = typeof(FastActivator<TestClass<int>>)
 				.GetMethods()
 				.Where(mi => mi.Name == "CreateInstance")
-				.OrderBy(mi => mi.GetParameters().Count())
+				.OrderBy(mi => mi.GetParameters().Length)
 				.ToArray();
 
 			TypedResultCreateInstanceMethodInfos_TestStruct = typeof(FastActivator<TestStruct<int>>)
 				.GetMethods()
 				.Where(mi => mi.Name == "CreateInstance")
-				.OrderBy(mi => mi.GetParameters().Count())
+				.OrderBy(mi => mi.GetParameters().Length)
 				.ToArray();
 
 			Assert.Equal(17, TypedResultCreateInstanceMethodInfos_TestClass.Length);
@@ -41,7 +41,7 @@ namespace UnitTests
 	/// </summary>
 	public class GenericFastActivatorTests : IClassFixture<GenericFastActivatorTests_Fixture>
 	{
-		private GenericFastActivatorTests_Fixture mFixture;
+		private readonly GenericFastActivatorTests_Fixture mFixture;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GenericFastActivatorTests"/> class.
