@@ -1,0 +1,282 @@
+#######################################################################################################################
+# build.vs: ci-csharp-netstandard20-with-deployment-on-tag.yml
+#######################################################################################################################
+#
+# Standard pipeline for building and testing C# projects with target .NET Standard 2.0.
+# The pipeline runs unit tests on the following target frameworks and platforms:
+#
+# - Windows Server 2019, .NET 4.6.1      (net461)
+# - Windows Server 2019, .NET Core 2.1   (netcoreapp2.1)
+# - Windows Server 2019, .NET Core 3.1   (netcoreapp3.1)
+# - Windows Server 2019, .NET 5.0        (net5.0, no platform specific TPMs)
+# - Ubuntu 20.04,        .NET Core 2.1   (netcoreapp2.1)
+# - Ubuntu 20.04,        .NET Core 3.1   (netcoreapp3.1)
+# - Ubuntu 20.04,        .NET 5.0        (net5.0, no platform specific TPMs)
+#
+# After tests have completed successfully nuget packages are created according to their specification (*.nuspec).
+# If the build was tagged with a tag starting with 'v' the nuget packages are pushed to nuget.org.
+#
+#######################################################################################################################
+
+trigger:
+  tags:
+    include:
+    - v*
+  branches:
+    include:
+    - master
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+
+########################################################################################################################
+# Stage: Build
+########################################################################################################################
+- stage: 'Build'
+  jobs:
+  ######################################################################################################################
+  # Job: Build
+  ######################################################################################################################
+  - job: 'Build'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 2.1 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '2.1.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 3.1 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '3.1.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 5.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '5.0.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: DotNetCoreCLI@2
+      displayName: 'Install GitVersion'
+      inputs:
+        command: 'custom'
+        custom: 'tool'
+        arguments: 'install -g gitversion.tool'
+    - task: DotNetCoreCLI@2
+      displayName: 'Show GitVersion Version'
+      inputs:
+        command: 'custom'
+        custom: 'gitversion'
+        arguments: 'version'
+    - task: DotNetCoreCLI@2
+      name: 'GitVersion'
+      displayName: 'Run GitVersion'
+      inputs:
+        command: 'custom'
+        custom: 'gitversion'
+        arguments: '/output buildserver /updateassemblyinfo build.vs/AssemblyInfoVersion.cs'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '/p:InformationalVersion=$(GitVersion.InformationalVersion)'
+        versioningScheme: 'byEnvVar'
+        versionEnvVar: 'GitVersion.SemVer'
+    - task: PowerShell@2
+      displayName: 'Export Shared Variables'
+      inputs:
+        targetType: 'inline'
+        pwsh: true
+        script: |
+          New-Item -ItemType Directory -Force -Path '$(Pipeline.Workspace)/variables'
+          Set-Location -Path '$(Pipeline.Workspace)/variables'
+          '$(GitVersion.NuGetVersion)' | Out-File GitVersion.NuGetVersion -NoNewLine
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)/_build'
+        artifactName: 'Binaries'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Shared Variables'
+      inputs:
+        targetPath: '$(Pipeline.Workspace)/variables'
+        artifactName: 'Variables'
+
+########################################################################################################################
+# Stage: Tests
+########################################################################################################################
+- stage: 'Tests'
+  jobs:
+  ######################################################################################################################
+  # Job: Tests for .NET 4.6.1 on Windows
+  ######################################################################################################################
+  - job:
+    displayName: 'Windows Server 2019, .NET 4.6.1'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifacts'
+      inputs:
+        artifact: 'Binaries'
+        targetPath: '$(Build.SourcesDirectory)/_build'
+        itemPattern: |
+          **/net461/*.*
+    - task: VSTest@2
+      displayName: 'Test'
+      inputs:
+        configuration: '$(BuildConfiguration)'
+        testSelector: 'testAssemblies'
+        codeCoverageEnabled: true
+        testAssemblyVer2: |
+          **\*Tests.dll
+          !**\obj\**
+        searchFolder: '$(Build.SourcesDirectory)'
+        otherConsoleOptions: '/Framework:.NETFramework,Version=v4.6.1'
+
+  ######################################################################################################################
+  # Job: Tests for .NET Core 2.1/3.1 and .NET 5.0 on Windows and Linux
+  ######################################################################################################################
+  - job:
+    displayName: ''
+    strategy:
+      matrix:
+        'Windows Server 2019, .NET Core 2.1':
+          VmImage: 'windows-2019'
+          DotNetTarget: 'netcoreapp2.1'
+        'Windows Server 2019, .NET Core 3.1':
+          VmImage: 'windows-2019'
+          DotNetTarget: 'netcoreapp3.1'
+        'Windows Server 2019, .NET 5.0':
+          VmImage: 'windows-2019'
+          DotNetTarget: 'net5.0'
+        'Ubuntu 20.04, .NET Core 2.1':
+          VmImage: 'ubuntu-20.04'
+          DotNetTarget: 'netcoreapp2.1'
+        'Ubuntu 20.04, .NET Core 3.1':
+          VmImage: 'ubuntu-20.04'
+          DotNetTarget: 'netcoreapp3.1'
+        'Ubuntu 20.04, .NET 5.0':
+          VmImage: 'ubuntu-20.04'
+          DotNetTarget: 'net5.0'
+    pool:
+      vmImage: '$(VmImage)'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 2.1 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '2.1.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 3.1 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '3.1.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 5.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '5.0.x'
+        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifacts'
+      inputs:
+        artifact: 'Binaries'
+        targetPath: '$(Build.SourcesDirectory)/_build'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework $(DotNetTarget)'
+
+########################################################################################################################
+# Stage: Deployment
+########################################################################################################################
+- stage: 'Deployment'
+  jobs:
+  ######################################################################################################################
+  # Job: Pack
+  ######################################################################################################################
+  - job: 'Pack'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifacts'
+      inputs:
+        artifact: 'Binaries'
+        targetPath: '$(Build.SourcesDirectory)/_build'
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifacts'
+      inputs:
+        artifact: 'Variables'
+        targetPath: '$(Pipeline.Workspace)/variables'
+    - task: PowerShell@2
+      displayName: 'Import Shared Variables'
+      inputs:
+        targetType: 'inline'
+        pwsh: true
+        workingDirectory: '$(Pipeline.Workspace)/variables'
+        script: |
+          foreach ( $file in Get-ChildItem ) {
+            $value = Get-Content $($file.FullName) -Raw
+            Write-Host "Setting variable '$($file.Name)' = '$value'"
+            Write-Host "##vso[task.setvariable variable=$($file.Name)]$value";
+          }
+    - task: PowerShell@2
+      displayName: 'Pack'
+      inputs:
+        targetType: 'inline'
+        pwsh: true
+        script: |
+          foreach ( $file in Get-ChildItem -Include *.nuspec -Recurse ) {
+            Write-Host "Processing file $($file.FullName)..."
+            nuget.exe pack `
+              "$($file.FullName)" `
+              -Symbols `
+              -SymbolPackageFormat snupkg `
+              -Properties version=$(GitVersion.NuGetVersion) `
+              -OutputDirectory "$(Build.ArtifactStagingDirectory)" `
+              -Verbosity detailed
+            if ($lastexitcode -ne 0) { throw("Creating nuget package failed.") }
+          }
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'Packages'
+
+  ######################################################################################################################
+  # Job: Publish
+  ######################################################################################################################
+  - job:
+    displayName: 'Publish'
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
+    dependsOn: 'Pack'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifacts'
+      inputs:
+        artifact: 'Packages'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+    - task: NuGetCommand@2
+      displayName: 'Publish'
+      inputs:
+        command: 'push'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'nuget.org'
