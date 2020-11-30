@@ -22,7 +22,7 @@ namespace GriffinPlus.Lib
 	{
 		// ReSharper disable once StaticMemberInGenericType
 		private static readonly Dictionary<Type, Delegate> sCreators;
-		private static readonly Func<T> sParameterlessCreator;
+		private static readonly Func<T>                    sParameterlessCreator;
 
 		/// <summary>
 		/// Initializes the <see cref="FastActivator"/> class.
@@ -33,24 +33,18 @@ namespace GriffinPlus.Lib
 
 			// init parameterless creator
 			sCreators.TryGetValue(typeof(Func<T>), out var creator);
-			sParameterlessCreator = (Func<T>)creator;
+			sParameterlessCreator = creator != null
+				? (Func<T>)creator
+				: () => throw new ArgumentException(
+					$"The specified type ({typeof(T).FullName}) does not have the required constructor.",
+					nameof(T));
 		}
 
 		/// <summary>
 		/// Creates an instance of the specified type using its default constructor.
 		/// </summary>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance()
-		{
-			// create an instance of the type
-			if (sParameterlessCreator != null) {
-				return sParameterlessCreator();
-			}
-
-			// constructor not found
-			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
-			throw new ArgumentException(error, nameof(T));
-		}
+		public static T CreateInstance() => sParameterlessCreator();
 
 		/// <summary>
 		/// Creates an instance of the specified type using its constructor with the specified arguments.
