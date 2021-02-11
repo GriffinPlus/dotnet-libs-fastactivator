@@ -1,0 +1,13 @@
+﻿.\GriffinPlus.Lib.FastActivator.dll
+.\GriffinPlus.Lib.FastActivator.pdb
+.\GriffinPlus.Lib.FastActivator.Tests.deps.json
+.\GriffinPlus.Lib.FastActivator.Tests.dll
+.\GriffinPlus.Lib.FastActivator.Tests.pdb
+.\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.dev.json
+.\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.json
+.\GriffinPlus.Lib.FastActivator.xml
+.\testhost.dll
+.\testhost.exe
+.\xunit.runner.reporters.netcoreapp10.dll
+.\xunit.runner.utility.netcoreapp10.dll
+.\xunit.runner.visualstudio.dotnetcore.testadapter.dll

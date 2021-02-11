@@ -1,0 +1,3 @@
+﻿.\GriffinPlus.Lib.FastActivator.dll
+.\GriffinPlus.Lib.FastActivator.pdb
+.\GriffinPlus.Lib.FastActivator.xml
