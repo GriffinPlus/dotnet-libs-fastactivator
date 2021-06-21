@@ -1,0 +1,7 @@
+﻿.\GriffinPlus.Lib.FastActivator.Benchmark.exe
+.\GriffinPlus.Lib.FastActivator.Benchmark.exe.config
+.\GriffinPlus.Lib.FastActivator.Benchmark.pdb
+.\GriffinPlus.Lib.FastActivator.dll
+.\GriffinPlus.Lib.FastActivator.pdb
+.\GriffinPlus.Lib.FastActivator.xml
+.\System.ValueTuple.dll

@@ -1,12 +1,18 @@
+next-version: 0.1.0
 assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
-next-version: 0.1.0
 tag-prefix: '[vV]'
+legacy-semver-padding: 4
+build-metadata-padding: 4
+continuous-delivery-fallback-tag: ci
+commits-since-version-source-padding: 4
+commit-message-incrementing: Disabled
+commit-date-format: 'yyyy-MM-dd'
 branches:
     master:
-        mode: ContinuousDelivery
-        tag: ''
-        increment: None
         regex: master$
+        mode: ContinuousDeployment
+        tag: ''
+        increment: patch
 ignore:
   sha: []

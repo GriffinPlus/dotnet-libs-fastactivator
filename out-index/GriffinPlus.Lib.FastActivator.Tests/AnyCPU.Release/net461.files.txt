@@ -1,0 +1,13 @@
+﻿.\GriffinPlus.Lib.FastActivator.dll
+.\GriffinPlus.Lib.FastActivator.pdb
+.\GriffinPlus.Lib.FastActivator.Tests.dll
+.\GriffinPlus.Lib.FastActivator.Tests.pdb
+.\GriffinPlus.Lib.FastActivator.xml
+.\Microsoft.VisualStudio.CodeCoverage.Shim.dll
+.\xunit.abstractions.dll
+.\xunit.assert.dll
+.\xunit.core.dll
+.\xunit.execution.desktop.dll
+.\xunit.runner.reporters.net452.dll
+.\xunit.runner.utility.net452.dll
+.\xunit.runner.visualstudio.testadapter.dll

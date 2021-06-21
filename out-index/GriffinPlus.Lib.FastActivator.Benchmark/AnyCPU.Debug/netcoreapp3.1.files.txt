@@ -1,0 +1,10 @@
+﻿.\GriffinPlus.Lib.FastActivator.Benchmark.deps.json
+.\GriffinPlus.Lib.FastActivator.Benchmark.dll
+.\GriffinPlus.Lib.FastActivator.Benchmark.dll.config
+.\GriffinPlus.Lib.FastActivator.Benchmark.exe
+.\GriffinPlus.Lib.FastActivator.Benchmark.pdb
+.\GriffinPlus.Lib.FastActivator.Benchmark.runtimeconfig.dev.json
+.\GriffinPlus.Lib.FastActivator.Benchmark.runtimeconfig.json
+.\GriffinPlus.Lib.FastActivator.dll
+.\GriffinPlus.Lib.FastActivator.pdb
+.\GriffinPlus.Lib.FastActivator.xml

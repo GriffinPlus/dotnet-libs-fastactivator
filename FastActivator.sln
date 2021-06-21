@@ -32,7 +32,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build.vs", "build.vs", "{4F
 		build.vs\NuGet.msbuild = build.vs\NuGet.msbuild
 		build.vs\PackNuGet.psm1 = build.vs\PackNuGet.psm1
 		build.vs\PreBuildWizard.psm1 = build.vs\PreBuildWizard.psm1
+		build.vs\PublishNuGet.psm1 = build.vs\PublishNuGet.psm1
 		build.vs\README.md = build.vs\README.md
+		build.vs\ReSharper.DotSettings = build.vs\ReSharper.DotSettings
 		build.vs\RestoreNuGet.psm1 = build.vs\RestoreNuGet.psm1
 		build.vs\UpdateOutputFileList.psm1 = build.vs\UpdateOutputFileList.psm1
 	EndProjectSection

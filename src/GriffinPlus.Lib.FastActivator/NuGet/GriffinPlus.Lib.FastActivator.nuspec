@@ -4,7 +4,7 @@
 		<id>GriffinPlus.Lib.FastActivator</id>
 		<version>$version$</version>
 		<authors>Sascha Falk</authors>
-		<copyright>Copyright (c) 2020 Sascha Falk and Contributors</copyright>
+		<copyright>Copyright (c) 2021 Sascha Falk and Contributors</copyright>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>A fast replacement for System.Activator when instantiating local classes/structs is required.</description>
 		<license type="expression">MIT</license>
@@ -22,11 +22,11 @@
 	</metadata>
 	<files>
 		<file src="..\..\..\res\nuget-icon.png" target="images\" />
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.pdb" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.dll" target="lib\net461"/>
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.pdb" target="lib\net461"/>
-		<file src="..\..\..\_build\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.xml" target="lib\net461"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.pdb" target="lib\netstandard2.0"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.dll" target="lib\net461"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.pdb" target="lib\net461"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.xml" target="lib\net461"/>
 	</files>
 </package>
