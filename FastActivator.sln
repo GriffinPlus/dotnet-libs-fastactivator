@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GriffinPlus.Lib.FastActivat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build.vs", "build.vs", "{4F16DCDE-9AD7-4834-B7DF-27674EEF9107}"
 	ProjectSection(SolutionItems) = preProject
-		build.vs\AssemblyInfoVersion.cs = build.vs\AssemblyInfoVersion.cs
-		build.vs\AssemblyInfoVersion.mcpp = build.vs\AssemblyInfoVersion.mcpp
 		build.vs\Build.psm1 = build.vs\Build.psm1
 		build.vs\Clean.psm1 = build.vs\Clean.psm1
 		build.vs\Configuration.psm1 = build.vs\Configuration.psm1
