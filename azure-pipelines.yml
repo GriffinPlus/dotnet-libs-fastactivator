@@ -80,7 +80,7 @@ stages:
       inputs:
         command: 'custom'
         custom: 'gitversion'
-        arguments: '/output buildserver /updateassemblyinfo build.vs/AssemblyInfoVersion.cs'
+        arguments: '/output buildserver /updateassemblyinfo src/CommonAssemblyInfo.cs'
     - task: DotNetCoreCLI@2
       displayName: 'Restore'
       inputs:
