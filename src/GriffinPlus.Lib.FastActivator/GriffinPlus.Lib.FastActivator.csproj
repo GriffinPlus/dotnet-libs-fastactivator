@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net461; netstandard2.0</TargetFrameworks>
-    <AssemblyName>GriffinPlus.Lib.FastActivator</AssemblyName>
-    <RootNamespace>GriffinPlus.Lib</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net461; netstandard2.0</TargetFrameworks>
+		<AssemblyName>GriffinPlus.Lib.FastActivator</AssemblyName>
+		<RootNamespace>GriffinPlus.Lib</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+	</ItemGroup>
 
 </Project>

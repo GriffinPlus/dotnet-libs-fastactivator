@@ -4,14 +4,17 @@
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GriffinPlus.Lib;
 using System;
 using System.Linq;
 using System.Reflection;
+
+using GriffinPlus.Lib;
+
 using Xunit;
 
 namespace UnitTests
 {
+
 	public class GenericFastActivatorTests_Fixture
 	{
 		public MethodInfo[] TypedResultCreateInstanceMethodInfos_TestClass;
@@ -109,7 +112,8 @@ namespace UnitTests
 				// check result
 				Assert.IsType<TestStruct<int>>(obj);
 				TestStruct<int> testStruct = (TestStruct<int>)obj;
-				for (int j = 0; j < parameterCount; j++) {
+				for (int j = 0; j < parameterCount; j++)
+				{
 					Assert.Equal(parameters[j], testStruct.Values[j]);
 				}
 			}
@@ -152,11 +156,12 @@ namespace UnitTests
 				// check result
 				Assert.IsType<TestClass<int>>(obj);
 				TestClass<int> testClass = (TestClass<int>)obj;
-				for (int j = 0; j < parameterCount; j++) {
+				for (int j = 0; j < parameterCount; j++)
+				{
 					Assert.Equal(parameters[j], testClass.Values[j]);
 				}
 			}
 		}
-
 	}
+
 }

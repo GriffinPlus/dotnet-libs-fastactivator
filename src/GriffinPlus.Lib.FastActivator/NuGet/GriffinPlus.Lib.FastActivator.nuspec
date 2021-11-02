@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <package>
 	<metadata minClientVersion="3.3">
 		<id>GriffinPlus.Lib.FastActivator</id>
@@ -22,11 +23,11 @@
 	</metadata>
 	<files>
 		<file src="..\..\..\res\nuget-icon.png" target="images\" />
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.pdb" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0"/>
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.dll" target="lib\net461"/>
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.pdb" target="lib\net461"/>
-		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.xml" target="lib\net461"/>
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.dll" target="lib\netstandard2.0" />
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.pdb" target="lib\netstandard2.0" />
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\netstandard2.0\GriffinPlus.Lib.FastActivator.xml" target="lib\netstandard2.0" />
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.dll" target="lib\net461" />
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.pdb" target="lib\net461" />
+		<file src="..\..\..\_build\.out\GriffinPlus.Lib.FastActivator\AnyCPU.Release\net461\GriffinPlus.Lib.FastActivator.xml" target="lib\net461" />
 	</files>
 </package>

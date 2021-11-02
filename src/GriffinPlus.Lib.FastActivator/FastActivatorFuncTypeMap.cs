@@ -12,15 +12,16 @@ using System.Threading;
 
 namespace GriffinPlus.Lib
 {
+
 	/// <summary>
 	/// Helper class mapping constructor parameter types to the corresponding function type that
 	/// is used as a key when accessing creators.
 	/// </summary>
-	internal class FastActivatorFuncTypeMap
+	class FastActivatorFuncTypeMap
 	{
 		private struct Node
 		{
-			public Type FuncType;
+			public Type   FuncType;
 			public Type[] ConstructorParameterTypes;
 		}
 
@@ -59,14 +60,13 @@ namespace GriffinPlus.Lib
 		}
 
 		private static readonly NodeComparer sComparer = new NodeComparer();
-		private List<Node> mData = new List<Node>();
+		private                 List<Node>   mData     = new List<Node>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FastActivatorFuncTypeMap"/> class.
 		/// </summary>
 		public FastActivatorFuncTypeMap()
 		{
-
 		}
 
 		/// <summary>
@@ -76,9 +76,8 @@ namespace GriffinPlus.Lib
 		/// <returns>The requested creator function type.</returns>
 		public Type Get(Type[] constructorParameterTypes)
 		{
-			if (constructorParameterTypes.Length == 0) {
+			if (constructorParameterTypes.Length == 0)
 				return typeof(Func<object>);
-			}
 
 			// get snapshot of function type map (is replaced atomically when changed)
 			while (true)
@@ -94,19 +93,16 @@ namespace GriffinPlus.Lib
 				{
 					return data[index].FuncType;
 				}
-				else
+
+				var newData = new List<Node>(data);
+				node = new Node
 				{
-					var newData = new List<Node>(data);
-					node = new Node
-					{
-						ConstructorParameterTypes = constructorParameterTypes,
-						FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length)
-					};
-					newData.Insert(~index, node);
-					if (Interlocked.CompareExchange(ref mData, newData, data) == data) {
-						return node.FuncType;
-					}
-				}
+					ConstructorParameterTypes = constructorParameterTypes,
+					FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length)
+				};
+				newData.Insert(~index, node);
+				if (Interlocked.CompareExchange(ref mData, newData, data) == data)
+					return node.FuncType;
 			}
 		}
 
@@ -126,51 +122,67 @@ namespace GriffinPlus.Lib
 				case 0:
 					funcType = typeof(Func<>).MakeGenericType(returnType);
 					break;
+
 				case 1:
 					funcType = typeof(Func<,>).MakeGenericType(pt[0], returnType);
 					break;
+
 				case 2:
 					funcType = typeof(Func<,,>).MakeGenericType(pt[0], pt[1], returnType);
 					break;
+
 				case 3:
 					funcType = typeof(Func<,,,>).MakeGenericType(pt[0], pt[1], pt[2], returnType);
 					break;
+
 				case 4:
 					funcType = typeof(Func<,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], returnType);
 					break;
+
 				case 5:
 					funcType = typeof(Func<,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], returnType);
 					break;
+
 				case 6:
 					funcType = typeof(Func<,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], returnType);
 					break;
+
 				case 7:
 					funcType = typeof(Func<,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], returnType);
 					break;
+
 				case 8:
 					funcType = typeof(Func<,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], returnType);
 					break;
+
 				case 9:
 					funcType = typeof(Func<,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], returnType);
 					break;
+
 				case 10:
 					funcType = typeof(Func<,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], returnType);
 					break;
+
 				case 11:
 					funcType = typeof(Func<,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], returnType);
 					break;
+
 				case 12:
 					funcType = typeof(Func<,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], returnType);
 					break;
+
 				case 13:
 					funcType = typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], returnType);
 					break;
+
 				case 14:
 					funcType = typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], returnType);
 					break;
+
 				case 15:
 					funcType = typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], returnType);
 					break;
+
 				case 16:
 					funcType = typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], pt[15], returnType);
 					break;
@@ -179,4 +191,5 @@ namespace GriffinPlus.Lib
 			return funcType;
 		}
 	}
+
 }

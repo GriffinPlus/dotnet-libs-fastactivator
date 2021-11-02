@@ -4,14 +4,17 @@
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GriffinPlus.Lib;
 using System;
 using System.Linq;
 using System.Reflection;
+
+using GriffinPlus.Lib;
+
 using Xunit;
 
 namespace UnitTests
 {
+
 	public class NonGenericFastActivatorTests_Fixture
 	{
 		public MethodInfo[] UntypedResultCreateInstanceMethodInfos;
@@ -108,16 +111,17 @@ namespace UnitTests
 			for (int i = 0; i < parameterCount; i++)
 			{
 				// call method
-				object[] parameters = new object[1+parameterCount];
+				object[] parameters = new object[1 + parameterCount];
 				parameters[0] = typeof(TestStruct<int>);
-				for (int j = 1; j < parameterCount+1; j++) parameters[j] = i+1 == j ? 1 : 0;
+				for (int j = 1; j < parameterCount + 1; j++) parameters[j] = i + 1 == j ? 1 : 0;
 				object obj = method.Invoke(null, parameters);
 
 				// check result
 				Assert.IsType<TestStruct<int>>(obj);
 				TestStruct<int> testStruct = (TestStruct<int>)obj;
-				for (int j = 0; j < parameterCount; j++) {
-					Assert.Equal(parameters[j+1], testStruct.Values[j]);
+				for (int j = 0; j < parameterCount; j++)
+				{
+					Assert.Equal(parameters[j + 1], testStruct.Values[j]);
 				}
 			}
 		}
@@ -152,16 +156,17 @@ namespace UnitTests
 			for (int i = 0; i < parameterCount; i++)
 			{
 				// call method
-				object[] parameters = new object[1+parameterCount];
+				object[] parameters = new object[1 + parameterCount];
 				parameters[0] = typeof(TestClass<int>);
-				for (int j = 1; j < parameterCount+1; j++) parameters[j] = i+1 == j ? 1 : 0;
+				for (int j = 1; j < parameterCount + 1; j++) parameters[j] = i + 1 == j ? 1 : 0;
 				object obj = method.Invoke(null, parameters);
 
 				// check result
 				Assert.IsType<TestClass<int>>(obj);
 				TestClass<int> testStruct = (TestClass<int>)obj;
-				for (int j = 0; j < parameterCount; j++) {
-					Assert.Equal(parameters[j+1], testStruct.Values[j]);
+				for (int j = 0; j < parameterCount; j++)
+				{
+					Assert.Equal(parameters[j + 1], testStruct.Values[j]);
 				}
 			}
 		}
@@ -223,6 +228,6 @@ namespace UnitTests
 		}
 
 		#endregion
-
 	}
+
 }

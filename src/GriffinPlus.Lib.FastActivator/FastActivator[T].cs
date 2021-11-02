@@ -14,6 +14,7 @@ using System.Reflection;
 
 namespace GriffinPlus.Lib
 {
+
 	/// <summary>
 	/// Creates instances of a certain class using dynamically compiled creation methods
 	/// (Generic version providing best performance gain for value types).
@@ -34,10 +35,10 @@ namespace GriffinPlus.Lib
 			// init parameterless creator
 			sCreators.TryGetValue(typeof(Func<T>), out var creator);
 			sParameterlessCreator = creator != null
-				? (Func<T>)creator
-				: () => throw new ArgumentException(
-					$"The specified type ({typeof(T).FullName}) does not have the required constructor.",
-					nameof(T));
+				                        ? (Func<T>)creator
+				                        : () => throw new ArgumentException(
+					                                $"The specified type ({typeof(T).FullName}) does not have the required constructor.",
+					                                nameof(T));
 		}
 
 		/// <summary>
@@ -56,9 +57,8 @@ namespace GriffinPlus.Lib
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg, T>)creator)(arg);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -77,9 +77,8 @@ namespace GriffinPlus.Lib
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, T>)creator)(arg1, arg2);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -100,9 +99,8 @@ namespace GriffinPlus.Lib
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, T>)creator)(arg1, arg2, arg3);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -121,13 +119,16 @@ namespace GriffinPlus.Lib
 		/// <param name="arg3">The third constructor argument.</param>
 		/// <param name="arg4">The fourth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, T>)creator)(arg1, arg2, arg3, arg4);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -148,13 +149,17 @@ namespace GriffinPlus.Lib
 		/// <param name="arg4">The fourth constructor argument.</param>
 		/// <param name="arg5">The fifth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4,
+			TArg5 arg5)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, T>)creator)(arg1, arg2, arg3, arg4, arg5);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -177,13 +182,18 @@ namespace GriffinPlus.Lib
 		/// <param name="arg5">The fifth constructor argument.</param>
 		/// <param name="arg6">The sixth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4,
+			TArg5 arg5,
+			TArg6 arg6)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -208,13 +218,19 @@ namespace GriffinPlus.Lib
 		/// <param name="arg6">The sixth constructor argument.</param>
 		/// <param name="arg7">The seventh constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4,
+			TArg5 arg5,
+			TArg6 arg6,
+			TArg7 arg7)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -241,13 +257,20 @@ namespace GriffinPlus.Lib
 		/// <param name="arg7">The seventh constructor argument.</param>
 		/// <param name="arg8">The eighth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4,
+			TArg5 arg5,
+			TArg6 arg6,
+			TArg7 arg7,
+			TArg8 arg8)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -276,13 +299,21 @@ namespace GriffinPlus.Lib
 		/// <param name="arg8">The eighth constructor argument.</param>
 		/// <param name="arg9">The ninth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(
+			TArg1 arg1,
+			TArg2 arg2,
+			TArg3 arg3,
+			TArg4 arg4,
+			TArg5 arg5,
+			TArg6 arg6,
+			TArg7 arg7,
+			TArg8 arg8,
+			TArg9 arg9)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -313,13 +344,22 @@ namespace GriffinPlus.Lib
 		/// <param name="arg9">The ninth constructor argument.</param>
 		/// <param name="arg10">The tenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -352,13 +392,23 @@ namespace GriffinPlus.Lib
 		/// <param name="arg10">The tenth constructor argument.</param>
 		/// <param name="arg11">The eleventh constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -393,13 +443,24 @@ namespace GriffinPlus.Lib
 		/// <param name="arg11">The eleventh constructor argument.</param>
 		/// <param name="arg12">The twelfth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11,
+			TArg12 arg12)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -436,13 +497,25 @@ namespace GriffinPlus.Lib
 		/// <param name="arg12">The twelfth constructor argument.</param>
 		/// <param name="arg13">The thirteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11,
+			TArg12 arg12,
+			TArg13 arg13)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -481,13 +554,26 @@ namespace GriffinPlus.Lib
 		/// <param name="arg13">The thirteenth constructor argument.</param>
 		/// <param name="arg14">The fourteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11,
+			TArg12 arg12,
+			TArg13 arg13,
+			TArg14 arg14)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -528,13 +614,27 @@ namespace GriffinPlus.Lib
 		/// <param name="arg14">The fourteenth constructor argument.</param>
 		/// <param name="arg15">The fifteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11,
+			TArg12 arg12,
+			TArg13 arg13,
+			TArg14 arg14,
+			TArg15 arg15)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
+			if (sCreators.TryGetValue(creatorType, out var creator))
 				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
-			}
 
 			// constructor not found
 			string error = $"The specified type ({typeof(T).FullName}) does not have the required constructor.";
@@ -577,12 +677,45 @@ namespace GriffinPlus.Lib
 		/// <param name="arg15">The fifteenth constructor argument.</param>
 		/// <param name="arg16">The sixteenth constructor argument.</param>
 		/// <returns>An instance of the specified type.</returns>
-		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16)
+		public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(
+			TArg1  arg1,
+			TArg2  arg2,
+			TArg3  arg3,
+			TArg4  arg4,
+			TArg5  arg5,
+			TArg6  arg6,
+			TArg7  arg7,
+			TArg8  arg8,
+			TArg9  arg9,
+			TArg10 arg10,
+			TArg11 arg11,
+			TArg12 arg12,
+			TArg13 arg13,
+			TArg14 arg14,
+			TArg15 arg15,
+			TArg16 arg16)
 		{
 			// create an instance of the type
 			Type creatorType = typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16, T>);
-			if (sCreators.TryGetValue(creatorType, out var creator)) {
-				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16, T>)creator)(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+			if (sCreators.TryGetValue(creatorType, out var creator))
+			{
+				return ((Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16, T>)creator)(
+					arg1,
+					arg2,
+					arg3,
+					arg4,
+					arg5,
+					arg6,
+					arg7,
+					arg8,
+					arg9,
+					arg10,
+					arg11,
+					arg12,
+					arg13,
+					arg14,
+					arg15,
+					arg16);
 			}
 
 			// constructor not found
@@ -623,8 +756,8 @@ namespace GriffinPlus.Lib
 				if (typeof(T).IsValueType)
 				{
 					body = parameterExpressions.Length > 0
-						? Expression.New(constructor, parameterExpressions)
-						: Expression.New(typeof(T));
+						       ? Expression.New(constructor, parameterExpressions)
+						       : Expression.New(typeof(T));
 				}
 				else
 				{
@@ -640,6 +773,6 @@ namespace GriffinPlus.Lib
 
 			return creatorTypeToCreatorMap;
 		}
-
 	}
+
 }

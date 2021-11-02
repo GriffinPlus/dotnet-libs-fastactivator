@@ -6,13 +6,13 @@
 
 namespace GriffinPlus.Benchmark
 {
+
 	public class TestClass<T>
 	{
 		public T[] Values;
 
 		public TestClass()
 		{
-
 		}
 
 		public TestClass(T test0)
@@ -36,7 +36,11 @@ namespace GriffinPlus.Benchmark
 			Values[2] = test2;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -45,7 +49,12 @@ namespace GriffinPlus.Benchmark
 			Values[3] = test3;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -55,7 +64,13 @@ namespace GriffinPlus.Benchmark
 			Values[4] = test4;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -66,7 +81,14 @@ namespace GriffinPlus.Benchmark
 			Values[5] = test5;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -78,7 +100,15 @@ namespace GriffinPlus.Benchmark
 			Values[6] = test6;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -91,7 +121,16 @@ namespace GriffinPlus.Benchmark
 			Values[7] = test7;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -105,7 +144,17 @@ namespace GriffinPlus.Benchmark
 			Values[8] = test8;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -120,7 +169,18 @@ namespace GriffinPlus.Benchmark
 			Values[9] = test9;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -136,7 +196,19 @@ namespace GriffinPlus.Benchmark
 			Values[10] = test10;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10, T test11)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10,
+			T test11)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -153,7 +225,20 @@ namespace GriffinPlus.Benchmark
 			Values[11] = test11;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10, T test11, T test12)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10,
+			T test11,
+			T test12)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -171,7 +256,21 @@ namespace GriffinPlus.Benchmark
 			Values[12] = test12;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10, T test11, T test12, T test13)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10,
+			T test11,
+			T test12,
+			T test13)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -190,7 +289,22 @@ namespace GriffinPlus.Benchmark
 			Values[13] = test13;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10, T test11, T test12, T test13, T test14)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10,
+			T test11,
+			T test12,
+			T test13,
+			T test14)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -210,7 +324,23 @@ namespace GriffinPlus.Benchmark
 			Values[14] = test14;
 		}
 
-		public TestClass(T test0, T test1, T test2, T test3, T test4, T test5, T test6, T test7, T test8, T test9, T test10, T test11, T test12, T test13, T test14, T test15)
+		public TestClass(
+			T test0,
+			T test1,
+			T test2,
+			T test3,
+			T test4,
+			T test5,
+			T test6,
+			T test7,
+			T test8,
+			T test9,
+			T test10,
+			T test11,
+			T test12,
+			T test13,
+			T test14,
+			T test15)
 		{
 			Values = new T[16];
 			Values[0] = test0;
@@ -231,4 +361,5 @@ namespace GriffinPlus.Benchmark
 			Values[15] = test15;
 		}
 	}
+
 }
