@@ -6,6 +6,7 @@
 .\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.dev.json
 .\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.json
 .\GriffinPlus.Lib.FastActivator.xml
+.\Microsoft.TestPlatform.PlatformAbstractions.dll
 .\testhost.dll
 .\testhost.exe
 .\xunit.runner.reporters.netcoreapp10.dll

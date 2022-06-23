@@ -70,7 +70,6 @@
 .\pt-BR\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
 .\pt-BR\Microsoft.VisualStudio.TestPlatform.Common.resources.dll
 .\pt-BR\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
-.\ref\GriffinPlus.Lib.FastActivator.Tests.dll
 .\ru\Microsoft.TestPlatform.CommunicationUtilities.resources.dll
 .\ru\Microsoft.TestPlatform.CoreUtilities.resources.dll
 .\ru\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
