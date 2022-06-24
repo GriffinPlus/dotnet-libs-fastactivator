@@ -181,7 +181,7 @@ namespace UnitTests
 		[Fact]
 		public void CreateInstance_Struct_Without_Arguments_Returning_Specific_Type()
 		{
-			TestStruct<int> testStruct = FastActivator<TestStruct<int>>.CreateInstance();
+			TestStruct<int> testStruct = (TestStruct<int>)FastActivator.CreateInstance(typeof(TestStruct<int>));
 			Assert.Null(testStruct.Values);
 		}
 
@@ -191,7 +191,7 @@ namespace UnitTests
 		[Fact]
 		public void CreateInstance_Class_Without_Arguments_Returning_Specific_Type()
 		{
-			TestClass<int> testClass = FastActivator<TestClass<int>>.CreateInstance();
+			TestClass<int> testClass = (TestClass<int>)FastActivator.CreateInstance(typeof(TestClass<int>));
 			Assert.Null(testClass.Values);
 		}
 
