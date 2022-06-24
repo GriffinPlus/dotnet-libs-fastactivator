@@ -5,7 +5,7 @@
 		<id>GriffinPlus.Lib.FastActivator</id>
 		<version>$version$</version>
 		<authors>Sascha Falk</authors>
-		<copyright>Copyright (c) 2021 Sascha Falk and Contributors</copyright>
+		<copyright>Copyright (c) 2022 Sascha Falk and Contributors</copyright>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>A fast replacement for System.Activator when instantiating local classes/structs is required.</description>
 		<license type="expression">MIT</license>

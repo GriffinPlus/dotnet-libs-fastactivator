@@ -19,6 +19,7 @@ Therefore it should work on the following platforms (or higher):
 - .NET Framework 4.6.1
 - .NET Core 2.0
 - .NET 5.0
+- .NET 6.0
 - Mono 5.4
 - Xamarin iOS 10.14
 - Xamarin Mac 3.8
@@ -26,10 +27,11 @@ Therefore it should work on the following platforms (or higher):
 - Universal Windows Platform (UWP) 10.0.16299
 
 The library is tested automatically on the following frameworks and operating systems:
-- .NET Framework 4.6.1 (Windows Server 2019)
+- .NET Framework 4.8 (Windows Server 2019)
 - .NET Core 2.1 (Windows Server 2019 and Ubuntu 20.04)
 - .NET Core 3.1 (Windows Server 2019 and Ubuntu 20.04)
-- .NET 5.0  (Windows Server 2019 and Ubuntu 20.04)
+- .NET 5.0 (Windows Server 2019 and Ubuntu 20.04)
+- .NET 6.0 (Windows Server 2019 and Ubuntu 20.04)
 
 ## Using
 
