@@ -4,16 +4,14 @@
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace UnitTests
+namespace GriffinPlus.Lib
 {
 
 	public class TestClass<T>
 	{
 		public T[] Values;
 
-		public TestClass()
-		{
-		}
+		public TestClass() { }
 
 		public TestClass(T test0)
 		{

@@ -8,11 +8,9 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-using GriffinPlus.Lib;
-
 using Xunit;
 
-namespace UnitTests
+namespace GriffinPlus.Lib
 {
 
 	public class NonGenericFastActivatorTests_Fixture
