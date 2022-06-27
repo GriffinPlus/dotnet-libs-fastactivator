@@ -5,6 +5,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -74,25 +75,24 @@ namespace GriffinPlus.Lib
 		}
 
 		/// <summary>
+		/// Gets test data for test methods taking the number of parameters to test with (1..16).
+		/// </summary>
+		public static IEnumerable<object[]> ParameterCountTestData
+		{
+			get
+			{
+				for (int i = 1; i <= 16; i++)
+				{
+					yield return new object[] { i };
+				}
+			}
+		}
+
+		/// <summary>
 		/// Checks whether the creation methods taking 1 to 16 arguments returning a typed object pass constructor arguments properly (for structs).
 		/// </summary>
 		[Theory]
-		[InlineData(1)]
-		[InlineData(2)]
-		[InlineData(3)]
-		[InlineData(4)]
-		[InlineData(5)]
-		[InlineData(6)]
-		[InlineData(7)]
-		[InlineData(8)]
-		[InlineData(9)]
-		[InlineData(10)]
-		[InlineData(11)]
-		[InlineData(12)]
-		[InlineData(13)]
-		[InlineData(14)]
-		[InlineData(15)]
-		[InlineData(16)]
+		[MemberData(nameof(ParameterCountTestData))]
 		public void CreateInstance_Struct_With_Arguments_Returning_Specific_Type(int parameterCount)
 		{
 			// get method to call
@@ -121,22 +121,7 @@ namespace GriffinPlus.Lib
 		/// Checks whether the creation methods taking 1 to 16 arguments returning a typed object pass constructor arguments properly (for classes).
 		/// </summary>
 		[Theory]
-		[InlineData(1)]
-		[InlineData(2)]
-		[InlineData(3)]
-		[InlineData(4)]
-		[InlineData(5)]
-		[InlineData(6)]
-		[InlineData(7)]
-		[InlineData(8)]
-		[InlineData(9)]
-		[InlineData(10)]
-		[InlineData(11)]
-		[InlineData(12)]
-		[InlineData(13)]
-		[InlineData(14)]
-		[InlineData(15)]
-		[InlineData(16)]
+		[MemberData(nameof(ParameterCountTestData))]
 		public void CreateInstance_Class_With_Arguments_Returning_Specific_Type(int parameterCount)
 		{
 			// get method to call
