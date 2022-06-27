@@ -65,9 +65,7 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FastActivatorFuncTypeMap"/> class.
 		/// </summary>
-		public FastActivatorFuncTypeMap()
-		{
-		}
+		public FastActivatorFuncTypeMap() { }
 
 		/// <summary>
 		/// Gets or creates the creator function type for the specified constructor parameter types.

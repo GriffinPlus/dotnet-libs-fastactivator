@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -22,8 +21,8 @@ namespace GriffinPlus.Lib
 	public sealed class FastActivator<T>
 	{
 		// ReSharper disable once StaticMemberInGenericType
-		private static readonly Dictionary<Type, Delegate> sCreators;
-		private static readonly Func<T>                    sParameterlessCreator;
+		private static readonly TypeKeyedDictionary<Delegate> sCreators;
+		private static readonly Func<T>                       sParameterlessCreator;
 
 		/// <summary>
 		/// Initializes the <see cref="FastActivator"/> class.
@@ -726,9 +725,9 @@ namespace GriffinPlus.Lib
 		/// <summary>
 		/// Initializes the creator cache.
 		/// </summary>
-		private static Dictionary<Type, Delegate> GetCreators()
+		private static TypeKeyedDictionary<Delegate> GetCreators()
 		{
-			Dictionary<Type, Delegate> creatorTypeToCreatorMap = new Dictionary<Type, Delegate>();
+			TypeKeyedDictionary<Delegate> creatorTypeToCreatorMap = new TypeKeyedDictionary<Delegate>();
 
 			// add default constructor, if the type is a value type
 			// (the default constructor will not occur in the enumeration below...)

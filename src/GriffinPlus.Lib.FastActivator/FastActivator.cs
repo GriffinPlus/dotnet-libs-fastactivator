@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -25,18 +24,16 @@ namespace GriffinPlus.Lib
 	{
 		private delegate Array ArrayCreatorDelegate(int length);
 
-		private static          Dictionary<Type, Dictionary<Type, Delegate>> sCreatorsByCreatorTypeMap           = new Dictionary<Type, Dictionary<Type, Delegate>>();
-		private static          Dictionary<Type, Delegate>                   sParameterlessCreatorsByCreatorType = new Dictionary<Type, Delegate>();
-		private static          Dictionary<Type, ArrayCreatorDelegate>       sArrayCreatorsByTypeMap             = new Dictionary<Type, ArrayCreatorDelegate>();
-		private static readonly FastActivatorFuncTypeMap                     sObjectResultCreatorFuncMap         = new FastActivatorFuncTypeMap();
-		private static readonly object                                       sSync                               = new object();
+		private static          TypeKeyedDictionary<TypeKeyedDictionary<Delegate>> sCreatorsByCreatorTypeMap           = new TypeKeyedDictionary<TypeKeyedDictionary<Delegate>>();
+		private static          TypeKeyedDictionary<Delegate>                      sParameterlessCreatorsByCreatorType = new TypeKeyedDictionary<Delegate>();
+		private static          TypeKeyedDictionary<ArrayCreatorDelegate>          sArrayCreatorsByTypeMap             = new TypeKeyedDictionary<ArrayCreatorDelegate>();
+		private static readonly FastActivatorFuncTypeMap                           sObjectResultCreatorFuncMap         = new FastActivatorFuncTypeMap();
+		private static readonly object                                             sSync                               = new object();
 
 		/// <summary>
 		/// Initializes the <see cref="FastActivator"/> class.
 		/// </summary>
-		static FastActivator()
-		{
-		}
+		static FastActivator() { }
 
 		#region Checking Type Constructor
 
@@ -1113,7 +1110,7 @@ namespace GriffinPlus.Lib
 				if (sCreatorsByCreatorTypeMap.ContainsKey(type))
 					return;
 
-				Dictionary<Type, Delegate> creatorTypeToCreatorMap = new Dictionary<Type, Delegate>();
+				TypeKeyedDictionary<Delegate> creatorTypeToCreatorMap = new TypeKeyedDictionary<Delegate>();
 				Delegate parameterlessCreator = null;
 
 				// add default constructor, if the type is a value type
@@ -1166,9 +1163,9 @@ namespace GriffinPlus.Lib
 						parameterlessCreator = creator;
 				}
 
-				Dictionary<Type, Dictionary<Type, Delegate>> untypedCreatorsByCreatorTypeMap = new Dictionary<Type, Dictionary<Type, Delegate>>(sCreatorsByCreatorTypeMap);
+				TypeKeyedDictionary<TypeKeyedDictionary<Delegate>> untypedCreatorsByCreatorTypeMap = new TypeKeyedDictionary<TypeKeyedDictionary<Delegate>>(sCreatorsByCreatorTypeMap);
 				untypedCreatorsByCreatorTypeMap.Add(type, creatorTypeToCreatorMap);
-				Dictionary<Type, Delegate> parameterlessCreatorsByCreatorType = new Dictionary<Type, Delegate>(sParameterlessCreatorsByCreatorType);
+				TypeKeyedDictionary<Delegate> parameterlessCreatorsByCreatorType = new TypeKeyedDictionary<Delegate>(sParameterlessCreatorsByCreatorType);
 				parameterlessCreatorsByCreatorType.Add(type, parameterlessCreator);
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sCreatorsByCreatorTypeMap = untypedCreatorsByCreatorTypeMap;
@@ -1194,7 +1191,7 @@ namespace GriffinPlus.Lib
 				LambdaExpression lambda = Expression.Lambda(typeof(ArrayCreatorDelegate), body, parameterExpressions);
 				var creator = (ArrayCreatorDelegate)lambda.Compile();
 
-				Dictionary<Type, ArrayCreatorDelegate> arrayCreatorsByTypeMap = new Dictionary<Type, ArrayCreatorDelegate>(sArrayCreatorsByTypeMap);
+				TypeKeyedDictionary<ArrayCreatorDelegate> arrayCreatorsByTypeMap = new TypeKeyedDictionary<ArrayCreatorDelegate>(sArrayCreatorsByTypeMap);
 				arrayCreatorsByTypeMap.Add(type, creator);
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sArrayCreatorsByTypeMap = arrayCreatorsByTypeMap;
