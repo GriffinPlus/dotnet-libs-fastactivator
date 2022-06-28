@@ -96,6 +96,16 @@ public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, 
 public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16);
 ```
 
+### Class: GriffinPlus.Lib.FastCreator&lt;TCreator&gt;
+
+If you need to create an instance of a certain type that is not known at compile time, you can use the following method to obtain a delegate that creates an instance of the specified type passing the delegate's arguments to the invoked constructor. The creator delegate `TCreator` must therefore have return type `System.Object` and parameters that exactly match the parameter types of the constructor to invoke. To create an instance of the specified type, you simply need to invoke the delegate an pass the appropriate constructor parameters.
+
+```csharp
+public static TCreator GetCreator(Type type);
+```
+
+In contrast to `FastActivator` and `FastActivator<T>` the `FastCreator<TCreator>` class allows to dynamically instantiate types that use `ref struct` types as constructor parameters. These types can only exist on the stack and are therefore not usable as generic arguments to methods of the `FastActivator` and `FastActivator<T>` class.
+
 ## Benchmark
 
 To compare the performance of the *Fast Activator* with .NET's default activator a benchmark application is part of the repository. The benchmark creates 50 million instances of a test class/struct using the default activator and the different *Fast Activator* methods to call the constructors of the test class/struct. The test class/struct contains a parameterless constructor and constructors taking up to sixteen integer arguments. The benchmark measures the time the instantiation needs to complete and compares the times measured for the *Fast Activator* to the time the standard activator needed to complete.
