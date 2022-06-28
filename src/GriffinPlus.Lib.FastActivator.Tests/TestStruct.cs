@@ -11,6 +11,12 @@ namespace GriffinPlus.Lib
 	{
 		public T[] Values;
 
+		public TestStruct(RefStruct test)
+		{
+			// just for testing whether ref structs now work as constructor parameters
+			Values = new T[16];
+		}
+
 		public TestStruct(T test0)
 		{
 			Values = new T[16];
