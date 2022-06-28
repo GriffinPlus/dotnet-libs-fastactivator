@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 
 // ReSharper disable EmptyConstructor
@@ -96,97 +97,12 @@ namespace GriffinPlus.Lib
 				node = new Node
 				{
 					ConstructorParameterTypes = constructorParameterTypes,
-					FuncType = MakeGenericCreatorFuncType(typeof(object), constructorParameterTypes, constructorParameterTypes.Length)
+					FuncType = Expression.GetDelegateType(new List<Type>(constructorParameterTypes) { typeof(object) }.ToArray())
 				};
 				newData.Insert(~index, node);
 				if (Interlocked.CompareExchange(ref mData, newData, data) == data)
 					return node.FuncType;
 			}
-		}
-
-		/// <summary>
-		/// Creates a generic function type from the specified parameter types.
-		/// </summary>
-		/// <param name="returnType">Return type of the creator function.</param>
-		/// <param name="parameterTypes">Parameter types to create the function type from.</param>
-		/// <param name="count">Number of parameters to consider.</param>
-		/// <returns>The generated function type.</returns>
-		public static Type MakeGenericCreatorFuncType(Type returnType, Type[] parameterTypes, int count)
-		{
-			Type funcType = null;
-			Type[] pt = parameterTypes;
-			switch (count)
-			{
-				case 0:
-					funcType = typeof(Func<>).MakeGenericType(returnType);
-					break;
-
-				case 1:
-					funcType = typeof(Func<,>).MakeGenericType(pt[0], returnType);
-					break;
-
-				case 2:
-					funcType = typeof(Func<,,>).MakeGenericType(pt[0], pt[1], returnType);
-					break;
-
-				case 3:
-					funcType = typeof(Func<,,,>).MakeGenericType(pt[0], pt[1], pt[2], returnType);
-					break;
-
-				case 4:
-					funcType = typeof(Func<,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], returnType);
-					break;
-
-				case 5:
-					funcType = typeof(Func<,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], returnType);
-					break;
-
-				case 6:
-					funcType = typeof(Func<,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], returnType);
-					break;
-
-				case 7:
-					funcType = typeof(Func<,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], returnType);
-					break;
-
-				case 8:
-					funcType = typeof(Func<,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], returnType);
-					break;
-
-				case 9:
-					funcType = typeof(Func<,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], returnType);
-					break;
-
-				case 10:
-					funcType = typeof(Func<,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], returnType);
-					break;
-
-				case 11:
-					funcType = typeof(Func<,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], returnType);
-					break;
-
-				case 12:
-					funcType = typeof(Func<,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], returnType);
-					break;
-
-				case 13:
-					funcType = typeof(Func<,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], returnType);
-					break;
-
-				case 14:
-					funcType = typeof(Func<,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], returnType);
-					break;
-
-				case 15:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], returnType);
-					break;
-
-				case 16:
-					funcType = typeof(Func<,,,,,,,,,,,,,,,,>).MakeGenericType(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], pt[10], pt[11], pt[12], pt[13], pt[14], pt[15], returnType);
-					break;
-			}
-
-			return funcType;
 		}
 	}
 

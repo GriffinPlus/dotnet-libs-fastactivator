@@ -5,6 +5,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -737,7 +738,7 @@ namespace GriffinPlus.Lib
 				Expression body = Expression.New(typeof(T));
 
 				// compile creator
-				Type creatorType = FastActivatorFuncTypeMap.MakeGenericCreatorFuncType(typeof(T), Type.EmptyTypes, 0);
+				Type creatorType = Expression.GetDelegateType(typeof(T));
 				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
 				Delegate creator = lambda.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
@@ -764,7 +765,7 @@ namespace GriffinPlus.Lib
 				}
 
 				// compile creator
-				Type creatorType = FastActivatorFuncTypeMap.MakeGenericCreatorFuncType(typeof(T), constructorParameterTypes, constructorParameterTypes.Length);
+				Type creatorType = Expression.GetDelegateType(new List<Type>(constructorParameterTypes) { typeof(T) }.ToArray());
 				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
 				Delegate creator = lambda.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
