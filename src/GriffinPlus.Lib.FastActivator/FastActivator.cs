@@ -1,6 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This file is part of the Griffin+ common library suite.
-// Project URL: https://github.com/griffinplus/dotnet-libs-fastactivator
+// This file is part of the Griffin+ common library suite (https://github.com/griffinplus/dotnet-libs-fastactivator)
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,11 +28,6 @@ namespace GriffinPlus.Lib
 		private static          TypeKeyedDictionary<ArrayCreatorDelegate>          sArrayCreatorsByTypeMap             = new TypeKeyedDictionary<ArrayCreatorDelegate>();
 		private static readonly FastActivatorFuncTypeMap                           sObjectResultCreatorFuncMap         = new FastActivatorFuncTypeMap();
 		private static readonly object                                             sSync                               = new object();
-
-		/// <summary>
-		/// Initializes the <see cref="FastActivator"/> class.
-		/// </summary>
-		static FastActivator() { }
 
 		#region Checking Type Constructor
 
@@ -1117,14 +1111,16 @@ namespace GriffinPlus.Lib
 				// (the default constructor will not occur in the enumeration below...)
 				if (type.IsValueType)
 				{
-					ParameterExpression[] parameterExpressions = new ParameterExpression[0];
-					Expression body = Expression.Convert(Expression.New(type), typeof(object));
-
 					// get creator function type
 					Type creatorType = sObjectResultCreatorFuncMap.Get(Type.EmptyTypes);
 
 					// compile creator
-					LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
+					LambdaExpression lambda = Expression.Lambda(
+						creatorType,
+						Expression.Convert(
+							Expression.New(type),
+							typeof(object)),
+						Array.Empty<ParameterExpression>());
 					Delegate creator = lambda.Compile();
 					creatorTypeToCreatorMap.Add(creatorType, creator);
 					parameterlessCreator = creator;
@@ -1165,8 +1161,7 @@ namespace GriffinPlus.Lib
 
 				TypeKeyedDictionary<TypeKeyedDictionary<Delegate>> untypedCreatorsByCreatorTypeMap = new TypeKeyedDictionary<TypeKeyedDictionary<Delegate>>(sCreatorsByCreatorTypeMap);
 				untypedCreatorsByCreatorTypeMap.Add(type, creatorTypeToCreatorMap);
-				TypeKeyedDictionary<Delegate> parameterlessCreatorsByCreatorType = new TypeKeyedDictionary<Delegate>(sParameterlessCreatorsByCreatorType);
-				parameterlessCreatorsByCreatorType.Add(type, parameterlessCreator);
+				TypeKeyedDictionary<Delegate> parameterlessCreatorsByCreatorType = new TypeKeyedDictionary<Delegate>(sParameterlessCreatorsByCreatorType) { { type, parameterlessCreator } };
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sCreatorsByCreatorTypeMap = untypedCreatorsByCreatorTypeMap;
 				sParameterlessCreatorsByCreatorType = parameterlessCreatorsByCreatorType;
@@ -1187,12 +1182,13 @@ namespace GriffinPlus.Lib
 
 				Type[] parameterTypes = { typeof(int) };
 				ParameterExpression[] parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
-				Expression body = Expression.NewArrayBounds(type, parameterExpressions);
-				LambdaExpression lambda = Expression.Lambda(typeof(ArrayCreatorDelegate), body, parameterExpressions);
+				LambdaExpression lambda = Expression.Lambda(
+					typeof(ArrayCreatorDelegate),
+					Expression.NewArrayBounds(type, parameterExpressions),
+					parameterExpressions);
 				var creator = (ArrayCreatorDelegate)lambda.Compile();
 
-				TypeKeyedDictionary<ArrayCreatorDelegate> arrayCreatorsByTypeMap = new TypeKeyedDictionary<ArrayCreatorDelegate>(sArrayCreatorsByTypeMap);
-				arrayCreatorsByTypeMap.Add(type, creator);
+				TypeKeyedDictionary<ArrayCreatorDelegate> arrayCreatorsByTypeMap = new TypeKeyedDictionary<ArrayCreatorDelegate>(sArrayCreatorsByTypeMap) { { type, creator } };
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sArrayCreatorsByTypeMap = arrayCreatorsByTypeMap;
 			}

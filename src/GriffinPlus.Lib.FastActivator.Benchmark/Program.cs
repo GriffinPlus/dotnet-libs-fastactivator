@@ -1,6 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This file is part of the Griffin+ common library suite.
-// Project URL: https://github.com/griffinplus/dotnet-libs-fastactivator
+// This file is part of the Griffin+ common library suite (https://github.com/griffinplus/dotnet-libs-fastactivator)
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,6 +17,7 @@ using Microsoft.Win32;
 
 // ReSharper disable AccessToModifiedClosure
 // ReSharper disable ConvertClosureToMethodGroup
+// ReSharper disable UnusedParameter.Local
 
 namespace GriffinPlus.Benchmark
 {
@@ -81,13 +81,12 @@ namespace GriffinPlus.Benchmark
 			// -----------------------------------------------------------------------------------------------------------------
 
 			var constructorArgumentTypesList = new List<Type>();
-			Type[] constructorArgumentTypes;
 
 			Console.WriteLine("### 1 Constructor Parameter");
 			Console.WriteLine();
 			WriteHeader();
 			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
+			var constructorArgumentTypes = constructorArgumentTypesList.ToArray();
 			var constructorArgumentsTyped =
 				new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
 			var constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
@@ -631,8 +630,8 @@ namespace GriffinPlus.Benchmark
 		{
 #if NETFRAMEWORK
 			using (var key = RegistryKey
-				.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)
-				.OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\"))
+				       .OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)
+				       .OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\"))
 			{
 				if (key != null)
 				{

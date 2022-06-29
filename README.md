@@ -98,7 +98,7 @@ public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, 
 
 ### Class: GriffinPlus.Lib.FastCreator&lt;TCreator&gt;
 
-If you need to create an instance of a certain type that is not known at compile time, you can use the following method to obtain a delegate that creates an instance of the specified type passing the delegate's arguments to the invoked constructor. The creator delegate `TCreator` must therefore have return type `System.Object` and parameters that exactly match the parameter types of the constructor to invoke. To create an instance of the specified type, you simply need to invoke the delegate an pass the appropriate constructor parameters.
+If you need to create an instance of a certain type that is not known at compile time, you can use the following method to obtain a delegate that creates an instance of the specified type passing the delegate's arguments to the invoked constructor. The creator delegate `TCreator` must therefore have return type `System.Object` and parameters that exactly match the parameter types of the constructor to invoke. To create an instance of the specified type, you simply need to invoke the delegate and pass the appropriate constructor parameters.
 
 ```csharp
 public static TCreator GetCreator(Type type);

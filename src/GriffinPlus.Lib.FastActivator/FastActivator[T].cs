@@ -1,6 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This file is part of the Griffin+ common library suite.
-// Project URL: https://github.com/griffinplus/dotnet-libs-fastactivator
+// This file is part of the Griffin+ common library suite (https://github.com/griffinplus/dotnet-libs-fastactivator)
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -734,13 +733,15 @@ namespace GriffinPlus.Lib
 			// (the default constructor will not occur in the enumeration below...)
 			if (typeof(T).IsValueType)
 			{
-				ParameterExpression[] parameterExpressions = new ParameterExpression[0];
-				Expression body = Expression.New(typeof(T));
+				ParameterExpression[] parameterExpressions = Array.Empty<ParameterExpression>();
 
 				// compile creator
 				Type creatorType = Expression.GetDelegateType(typeof(T));
-				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
-				Delegate creator = lambda.Compile();
+				Delegate creator = Expression.Lambda(
+						creatorType,
+						Expression.New(typeof(T)),
+						parameterExpressions)
+					.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
 			}
 
@@ -751,23 +752,27 @@ namespace GriffinPlus.Lib
 				if (constructorParameterTypes.Length > 16) continue;
 
 				ParameterExpression[] parameterExpressions = constructorParameterTypes.Select(Expression.Parameter).ToArray();
-				Expression body;
-
+				Type creatorType = Expression.GetDelegateType(new List<Type>(constructorParameterTypes) { typeof(T) }.ToArray());
+				Delegate creator;
 				if (typeof(T).IsValueType)
 				{
-					body = parameterExpressions.Length > 0
-						       ? Expression.New(constructor, parameterExpressions)
-						       : Expression.New(typeof(T));
+					creator = Expression.Lambda(
+							creatorType,
+							parameterExpressions.Length > 0
+								? Expression.New(constructor, parameterExpressions)
+								: Expression.New(typeof(T)),
+							parameterExpressions)
+						.Compile();
 				}
 				else
 				{
-					body = Expression.New(constructor, parameterExpressions);
+					creator = Expression.Lambda(
+							creatorType,
+							Expression.New(constructor, parameterExpressions),
+							parameterExpressions)
+						.Compile();
 				}
 
-				// compile creator
-				Type creatorType = Expression.GetDelegateType(new List<Type>(constructorParameterTypes) { typeof(T) }.ToArray());
-				LambdaExpression lambda = Expression.Lambda(creatorType, body, parameterExpressions);
-				Delegate creator = lambda.Compile();
 				creatorTypeToCreatorMap.Add(creatorType, creator);
 			}
 

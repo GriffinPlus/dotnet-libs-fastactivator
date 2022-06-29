@@ -1,6 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This file is part of the Griffin+ common library suite.
-// Project URL: https://github.com/griffinplus/dotnet-libs-fastactivator
+// This file is part of the Griffin+ common library suite (https://github.com/griffinplus/dotnet-libs-fastactivator)
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11,9 +10,7 @@ namespace GriffinPlus.Benchmark
 	{
 		public T[] Values;
 
-		public TestClass()
-		{
-		}
+		public TestClass() { }
 
 		public TestClass(T test0)
 		{

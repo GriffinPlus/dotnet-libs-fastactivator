@@ -1,6 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This file is part of the Griffin+ common library suite.
-// Project URL: https://github.com/griffinplus/dotnet-libs-fastactivator
+// This file is part of the Griffin+ common library suite (https://github.com/griffinplus/dotnet-libs-fastactivator)
 // The source code is licensed under the MIT license.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,25 +32,25 @@ namespace GriffinPlus.Lib
 		{
 			public int Compare(Node x, Node y)
 			{
-				Type[] xcpts = x.ConstructorParameterTypes;
-				Type[] ycpts = y.ConstructorParameterTypes;
-				if (xcpts.Length < ycpts.Length) return -1;
-				if (xcpts.Length > ycpts.Length) return 1;
-				for (int i = 0; i < xcpts.Length; i++)
+				Type[] xConstructorParameterTypes = x.ConstructorParameterTypes;
+				Type[] yConstructorParameterTypes = y.ConstructorParameterTypes;
+				if (xConstructorParameterTypes.Length < yConstructorParameterTypes.Length) return -1;
+				if (xConstructorParameterTypes.Length > yConstructorParameterTypes.Length) return 1;
+				for (int i = 0; i < xConstructorParameterTypes.Length; i++)
 				{
-					// sort ascendingly by hash code
-					Type xcpt = xcpts[i];
-					Type ycpt = ycpts[i];
-					int xcpth = xcpt.GetHashCode();
-					int ycpth = ycpt.GetHashCode();
-					if (xcpth < ycpth) return -1;
-					if (xcpth > ycpth) return 1;
+					// sort by hash code in ascending order
+					Type xConstructorParameterType = xConstructorParameterTypes[i];
+					Type yConstructorParameterType = yConstructorParameterTypes[i];
+					int xHashCode = xConstructorParameterType.GetHashCode();
+					int yHashCode = yConstructorParameterType.GetHashCode();
+					if (xHashCode < yHashCode) return -1;
+					if (xHashCode > yHashCode) return 1;
 
 					// the types should be equal at this point, but two types MAY have the same hash code
 					// => check type name to be sure...
-					if (xcpt != ycpt)
+					if (xConstructorParameterType != yConstructorParameterType)
 					{
-						int result = StringComparer.Ordinal.Compare(xcpt.FullName, ycpt.FullName);
+						int result = StringComparer.Ordinal.Compare(xConstructorParameterType.FullName, yConstructorParameterType.FullName);
 						if (result != 0) return result;
 					}
 				}
@@ -89,9 +88,7 @@ namespace GriffinPlus.Lib
 				Node node = new Node { ConstructorParameterTypes = constructorParameterTypes };
 				int index = data.BinarySearch(node, sComparer);
 				if (index >= 0)
-				{
 					return data[index].FuncType;
-				}
 
 				var newData = new List<Node>(data);
 				node = new Node
