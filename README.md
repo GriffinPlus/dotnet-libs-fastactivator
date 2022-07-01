@@ -96,6 +96,12 @@ public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, 
 public static T CreateInstance<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TArg11, TArg12, TArg13, TArg14, TArg15, TArg16>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, TArg11 arg11, TArg12 arg12, TArg13 arg13, TArg14 arg14, TArg15 arg15, TArg16 arg16);
 ```
 
+If you need to create a one-dimensional array of a certain type that is not known at compile time, you can use:
+
+```csharp
+public static T[] CreateArray(int length);
+```
+
 ### Class: GriffinPlus.Lib.FastCreator&lt;TCreator&gt;
 
 If you need to create an instance of a certain type that is not known at compile time, you can use the following method to obtain a delegate that creates an instance of the specified type passing the delegate's arguments to the invoked constructor. The creator delegate `TCreator` must therefore have return type `System.Object` and parameters that exactly match the parameter types of the constructor to invoke. To create an instance of the specified type, you simply need to invoke the delegate and pass the appropriate constructor parameters.
