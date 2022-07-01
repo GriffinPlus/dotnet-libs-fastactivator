@@ -21,10 +21,10 @@ namespace GriffinPlus.Lib
 	/// </summary>
 	/// <typeparam name="TCreator">
 	/// The creator delegate type.
-	/// Its return type must be <see cref="System.Object"/>.
+	/// Its return type corresponds to the type of the object to create or a base type (may be <see cref="System.Object"/> as last consequence).
 	/// Its parameters must match the parameters of the constructor of the type to invoke.
 	/// </typeparam>
-	public sealed class FastCreator<TCreator> where TCreator : Delegate
+	public static class FastCreator<TCreator> where TCreator : Delegate
 	{
 		private static          TypeKeyedDictionary<TCreator> sCreators = new TypeKeyedDictionary<TCreator>();
 		private static readonly object                        sInitSync = new object();
@@ -63,7 +63,7 @@ namespace GriffinPlus.Lib
 		/// <returns>The creator delegate.</returns>
 		/// <exception cref="ArgumentException">
 		/// The <typeparamref name="TCreator"/> type parameter is invalid if one of the following conditions applies:
-		/// <br/>- Its return type is <see cref="System.Void"/>.
+		/// <br/>- Its return type corresponds to the type to create or a base type.
 		/// <br/>- The type to create does not have a constructor with the same parameters as <typeparamref name="TCreator"/>.
 		/// </exception>
 		private static TCreator MakeCreator(Type typeOfObjectToCreate)
@@ -74,19 +74,19 @@ namespace GriffinPlus.Lib
 			Type returnType = method.ReturnType;
 			Type[] parameterTypes = method.GetParameters().Select(x => x.ParameterType).ToArray();
 
-			// ensure that the specified creator delegate type returns System.Object
-			if (returnType != typeof(object))
-				throw new ArgumentException("The creator delegate must return System.Object.");
+			// ensure that the return type of the specified creator delegate type is compatible with the type to instantiate
+			if (!returnType.IsAssignableFrom(typeOfObjectToCreate))
+				throw new ArgumentException("The return type of the creator delegate is not compatible with the type of the object to create.");
 
 			// handle parameterless constructor of value types
 			// (value types cannot have an explicit parameterless constructor)
 			if (typeOfObjectToCreate.IsValueType && parameterTypes.Length == 0)
 			{
+				Expression body = Expression.New(typeOfObjectToCreate);
+				if (returnType != typeOfObjectToCreate) body = Expression.Convert(body, returnType);
 				return (TCreator)Expression.Lambda(
 						typeof(TCreator),
-						Expression.Convert(
-							Expression.New(typeOfObjectToCreate),
-							typeof(object)),
+						body,
 						Array.Empty<ParameterExpression>())
 					.Compile();
 			}
@@ -114,13 +114,13 @@ namespace GriffinPlus.Lib
 			if (typeOfObjectToCreate.IsValueType)
 			{
 				var parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
+				Expression body = parameterTypes.Length > 0
+					                  ? Expression.New(constructor, parameterExpressions)
+					                  : Expression.New(typeOfObjectToCreate);
+				if (returnType != typeOfObjectToCreate) body = Expression.Convert(body, returnType);
 				return (TCreator)Expression.Lambda(
 						typeof(TCreator),
-						Expression.Convert(
-							parameterTypes.Length > 0
-								? Expression.New(constructor, parameterExpressions)
-								: Expression.New(typeOfObjectToCreate),
-							typeof(object)),
+						body,
 						parameterExpressions)
 					.Compile();
 			}
