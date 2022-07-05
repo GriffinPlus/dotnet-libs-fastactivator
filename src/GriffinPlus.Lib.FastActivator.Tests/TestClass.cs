@@ -8,9 +8,9 @@
 namespace GriffinPlus.Lib
 {
 
-	public class TestClass<T>
+	public class TestClass<T> : ITestData<T>
 	{
-		public T[] Values;
+		public T[] Values { get; set; }
 
 		public TestClass() { }
 

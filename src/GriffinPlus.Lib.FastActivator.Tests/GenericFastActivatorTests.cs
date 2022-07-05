@@ -13,137 +13,128 @@ using Xunit;
 namespace GriffinPlus.Lib
 {
 
-	public class GenericFastActivatorTests_Fixture
-	{
-		public MethodInfo[] TypedResultCreateInstanceMethodInfos_TestClass;
-		public MethodInfo[] TypedResultCreateInstanceMethodInfos_TestStruct;
-
-		public GenericFastActivatorTests_Fixture()
-		{
-			TypedResultCreateInstanceMethodInfos_TestClass = typeof(FastActivator<TestClass<int>>)
-				.GetMethods()
-				.Where(mi => mi.Name == "CreateInstance")
-				.OrderBy(mi => mi.GetParameters().Length)
-				.ToArray();
-
-			TypedResultCreateInstanceMethodInfos_TestStruct = typeof(FastActivator<TestStruct<int>>)
-				.GetMethods()
-				.Where(mi => mi.Name == "CreateInstance")
-				.OrderBy(mi => mi.GetParameters().Length)
-				.ToArray();
-
-			Assert.Equal(17, TypedResultCreateInstanceMethodInfos_TestClass.Length);
-			Assert.Equal(17, TypedResultCreateInstanceMethodInfos_TestStruct.Length);
-		}
-	}
-
 	/// <summary>
 	/// Tests around the <see cref="FastActivator{T}"/> class.
 	/// </summary>
-	public class GenericFastActivatorTests : IClassFixture<GenericFastActivatorTests_Fixture>
+	public class GenericFastActivatorTests
 	{
-		private readonly GenericFastActivatorTests_Fixture mFixture;
+		#region CreateArray()
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="GenericFastActivatorTests"/> class.
+		/// Gets test data for testing the <see cref="FastActivator{T}.CreateArray"/> method.
 		/// </summary>
-		/// <param name="fixture">Fixture containing common test data.</param>
-		public GenericFastActivatorTests(GenericFastActivatorTests_Fixture fixture)
-		{
-			mFixture = fixture;
-		}
-
-		/// <summary>
-		/// Checks whether the creation method taking no parameters returning a simple object is working (for structs).
-		/// </summary>
-		[Fact]
-		public void CreateInstance_Struct_Without_Arguments_Returning_Specific_Type()
-		{
-			TestStruct<int> testStruct = FastActivator<TestStruct<int>>.CreateInstance();
-			Assert.Null(testStruct.Values);
-		}
-
-		/// <summary>
-		/// Checks whether the creation method taking no parameters returning a simple object is working (for classes).
-		/// </summary>
-		[Fact]
-		public void CreateInstance_Class_Without_Arguments_Returning_Specific_Type()
-		{
-			TestClass<int> testClass = FastActivator<TestClass<int>>.CreateInstance();
-			Assert.Null(testClass.Values);
-		}
-
-		/// <summary>
-		/// Gets test data for test methods taking the number of parameters to test with (1..16).
-		/// </summary>
-		public static IEnumerable<object[]> ParameterCountTestData
+		public static IEnumerable<object[]> CreateArrayTestData
 		{
 			get
 			{
-				for (int i = 1; i <= 16; i++)
+				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
-					yield return new object[] { i };
+					yield return new object[] { type, 0 };
+					yield return new object[] { type, 1 };
+					yield return new object[] { type, 5 };
 				}
 			}
 		}
 
 		/// <summary>
-		/// Checks whether the creation methods taking 1 to 16 arguments returning a typed object pass constructor arguments properly (for structs).
+		/// Checks whether <see cref="FastActivator{T}.CreateArray"/> works as expected.
 		/// </summary>
 		[Theory]
-		[MemberData(nameof(ParameterCountTestData))]
-		public void CreateInstance_Struct_With_Arguments_Returning_Specific_Type(int parameterCount)
+		[MemberData(nameof(CreateArrayTestData))]
+		public void CreateArray(Type type, int count)
 		{
-			// get method to call
-			Type[] parameterTypes = new Type[parameterCount];
-			for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
-			MethodInfo method = mFixture.TypedResultCreateInstanceMethodInfos_TestStruct[parameterCount].MakeGenericMethod(parameterTypes);
+			Array expected = Array.CreateInstance(type, count);
+			var method = typeof(FastActivator<>).MakeGenericType(type).GetMethod("CreateArray");
+			Assert.NotNull(method);
+			Array actual = (Array)method.Invoke(null, new object[] { count });
+			Assert.Equal(expected, actual);
+		}
 
-			for (int i = 0; i < parameterCount; i++)
+		#endregion
+
+		#region CreateInstance()
+
+		/// <summary>
+		/// Gets test data for test methods targeting the CreateInstance() overloads.
+		/// </summary>
+		public static IEnumerable<object[]> CreateInstanceTestData
+		{
+			get
 			{
-				// call method
-				object[] parameters = new object[parameterCount];
-				for (int j = 0; j < parameterCount; j++) parameters[j] = i == j ? 1 : 0;
-				object obj = method.Invoke(null, parameters);
-
-				// check result
-				Assert.IsType<TestStruct<int>>(obj);
-				TestStruct<int> testStruct = (TestStruct<int>)obj;
-				for (int j = 0; j < parameterCount; j++)
+				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
-					Assert.Equal(parameters[j], testStruct.Values[j]);
+					for (int i = 0; i <= 16; i++)
+					{
+						yield return new object[] { type, i };
+					}
 				}
 			}
 		}
 
 		/// <summary>
-		/// Checks whether the creation methods taking 1 to 16 arguments returning a typed object pass constructor arguments properly (for classes).
+		/// Checks whether the following methods work as expected:
+		/// - <see cref="FastActivator{T}.CreateInstance"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11,TArg12}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11,TArg12,TArg13}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11,TArg12,TArg13,TArg14}"/><br/>
+		/// - <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11,TArg12,TArg13,TArg14,TArg15}"/><br/>
+		/// -
+		/// <see cref="FastActivator{T}.CreateInstance{TArg1,TArg2,TArg3,TArg4,TArg5,TArg6,TArg7,TArg8,TArg9,TArg10,TArg11,TArg12,TArg13,TArg14,TArg15,TArg16}"/>
 		/// </summary>
 		[Theory]
-		[MemberData(nameof(ParameterCountTestData))]
-		public void CreateInstance_Class_With_Arguments_Returning_Specific_Type(int parameterCount)
+		[MemberData(nameof(CreateInstanceTestData))]
+		public void CreateInstance(Type type, int parameterCount)
 		{
 			// get method to call
-			Type[] parameterTypes = new Type[parameterCount];
-			for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
-			MethodInfo method = mFixture.TypedResultCreateInstanceMethodInfos_TestClass[parameterCount].MakeGenericMethod(parameterTypes);
+			MethodInfo method = typeof(FastActivator<>)
+				.MakeGenericType(type)
+				.GetMethods()
+				.Single(mi => mi.Name == "CreateInstance" && mi.GetParameters().Length == parameterCount);
+			if (parameterCount > 0)
+			{
+				Type[] parameterTypes = new Type[parameterCount];
+				for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
+				method = method.MakeGenericMethod(parameterTypes);
+			}
 
-			for (int i = 0; i < parameterCount; i++)
+			if (parameterCount == 0)
 			{
 				// call method
-				object[] parameters = new object[parameterCount];
-				for (int j = 0; j < parameterCount; j++) parameters[j] = i == j ? 1 : 0;
-				object obj = method.Invoke(null, parameters);
-
-				// check result
-				Assert.IsType<TestClass<int>>(obj);
-				TestClass<int> testClass = (TestClass<int>)obj;
-				for (int j = 0; j < parameterCount; j++)
+				object obj = method.Invoke(null, Array.Empty<object>());
+				Assert.IsType(type, obj);
+			}
+			else
+			{
+				for (int i = 0; i < parameterCount; i++)
 				{
-					Assert.Equal(parameters[j], testClass.Values[j]);
+					// call method
+					object[] parameters = new object[parameterCount];
+					for (int j = 0; j < parameterCount; j++) parameters[j] = i == j ? 1 : 0;
+					object obj = method.Invoke(null, parameters);
+
+					// check result
+					Assert.IsType(type, obj);
+					ITestData<int> data = (ITestData<int>)obj;
+					for (int j = 0; j < parameterCount; j++)
+					{
+						Assert.Equal(parameters[j], data.Values[j]);
+					}
 				}
 			}
 		}
+
+		#endregion
 	}
 
 }

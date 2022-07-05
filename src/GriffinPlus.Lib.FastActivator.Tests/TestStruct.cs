@@ -8,9 +8,9 @@
 namespace GriffinPlus.Lib
 {
 
-	public struct TestStruct<T>
+	public struct TestStruct<T> : ITestData<T>
 	{
-		public T[] Values;
+		public T[] Values { get; set; }
 
 		public TestStruct(RefStruct test)
 		{
