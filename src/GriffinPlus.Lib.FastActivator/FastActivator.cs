@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -34,23 +34,12 @@ namespace GriffinPlus.Lib
 		/// <param name="type">Type to check.</param>
 		/// <param name="constructorParameterTypes">Types of constructor parameters to check for.</param>
 		/// <returns>
-		/// true, if the specified type has a constructor that takes the specified parameters;
-		/// otherwise false.
+		/// <c>true</c> if <paramref name="type"/>has a constructor that takes the specified parameters;
+		/// otherwise <c>false</c>.
 		/// </returns>
 		public static bool IsCreatable(Type type, Type[] constructorParameterTypes)
 		{
-			// convert constructor parameters into the corresponding creator function type
-			Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
-
-			// query the creator cache
-			if (!sCreatorsByCreatorTypeMap.TryGetValue(type, out var creatorsByCreatorType))
-			{
-				InitCreatorCache(type);
-				creatorsByCreatorType = sCreatorsByCreatorTypeMap[type];
-			}
-
-			// check whether the specified constructor is available
-			return creatorsByCreatorType.TryGetValue(creatorType, out _);
+			return CreateInstanceDynamically_GetCreator(type, constructorParameterTypes) != null;
 		}
 
 		#endregion
@@ -684,19 +673,66 @@ namespace GriffinPlus.Lib
 
 		#region CreateInstanceDynamically(...)
 
-		private static          TypeKeyedDictionary<TypeKeyedDictionary<Delegate>> sCreatorsByCreatorTypeMap   = new TypeKeyedDictionary<TypeKeyedDictionary<Delegate>>();
-		private static readonly FastActivatorFuncTypeMap                           sObjectResultCreatorFuncMap = new FastActivatorFuncTypeMap();
+		private class DynamicCreatorNode
+		{
+			public readonly Type                   Type; // null = root node
+			public          DynamicCreatorNode[]   NextNodes = Array.Empty<DynamicCreatorNode>();
+			public          Func<object[], object> Creator;
+
+			public DynamicCreatorNode(Type type)
+			{
+				Type = type;
+			}
+
+			public DynamicCreatorNode GetChild(Type[] types, int index)
+			{
+				if (types.Length == index)
+					return this;
+
+				// try to find the node for the current type
+				Type type = types[index];
+				foreach (var next in NextNodes)
+				{
+					if (next.Type == type)
+						return next.GetChild(types, index + 1);
+				}
+
+				// the node for the current type does not exist, yet
+				// => add it...
+				DynamicCreatorNode node;
+				lock (sSync)
+				{
+					foreach (var next in NextNodes)
+					{
+						if (next.Type == type)
+							return next.GetChild(types, index + 1);
+					}
+
+					node = new DynamicCreatorNode(type);
+					var newNextNodesByType = new DynamicCreatorNode[NextNodes.Length + 1];
+					Array.Copy(NextNodes, newNextNodesByType, NextNodes.Length);
+					newNextNodesByType[NextNodes.Length] = node;
+					Thread.MemoryBarrier();
+					NextNodes = newNextNodesByType;
+				}
+
+				return node.GetChild(types, index + 1);
+			}
+		}
+
+		private static readonly DynamicCreatorNode sDynamicCreatorRootNode = new DynamicCreatorNode(null);
 
 		/// <summary>
 		/// Creates an instance of the specified type.
 		/// </summary>
 		/// <param name="type">Type of the object to create.</param>
-		/// <param name="constructorParameterTypes">Parameters of the constructor to call (up to 16 types; may be <c>null</c> for parameterless constructors).</param>
+		/// <param name="constructorParameterTypes">Parameters of the constructor to call (may be <c>null</c> for parameterless constructors).</param>
 		/// <param name="args">Arguments to pass to the constructor.</param>
 		/// <returns>An instance of the specified type.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentException">
-		/// The <paramref name="args"/> do not contain the same number of objects as <paramref name="constructorParameterTypes"/> contains types.
+		/// The <paramref name="args"/> do not contain the same number of objects as <paramref name="constructorParameterTypes"/> contains types,
+		/// or the specified arguments cannot be assigned to the corresponding constructor parameter types.
 		/// </exception>
 		/// <remarks>
 		/// Due to use of reflection this method is rather expensive.
@@ -706,119 +742,139 @@ namespace GriffinPlus.Lib
 		{
 			// check arguments
 			if (type == null) throw new ArgumentNullException(nameof(type));
-			if (constructorParameterTypes != null)
-			{
-				int constructorParameterTypeCount = constructorParameterTypes.Length;
-				if (constructorParameterTypeCount > 0)
-				{
-					if (constructorParameterTypeCount > 16)
-						throw new ArgumentException("This method does not support constructors with more than 16 arguments.");
 
-					if (args == null || args.Length != constructorParameterTypeCount)
-						throw new ArgumentException("The number of constructor arguments does not match the the number of constructor parameter types.");
+			// default to use the parameterless constructor
+			if (constructorParameterTypes == null) constructorParameterTypes = Type.EmptyTypes;
+
+			// check consistency of constructor parameters and arguments
+			int constructorParameterTypeCount = constructorParameterTypes.Length;
+			if (constructorParameterTypeCount > 0)
+			{
+				if (args == null || args.Length != constructorParameterTypeCount)
+					throw new ArgumentException("The number of constructor arguments does not match the the number of constructor parameter types.");
+
+				for (int i = 0; i < constructorParameterTypeCount; i++)
+				{
+					if (!constructorParameterTypes[i].IsInstanceOfType(args[i]))
+						throw new ArgumentException($"Argument {i} (zero-based) is not assignable to the corresponding constructor parameter type '{constructorParameterTypes[i].FullName}'.");
 				}
 			}
 
-			Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
-
-			// query the creator cache
-			if (!sCreatorsByCreatorTypeMap.TryGetValue(type, out var creatorsByCreatorType))
-			{
-				InitCreatorCache(type);
-				creatorsByCreatorType = sCreatorsByCreatorTypeMap[type];
-			}
-
-			// try to create an instance of the specified class/struct using the requested constructor
-			if (creatorsByCreatorType.TryGetValue(creatorType, out var creator))
-			{
-				return CallCreatorDynamically(creator, args);
-			}
-
-			// constructor not found
-			string error = $"The specified type ({type.FullName}) does not have the required constructor.";
-			throw new ArgumentException(error, nameof(type));
+			// create an instance of the specified type using the specified constructor
+			var creator = CreateInstanceDynamically_GetCreator(type, constructorParameterTypes);
+			return creator(args);
 		}
 
 		/// <summary>
-		/// Calls the specified creator delegate dynamically passing the specified arguments to the constructor.
+		/// Gets a creator delegate that invokes the constructor with the specified parameters of the specified type.
 		/// </summary>
-		/// <param name="creator">Creator delegate to call.</param>
-		/// <param name="args">Arguments to pass to the constructor of the object to create.</param>
-		/// <returns>An object created by the creator delegate.</returns>
-		private static object CallCreatorDynamically(dynamic creator, dynamic[] args)
+		/// <param name="type">Type to get the creator delegate for.</param>
+		/// <param name="constructorParameterTypes">Types of constructor parameters of <paramref name="type"/>.</param>
+		/// <returns>
+		/// Delegate that invokes the constructor of <paramref name="type"/> with the specified constructor parameters.
+		/// <c>null</c> if <paramref name="type"/> does not have a constructor with the specified parameters.
+		/// </returns>
+		private static Func<object[], object> CreateInstanceDynamically_GetCreator(Type type, Type[] constructorParameterTypes)
 		{
-			if (args == null) return creator();
-
-			switch (args.Length)
+			// get the node of the type to create...
+			DynamicCreatorNode typeToInstantiateNode = null;
+			foreach (var next in sDynamicCreatorRootNode.NextNodes)
 			{
-				case 0:  return creator();
-				case 1:  return creator(args[0]);
-				case 2:  return creator(args[0], args[1]);
-				case 3:  return creator(args[0], args[1], args[2]);
-				case 4:  return creator(args[0], args[1], args[2], args[3]);
-				case 5:  return creator(args[0], args[1], args[2], args[3], args[4]);
-				case 6:  return creator(args[0], args[1], args[2], args[3], args[4], args[5]);
-				case 7:  return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-				case 8:  return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-				case 9:  return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
-				case 10: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
-				case 11: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
-				case 12: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
-				case 13: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
-				case 14: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
-				case 15: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
-				case 16: return creator(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
-				default: return null;
+				if (next.Type != type) continue;
+				typeToInstantiateNode = next;
+				break;
 			}
-		}
 
-		/// <summary>
-		/// Initializes the creator cache for the specified type.
-		/// </summary>
-		/// <param name="type">Type to generate creators for.</param>
-		private static void InitCreatorCache(Type type)
-		{
+			// create node for the type if it does not exist, yet
+			if (typeToInstantiateNode == null)
+			{
+				lock (sSync)
+				{
+					foreach (var next in sDynamicCreatorRootNode.NextNodes)
+					{
+						if (next.Type != type) continue;
+						typeToInstantiateNode = next;
+						break;
+					}
+
+					if (typeToInstantiateNode == null)
+					{
+						typeToInstantiateNode = new DynamicCreatorNode(type);
+						var newNextNodes = new DynamicCreatorNode[sDynamicCreatorRootNode.NextNodes.Length + 1];
+						Array.Copy(sDynamicCreatorRootNode.NextNodes, newNextNodes, sDynamicCreatorRootNode.NextNodes.Length);
+						newNextNodes[sDynamicCreatorRootNode.NextNodes.Length] = typeToInstantiateNode;
+						Thread.MemoryBarrier();
+						sDynamicCreatorRootNode.NextNodes = newNextNodes;
+					}
+				}
+			}
+
+			// try to look up creator node, create it, if necessary
+			var node = typeToInstantiateNode.GetChild(constructorParameterTypes, 0);
+			if (node.Creator != null) return node.Creator;
+
+			// the creator is not initialized, yet
+			// => generate and cache it
 			lock (sSync)
 			{
-				// abort, if the type was already processed
-				if (sCreatorsByCreatorTypeMap.ContainsKey(type))
-					return;
-
-				TypeKeyedDictionary<Delegate> creatorTypeToCreatorMap = new TypeKeyedDictionary<Delegate>();
-
-				// add default constructor, if the type is a value type
-				// (the default constructor will not occur in the enumeration below...)
-				if (type.IsValueType)
-				{
-					// get creator and cache it
-					Type creatorType = sObjectResultCreatorFuncMap.Get(Type.EmptyTypes);
-					Type fastCreatorType = typeof(FastCreator<>).MakeGenericType(creatorType);
-					MethodInfo getCreatorMethod = fastCreatorType.GetMethod("GetCreator");
-					Debug.Assert(getCreatorMethod != null, nameof(getCreatorMethod) + " != null");
-					Delegate creator = (Delegate)getCreatorMethod.Invoke(null, new object[] { type });
-					creatorTypeToCreatorMap.Add(creatorType, creator);
-				}
-
-				// add create for all constructors
-				foreach (var constructor in type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-				{
-					var constructorParameterTypes = constructor.GetParameters().Select(x => x.ParameterType).ToArray();
-					if (constructorParameterTypes.Length > 16) continue;
-
-					// get creator and cache it
-					Type creatorType = sObjectResultCreatorFuncMap.Get(constructorParameterTypes);
-					Type fastCreatorType = typeof(FastCreator<>).MakeGenericType(creatorType);
-					MethodInfo getCreatorMethod = fastCreatorType.GetMethod("GetCreator");
-					Debug.Assert(getCreatorMethod != null, nameof(getCreatorMethod) + " != null");
-					Delegate creator = (Delegate)getCreatorMethod.Invoke(null, new object[] { type });
-					creatorTypeToCreatorMap.Add(creatorType, creator);
-				}
-
-				TypeKeyedDictionary<TypeKeyedDictionary<Delegate>> creatorsByCreatorTypeMap = new TypeKeyedDictionary<TypeKeyedDictionary<Delegate>>(sCreatorsByCreatorTypeMap);
-				creatorsByCreatorTypeMap.Add(type, creatorTypeToCreatorMap);
-				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
-				sCreatorsByCreatorTypeMap = creatorsByCreatorTypeMap;
+				if (node.Creator != null) return node.Creator;
+				var creator = CreateInstanceDynamically_MakeCreator(type, constructorParameterTypes);
+				Thread.MemoryBarrier();
+				node.Creator = creator;
+				return creator;
 			}
+		}
+
+		/// <summary>
+		/// Generates a creator delegate for the specified type using the constructor with the specified parameters.
+		/// </summary>
+		/// <param name="typeToInstantiate">Type to get the creator delegate for.</param>
+		/// <param name="constructorParameterTypes">Parameters of the constructor of <paramref name="typeToInstantiate"/>.</param>
+		/// <returns>
+		/// Delegate that invokes the constructor of <paramref name="typeToInstantiate"/> with the specified constructor parameters.
+		/// <c>null</c> if <paramref name="typeToInstantiate"/> does not have a constructor with the specified parameters.
+		/// </returns>
+		private static Func<object[], object> CreateInstanceDynamically_MakeCreator(Type typeToInstantiate, Type[] constructorParameterTypes)
+		{
+			// handle parameterless constructor of value types
+			// (value types cannot have an explicit parameterless constructor)
+			var parameterExpression = Expression.Parameter(typeof(object[]));
+			if (typeToInstantiate.IsValueType && constructorParameterTypes.Length == 0)
+			{
+				return (Func<object[], object>)Expression.Lambda(
+						typeof(Func<object[], object>),
+						Expression.Convert(Expression.New(typeToInstantiate), typeof(object)),
+						parameterExpression)
+					.Compile();
+			}
+
+			// try to find the constructor with the specified parameter types
+			var constructor = typeToInstantiate.GetConstructor(
+				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+				Type.DefaultBinder,
+				CallingConventions.Any,
+				constructorParameterTypes,
+				null);
+
+			// abort if the type does not contain a constructor with the specified arguments
+			if (constructor == null) return null;
+
+			// handle regular constructors of value types (structs) and all constructors of reference types (classes)
+			var constructorArgumentExpressions = new List<Expression>();
+			for (int i = 0; i < constructorParameterTypes.Length; i++)
+			{
+				Expression expression = Expression.ArrayIndex(parameterExpression, Expression.Constant(i));
+				if (constructorParameterTypes[i] != typeof(object)) expression = Expression.Convert(expression, constructorParameterTypes[i]);
+				constructorArgumentExpressions.Add(expression);
+			}
+
+			Expression body = Expression.Block(Expression.New(constructor, constructorArgumentExpressions));
+			if (typeToInstantiate.IsValueType) body = Expression.Convert(body, typeof(object));
+			return (Func<object[], object>)Expression.Lambda(
+					typeof(Func<object[], object>),
+					body,
+					parameterExpression)
+				.Compile();
 		}
 
 		#endregion

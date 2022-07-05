@@ -14,10 +14,8 @@
 		<tags>activation activator</tags>
 		<dependencies>
 			<group targetFramework="net461">
-				<dependency id="Microsoft.CSharp" version="4.7.0" />
 			</group>
 			<group targetFramework="netstandard2.0">
-				<dependency id="Microsoft.CSharp" version="4.7.0" />
 			</group>
 		</dependencies>
 	</metadata>
