@@ -720,7 +720,7 @@ namespace GriffinPlus.Lib
 			}
 		}
 
-		private static readonly DynamicCreatorNode sDynamicCreatorRootNode = new DynamicCreatorNode(null);
+		private static TypeKeyedDictionary<DynamicCreatorNode> sDynamicCreatorNodesByType = new TypeKeyedDictionary<DynamicCreatorNode>();
 
 		/// <summary>
 		/// Creates an instance of the specified type.
@@ -777,34 +777,17 @@ namespace GriffinPlus.Lib
 		private static Func<object[], object> CreateInstanceDynamically_GetCreator(Type type, Type[] constructorParameterTypes)
 		{
 			// get the node of the type to create...
-			DynamicCreatorNode typeToInstantiateNode = null;
-			foreach (var next in sDynamicCreatorRootNode.NextNodes)
+			if (!sDynamicCreatorNodesByType.TryGetValue(type, out var typeToInstantiateNode))
 			{
-				if (next.Type != type) continue;
-				typeToInstantiateNode = next;
-				break;
-			}
-
-			// create node for the type if it does not exist, yet
-			if (typeToInstantiateNode == null)
-			{
+				// create node for the type if it does not exist, yet
 				lock (sSync)
 				{
-					foreach (var next in sDynamicCreatorRootNode.NextNodes)
-					{
-						if (next.Type != type) continue;
-						typeToInstantiateNode = next;
-						break;
-					}
-
-					if (typeToInstantiateNode == null)
+					if (!sDynamicCreatorNodesByType.TryGetValue(type, out typeToInstantiateNode))
 					{
 						typeToInstantiateNode = new DynamicCreatorNode(type);
-						var newNextNodes = new DynamicCreatorNode[sDynamicCreatorRootNode.NextNodes.Length + 1];
-						Array.Copy(sDynamicCreatorRootNode.NextNodes, newNextNodes, sDynamicCreatorRootNode.NextNodes.Length);
-						newNextNodes[sDynamicCreatorRootNode.NextNodes.Length] = typeToInstantiateNode;
+						var newDynamicCreatorNodesByType = new TypeKeyedDictionary<DynamicCreatorNode>(sDynamicCreatorNodesByType) { { type, typeToInstantiateNode } };
 						Thread.MemoryBarrier();
-						sDynamicCreatorRootNode.NextNodes = newNextNodes;
+						sDynamicCreatorNodesByType = newDynamicCreatorNodesByType;
 					}
 				}
 			}
