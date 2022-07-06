@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading;
@@ -24,14 +25,14 @@ namespace GriffinPlus.Benchmark
 
 	class Program
 	{
-		private const int TestedAllocationCount  = 50000000;
-		private const int MethodColumnWidth      = 70;
-		private const int MeasurementColumnWidth = 22;
+		private const long MeasureDurationMs      = 30000;
+		private const int  MethodColumnWidth      = 70;
+		private const int  MeasurementColumnWidth = 30;
 
 		private static void Main()
 		{
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-			var framework = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+			string framework = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
 			Console.WriteLine("Target Framework:  {0}", framework);
 			Console.WriteLine("Runtime Version:   {0}", GetRuntimeDescription());
 
@@ -45,522 +46,690 @@ namespace GriffinPlus.Benchmark
 			Console.ReadKey();
 		}
 
+		private class MeasureBlock<TClass, TStruct>
+		{
+			public string                             Description;
+			public MeasureItem<TClass, TStruct>       Reference;
+			public List<MeasureItem<TClass, TStruct>> Comparisons;
+		}
+
+		private class MeasureItem<TClass, TStruct>
+		{
+			public string        Description;
+			public Func<TClass>  ClassAction;
+			public Func<TStruct> StructAction;
+		}
+
+		private class RunData
+		{
+			public readonly Type[]   ConstructorArgumentTypes;
+			public readonly int[]    ConstructorArgumentsTyped;
+			public readonly object[] ConstructorArgumentsUntyped;
+
+			public RunData(int parameterCount)
+			{
+				ConstructorArgumentTypes = Enumerable.Repeat(typeof(int), parameterCount).ToArray();
+				ConstructorArgumentsTyped = Enumerable.Range(1, parameterCount).ToArray();
+				ConstructorArgumentsUntyped = new object[ConstructorArgumentsTyped.Length];
+				Array.Copy(ConstructorArgumentsTyped, ConstructorArgumentsUntyped, ConstructorArgumentsTyped.Length);
+			}
+		}
 
 		private static void RunBenchmark<TClass, TStruct>()
 		{
 			// -----------------------------------------------------------------------------------------------------------------
 
-			Console.WriteLine("### No Constructor Parameters (Generic)");
-			Console.WriteLine();
-			WriteHeader();
-			Measure(
-				("T Activator.CreateInstance<T>()",
-				 () => Activator.CreateInstance<TClass>(),
-				 () => Activator.CreateInstance<TStruct>()),
-				("T FastActivator<T>.CreateInstance()",
-				 () => FastActivator<TClass>.CreateInstance(),
-				 () => FastActivator<TStruct>.CreateInstance()));
-			Console.WriteLine();
-			Console.WriteLine();
+			// prepare run data
+			var runData1 = new RunData(1);
+			var runData2 = new RunData(2);
+			var runData3 = new RunData(3);
+			var runData4 = new RunData(4);
+			var runData5 = new RunData(5);
+			var runData6 = new RunData(6);
+			var runData7 = new RunData(7);
+			var runData8 = new RunData(8);
+			var runData9 = new RunData(9);
+			var runData10 = new RunData(10);
+			var runData11 = new RunData(11);
+			var runData12 = new RunData(12);
+			var runData13 = new RunData(13);
+			var runData14 = new RunData(14);
+			var runData15 = new RunData(15);
+			var runData16 = new RunData(16);
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			Console.WriteLine("### No Constructor Parameters (Non-Generic)");
-			Console.WriteLine();
-			WriteHeader();
-			Measure(
-				("object Activator.CreateInstance(Type)",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass)),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct))),
-				("object FastActivator.CreateInstance(Type)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass)),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct))));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			var constructorArgumentTypesList = new List<Type>();
-
-			Console.WriteLine("### 1 Constructor Parameter");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			var constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			var constructorArgumentsTyped =
-				new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			var constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1),
-				 () => FastActivator<TStruct>.CreateInstance(1)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 2 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 3 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 4 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 5 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 6 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 7 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 8 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 9 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 10 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 11 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)),
-				("T      FastActivator.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 12 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 13 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 14 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 15 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			Console.WriteLine("### 16 Constructor Parameters");
-			Console.WriteLine();
-			WriteHeader();
-			constructorArgumentTypesList.Add(typeof(int));
-			constructorArgumentTypes = constructorArgumentTypesList.ToArray();
-			constructorArgumentsTyped = new int[constructorArgumentTypesList.Count]; // always 0, but does not matter...
-			constructorArgumentsUntyped = new object[constructorArgumentTypesList.Count];
-			Array.Copy(constructorArgumentsTyped, constructorArgumentsUntyped, constructorArgumentTypesList.Count);
-			Measure(
-				("object Activator.CreateInstance(Type, object[])",
-				 () => (TClass)Activator.CreateInstance(typeof(TClass), constructorArgumentsUntyped),
-				 () => (TStruct)Activator.CreateInstance(typeof(TStruct), constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
-				 () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), constructorArgumentTypes, constructorArgumentsUntyped),
-				 () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), constructorArgumentTypes, constructorArgumentsUntyped)),
-				("object FastActivator.CreateInstance<...>(...)",
-				 () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-				 () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)),
-				("T      FastActivator<T>.CreateInstance<...>(...)",
-				 () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-				 () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)));
-			Console.WriteLine();
-			Console.WriteLine();
-
-			// -----------------------------------------------------------------------------------------------------------------
-		}
-
-		private static void Measure<TClass, TStruct>(
-			ValueTuple<string, Func<TClass>, Func<TStruct>>          reference,
-			params ValueTuple<string, Func<TClass>, Func<TStruct>>[] compares)
-		{
-			var row = 0;
-
-			// measure the reference (.NET Activator)
-			var allocateClassReferenceTimeMs = MeasureAllocation(reference.Item2);
-			var allocateStructReferenceTimeMs = MeasureAllocation(reference.Item3);
-			WriteResultLine(
-				row++,
-				reference.Item1,
-				allocateClassReferenceTimeMs,
-				allocateStructReferenceTimeMs);
-
-			// measure comparisons
-			var watch = new Stopwatch();
-			foreach (var compare in compares)
+			// define the tests to run
+			List<MeasureBlock<TClass, TStruct>> blocks = new List<MeasureBlock<TClass, TStruct>>
 			{
-				// warm up
-				compare.Item2();
-				compare.Item3();
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "No Constructor Parameters (Generic)",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "T Activator.CreateInstance<T>()",
+						ClassAction = () => Activator.CreateInstance<TClass>(),
+						StructAction = () => Activator.CreateInstance<TStruct>()
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T FastActivator<T>.CreateInstance()",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(),
+							StructAction = () => FastActivator<TStruct>.CreateInstance()
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "No Constructor Parameters (Non-Generic)",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type)",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass)),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct))
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), null),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), null)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance(Type)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass)),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct))
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "1 Constructor Parameter",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData1.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData1.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData1.ConstructorArgumentTypes, runData1.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData1.ConstructorArgumentTypes, runData1.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "2 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData2.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData2.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData2.ConstructorArgumentTypes, runData2.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData2.ConstructorArgumentTypes, runData2.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "3 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData3.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData3.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData3.ConstructorArgumentTypes, runData3.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData3.ConstructorArgumentTypes, runData3.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "4 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData4.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData4.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData4.ConstructorArgumentTypes, runData4.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData4.ConstructorArgumentTypes, runData4.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "5 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData5.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData5.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData5.ConstructorArgumentTypes, runData5.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData5.ConstructorArgumentTypes, runData5.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "6 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData6.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData6.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData6.ConstructorArgumentTypes, runData6.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData6.ConstructorArgumentTypes, runData6.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "7 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData7.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData7.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData7.ConstructorArgumentTypes, runData7.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData7.ConstructorArgumentTypes, runData7.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "8 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData8.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData8.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData8.ConstructorArgumentTypes, runData8.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData8.ConstructorArgumentTypes, runData8.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "9 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData9.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData9.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData9.ConstructorArgumentTypes, runData9.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData9.ConstructorArgumentTypes, runData9.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "10 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData10.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData10.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData10.ConstructorArgumentTypes, runData10.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData10.ConstructorArgumentTypes, runData10.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "11 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData11.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData11.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData11.ConstructorArgumentTypes, runData11.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData11.ConstructorArgumentTypes, runData11.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "12 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData12.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData12.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData12.ConstructorArgumentTypes, runData12.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData12.ConstructorArgumentTypes, runData12.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "13 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData13.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData13.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData13.ConstructorArgumentTypes, runData13.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData13.ConstructorArgumentTypes, runData13.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "14 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData14.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData14.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData14.ConstructorArgumentTypes, runData14.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData14.ConstructorArgumentTypes, runData14.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "15 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData15.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData15.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData15.ConstructorArgumentTypes, runData15.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData15.ConstructorArgumentTypes, runData15.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+						}
+					}
+				},
+				new MeasureBlock<TClass, TStruct>
+				{
+					Description = "16 Constructor Parameters",
+					Reference = new MeasureItem<TClass, TStruct>
+					{
+						Description = "object Activator.CreateInstance(Type, object[])",
+						ClassAction = () => (TClass)Activator.CreateInstance(typeof(TClass), runData16.ConstructorArgumentsUntyped),
+						StructAction = () => (TStruct)Activator.CreateInstance(typeof(TStruct), runData16.ConstructorArgumentsUntyped)
+					},
+					Comparisons = new List<MeasureItem<TClass, TStruct>>
+					{
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstanceDynamically(Type, Type[], object[])",
+							ClassAction = () => (TClass)FastActivator.CreateInstanceDynamically(typeof(TClass), runData16.ConstructorArgumentTypes, runData16.ConstructorArgumentsUntyped),
+							StructAction = () => (TStruct)FastActivator.CreateInstanceDynamically(typeof(TStruct), runData16.ConstructorArgumentTypes, runData16.ConstructorArgumentsUntyped)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "object FastActivator.CreateInstance<...>(...)",
+							ClassAction = () => (TClass)FastActivator.CreateInstance(typeof(TClass), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+							StructAction = () => (TStruct)FastActivator.CreateInstance(typeof(TStruct), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+						},
+						new MeasureItem<TClass, TStruct>
+						{
+							Description = "T      FastActivator<T>.CreateInstance<...>(...)",
+							ClassAction = () => FastActivator<TClass>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+							StructAction = () => FastActivator<TStruct>.CreateInstance(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+						}
+					}
+				}
+			};
 
-				// clean up and calm down
-				GC.Collect();
-				watch.Reset();
-				Thread.Sleep(5000);
+			// -----------------------------------------------------------------------------------------------------------------
 
-				// measure allocating instances of a class
-				watch.Start();
-				for (var i = 0; i < TestedAllocationCount; i++) compare.Item2();
-				watch.Stop();
-				var allocateClassTimeMs = watch.ElapsedMilliseconds;
+			// run all creator functions that will be used in the benchmark to set up the lookup tables
+			foreach (var block in blocks)
+			{
+				block.Reference.ClassAction();
+				block.Reference.StructAction();
+				foreach (var comparison in block.Comparisons)
+				{
+					comparison.ClassAction();
+					comparison.StructAction();
+				}
+			}
 
-				// clean up and calm down
-				GC.Collect();
-				watch.Reset();
-				Thread.Sleep(5000);
+			// -----------------------------------------------------------------------------------------------------------------
 
-				// measure allocating instances of a struct
-				watch.Start();
-				for (var i = 0; i < TestedAllocationCount; i++) compare.Item3();
-				watch.Stop();
-				var allocateStructTimeMs = watch.ElapsedMilliseconds;
+			// run the benchmark
+			foreach (var block in blocks)
+			{
+				int row = 0;
 
-				// calculate the speed gain and print the result
-				var speedGainClass = (double)allocateClassReferenceTimeMs / allocateClassTimeMs;
-				var speedGainStruct = (double)allocateStructReferenceTimeMs / allocateStructTimeMs;
+				Console.WriteLine($"### {block.Description}");
+				Console.WriteLine();
+				WriteHeader();
+
+				// measure the reference (.NET Activator)
+				long allocateClassReferenceIterationsPerDuration = MeasureAllocation(block.Reference.ClassAction, out long allocateClassReferenceDuration);
+				long allocateStructReferenceIterationsPerDuration = MeasureAllocation(block.Reference.StructAction, out long allocateStructReferenceDuration);
 				WriteResultLine(
 					row++,
-					compare.Item1,
-					allocateClassTimeMs,
-					allocateStructTimeMs,
-					speedGainClass,
-					speedGainStruct);
+					block.Reference.Description,
+					allocateClassReferenceDuration,
+					allocateClassReferenceIterationsPerDuration,
+					allocateStructReferenceDuration,
+					allocateStructReferenceIterationsPerDuration);
+
+				// measure comparisons
+				var watch = new Stopwatch();
+				foreach (var comparison in block.Comparisons)
+				{
+					// warm up
+					comparison.ClassAction();
+					comparison.StructAction();
+
+					// clean up and calm down
+					GC.Collect();
+					watch.Reset();
+					Thread.Sleep(5000);
+
+					// measure allocating instances of a class
+					watch.Start();
+					for (int i = 0; i < allocateClassReferenceIterationsPerDuration; i++) comparison.ClassAction();
+					watch.Stop();
+					long allocateClassTimeMs = watch.ElapsedMilliseconds;
+
+					// clean up and calm down
+					GC.Collect();
+					watch.Reset();
+					Thread.Sleep(5000);
+
+					// measure allocating instances of a struct
+					watch.Start();
+					for (int i = 0; i < allocateStructReferenceIterationsPerDuration; i++) comparison.StructAction();
+					watch.Stop();
+					long allocateStructTimeMs = watch.ElapsedMilliseconds;
+
+					// calculate the speed gain and print the result
+					double speedGainClass = (double)allocateClassReferenceDuration / allocateClassTimeMs;
+					double speedGainStruct = (double)allocateStructReferenceDuration / allocateStructTimeMs;
+					WriteResultLine(
+						row++,
+						comparison.Description,
+						allocateClassTimeMs,
+						allocateStructTimeMs,
+						speedGainClass,
+						speedGainStruct);
+				}
+
+				Console.WriteLine();
+				Console.WriteLine();
 			}
 		}
 
-		private static long MeasureAllocation<T>(Func<T> action)
+		private static long MeasureAllocation<T>(Func<T> action, out long measuredTimeMs)
 		{
-			var watch = new Stopwatch();
+			measuredTimeMs = 0;
 
 			// warm up
 			GC.Collect();
@@ -570,10 +739,23 @@ namespace GriffinPlus.Benchmark
 			Thread.Sleep(5000);
 
 			// measure
-			watch.Start();
-			for (var i = 0; i < TestedAllocationCount; i++) action();
-			watch.Stop();
-			return watch.ElapsedMilliseconds;
+			long startTicks = Stopwatch.GetTimestamp();
+			long measureDurationTicks = MeasureDurationMs * Stopwatch.Frequency / 1000;
+			long iterations = 0;
+			while (true)
+			{
+				long elapsedTicks = Stopwatch.GetTimestamp() - startTicks;
+				if (elapsedTicks > measureDurationTicks)
+				{
+					measuredTimeMs = 1000 * elapsedTicks / Stopwatch.Frequency;
+					break;
+				}
+
+				action();
+				iterations++;
+			}
+
+			return iterations;
 		}
 
 		private static void WriteHeader()
@@ -598,15 +780,17 @@ namespace GriffinPlus.Benchmark
 			int    row,
 			string method,
 			double classTimeMs,
-			double structTimeMs)
+			long   allocateClassReferenceIterationsPerDuration,
+			double structTimeMs,
+			long   allocateStructReferenceIterationsPerDuration)
 		{
-			var format =
+			string format =
 				$"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
 				method,
-				$"{classTimeMs} ms",
-				$"{structTimeMs} ms");
+				$"{classTimeMs} ms ({allocateClassReferenceIterationsPerDuration} allocs)",
+				$"{structTimeMs} ms ({allocateStructReferenceIterationsPerDuration} allocs)");
 		}
 
 		private static void WriteResultLine(
@@ -617,7 +801,7 @@ namespace GriffinPlus.Benchmark
 			double classSpeedGain,
 			double structSpeedGain)
 		{
-			var format =
+			string format =
 				$"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
@@ -635,7 +819,7 @@ namespace GriffinPlus.Benchmark
 			{
 				if (key != null)
 				{
-					var releaseKey = Convert.ToInt32(key.GetValue("Release"));
+					int releaseKey = Convert.ToInt32(key.GetValue("Release"));
 					if (releaseKey >= 528040) return ".NET Framework 4.8";
 					if (releaseKey >= 461808) return ".NET Framework 4.7.2";
 					if (releaseKey >= 461308) return ".NET Framework 4.7.1";
@@ -655,13 +839,15 @@ namespace GriffinPlus.Benchmark
 
 #if NETCOREAPP
 			var assembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly;
-			var assemblyPath = assembly.Location.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] assemblyPath = assembly.Location.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
 			int netCoreAppIndex = Array.IndexOf(assemblyPath, "Microsoft.NETCore.App");
-			if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2) {
-				var version = assemblyPath[netCoreAppIndex + 1];
+			if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2)
+			{
+				string version = assemblyPath[netCoreAppIndex + 1];
 				if (version.StartsWith("5.")) return ".NET " + version;
 				return ".NET Core " + version;
 			}
+
 			return null;
 #endif
 		}
