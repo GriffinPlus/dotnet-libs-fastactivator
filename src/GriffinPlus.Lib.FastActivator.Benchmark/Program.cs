@@ -27,7 +27,7 @@ namespace GriffinPlus.Benchmark
 	{
 		private const long MeasureDurationMs      = 30000;
 		private const int  MethodColumnWidth      = 70;
-		private const int  MeasurementColumnWidth = 30;
+		private const int  MeasurementColumnWidth = 28;
 
 		private static void Main()
 		{
@@ -670,56 +670,35 @@ namespace GriffinPlus.Benchmark
 				WriteHeader();
 
 				// measure the reference (.NET Activator)
-				long allocateClassReferenceIterationsPerDuration = MeasureAllocation(block.Reference.ClassAction, out long allocateClassReferenceDuration);
-				long allocateStructReferenceIterationsPerDuration = MeasureAllocation(block.Reference.StructAction, out long allocateStructReferenceDuration);
+				long allocateClassReferenceIterationsPerDuration = Measure(block.Reference.ClassAction, out double allocateClassReferenceDurationInSeconds);
+				long allocateStructReferenceIterationsPerDuration = Measure(block.Reference.StructAction, out double allocateStructReferenceDurationInSeconds);
+				double classReferenceAllocFrequency = allocateClassReferenceIterationsPerDuration / allocateClassReferenceDurationInSeconds;
+				double structReferenceAllocFrequency = allocateStructReferenceIterationsPerDuration / allocateStructReferenceDurationInSeconds;
 				WriteResultLine(
 					row++,
 					block.Reference.Description,
-					allocateClassReferenceDuration,
-					allocateClassReferenceIterationsPerDuration,
-					allocateStructReferenceDuration,
-					allocateStructReferenceIterationsPerDuration);
+					classReferenceAllocFrequency,
+					structReferenceAllocFrequency);
 
 				// measure comparisons
-				var watch = new Stopwatch();
 				foreach (var comparison in block.Comparisons)
 				{
-					// warm up
-					comparison.ClassAction();
-					comparison.StructAction();
-
 					// clean up and calm down
 					GC.Collect();
-					watch.Reset();
 					Thread.Sleep(5000);
 
-					// measure allocating instances of a class
-					watch.Start();
-					for (int i = 0; i < allocateClassReferenceIterationsPerDuration; i++) comparison.ClassAction();
-					watch.Stop();
-					long allocateClassTimeMs = watch.ElapsedMilliseconds;
-
-					// clean up and calm down
-					GC.Collect();
-					watch.Reset();
-					Thread.Sleep(5000);
-
-					// measure allocating instances of a struct
-					watch.Start();
-					for (int i = 0; i < allocateStructReferenceIterationsPerDuration; i++) comparison.StructAction();
-					watch.Stop();
-					long allocateStructTimeMs = watch.ElapsedMilliseconds;
-
-					// calculate the speed gain and print the result
-					double speedGainClass = (double)allocateClassReferenceDuration / allocateClassTimeMs;
-					double speedGainStruct = (double)allocateStructReferenceDuration / allocateStructTimeMs;
+					// measure allocating instances of a class/struct
+					long allocateClassComparisonIterationsPerDuration = Measure(comparison.ClassAction, out double allocateClassComparisonDurationInSeconds);
+					long allocateStructComparisonIterationsPerDuration = Measure(comparison.StructAction, out double allocateStructComparisonDurationInSeconds);
+					double classComparisonAllocFrequency = allocateClassComparisonIterationsPerDuration / allocateClassComparisonDurationInSeconds;
+					double structComparisonAllocFrequency = allocateStructComparisonIterationsPerDuration / allocateStructComparisonDurationInSeconds;
 					WriteResultLine(
 						row++,
 						comparison.Description,
-						allocateClassTimeMs,
-						allocateStructTimeMs,
-						speedGainClass,
-						speedGainStruct);
+						classComparisonAllocFrequency,
+						classReferenceAllocFrequency,
+						structComparisonAllocFrequency,
+						structReferenceAllocFrequency);
 				}
 
 				Console.WriteLine();
@@ -727,9 +706,9 @@ namespace GriffinPlus.Benchmark
 			}
 		}
 
-		private static long MeasureAllocation<T>(Func<T> action, out long measuredTimeMs)
+		private static long Measure<T>(Func<T> action, out double measuredTimeInSeconds)
 		{
-			measuredTimeMs = 0;
+			measuredTimeInSeconds = 0;
 
 			// warm up
 			GC.Collect();
@@ -747,7 +726,7 @@ namespace GriffinPlus.Benchmark
 				long elapsedTicks = Stopwatch.GetTimestamp() - startTicks;
 				if (elapsedTicks > measureDurationTicks)
 				{
-					measuredTimeMs = 1000 * elapsedTicks / Stopwatch.Frequency;
+					measuredTimeInSeconds = elapsedTicks / Stopwatch.Frequency;
 					break;
 				}
 
@@ -779,35 +758,34 @@ namespace GriffinPlus.Benchmark
 		private static void WriteResultLine(
 			int    row,
 			string method,
-			double classTimeMs,
-			long   allocateClassReferenceIterationsPerDuration,
-			double structTimeMs,
-			long   allocateStructReferenceIterationsPerDuration)
+			double classAllocFrequency,
+			double structAllocFrequency)
 		{
 			string format =
 				$"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
 				method,
-				$"{classTimeMs} ms ({allocateClassReferenceIterationsPerDuration} allocs)",
-				$"{structTimeMs} ms ({allocateStructReferenceIterationsPerDuration} allocs)");
+				$"{Math.Round(classAllocFrequency / 1000.0)} allocs/ms",
+				$"{Math.Round(structAllocFrequency / 1000.0)} allocs/ms");
 		}
 
 		private static void WriteResultLine(
 			int    row,
 			string method,
-			double classTimeMs,
-			double structTimeMs,
-			double classSpeedGain,
-			double structSpeedGain)
+			double classComparisonAllocFrequency,
+			double classReferenceAllocFrequency,
+			double structComparisonAllocFrequency,
+			double structReferenceAllocFrequency)
 		{
-			string format =
-				$"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
+			double classSpeedGain = classComparisonAllocFrequency / classReferenceAllocFrequency;
+			double structSpeedGain = structComparisonAllocFrequency / structReferenceAllocFrequency;
+			string format = $"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
 				method,
-				$"{classTimeMs} ms ({classSpeedGain:0.00}x)",
-				$"{structTimeMs} ms ({structSpeedGain:0.00}x)");
+				$"{Math.Round(classComparisonAllocFrequency / 1000.0)} allocs/ms ({classSpeedGain:0.00}x)",
+				$"{Math.Round(structComparisonAllocFrequency / 1000.0)} allocs/ms ({structSpeedGain:0.00}x)");
 		}
 
 		private static string GetRuntimeDescription()
