@@ -26,7 +26,7 @@ namespace GriffinPlus.Benchmark
 	class Program
 	{
 		private const long MeasureDurationMs      = 30000;
-		private const int  MethodColumnWidth      = 70;
+		private const int  MethodColumnWidth      = 76;
 		private const int  MeasurementColumnWidth = 28;
 
 		private static void Main()
@@ -765,7 +765,7 @@ namespace GriffinPlus.Benchmark
 				$"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
-				method,
+				method.Replace("<", "&lt;").Replace(">", "&gt;"),
 				$"{Math.Round(classAllocFrequency / 1000.0)} allocs/ms",
 				$"{Math.Round(structAllocFrequency / 1000.0)} allocs/ms");
 		}
@@ -783,7 +783,7 @@ namespace GriffinPlus.Benchmark
 			string format = $"| {{0,-{MethodColumnWidth}}} | {{1,-{MeasurementColumnWidth}}} | {{2,-{MeasurementColumnWidth}}} |";
 			Console.WriteLine(
 				format,
-				method,
+				method.Replace("<", "&lt;").Replace(">", "&gt;"),
 				$"{Math.Round(classComparisonAllocFrequency / 1000.0)} allocs/ms ({classSpeedGain:0.00}x)",
 				$"{Math.Round(structComparisonAllocFrequency / 1000.0)} allocs/ms ({structSpeedGain:0.00}x)");
 		}
@@ -823,6 +823,7 @@ namespace GriffinPlus.Benchmark
 			{
 				string version = assemblyPath[netCoreAppIndex + 1];
 				if (version.StartsWith("5.")) return ".NET " + version;
+				if (version.StartsWith("6.")) return ".NET " + version;
 				return ".NET Core " + version;
 			}
 
