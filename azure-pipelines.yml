@@ -2,16 +2,19 @@
 # build.vs: ci-csharp-netstandard20-with-deployment-on-tag.yml
 #######################################################################################################################
 #
-# Standard pipeline for building and testing C# projects with target .NET Standard 2.0.
 # The pipeline runs unit tests on the following target frameworks and platforms:
 #
-# - Windows Server 2022, .NET 4.8        (net48)
-# - Windows Server 2022, .NET Core 3.1   (netcoreapp3.1)
-# - Windows Server 2022, .NET 5.0        (net5.0, no platform specific TPMs)
-# - Windows Server 2022, .NET 6.0        (net6.0, no platform specific TPMs)
-# - Ubuntu 20.04,        .NET Core 3.1   (netcoreapp3.1)
-# - Ubuntu 20.04,        .NET 5.0        (net5.0, no platform specific TPMs)
-# - Ubuntu 20.04,        .NET 6.0        (net6.0, no platform specific TPMs)
+# - Windows Server 2022, .NET 4.6.1      (tests with build for .NET Framework 4.6.1)
+# - Windows Server 2022, .NET Core 2.2   (tests with build for .NET Standard 2.0)
+# - Windows Server 2022, .NET Core 3.1   (tests with build for .NET Standard 2.1)
+# - Windows Server 2022, .NET 5.0        (tests with build for .NET 5)
+# - Windows Server 2022, .NET 6.0        (tests with build for .NET 6)
+# - Windows Server 2022, .NET 7.0        (tests with build for .NET 6)
+# - Ubuntu 22.04, .NET Core 2.2          (tests with build for .NET Standard 2.0)
+# - Ubuntu 22.04, .NET Core 3.1          (tests with build for .NET Standard 2.1)
+# - Ubuntu 22.04, .NET 5.0               (tests with build for .NET 5)
+# - Ubuntu 22.04, .NET 6.0               (tests with build for .NET 6)
+# - Ubuntu 22.04, .NET 7.0               (tests with build for .NET 6)
 #
 # After tests have completed successfully nuget packages are created according to their specification (*.nuspec).
 # If the build was tagged with a tag starting with 'v' the nuget packages are pushed to nuget.org.
@@ -42,25 +45,34 @@ stages:
   - job: 'Build'
     steps:
     - task: UseDotNet@2
+      displayName: 'Use .NET Core 2.2 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '2.2.x'
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
       displayName: 'Use .NET Core 3.1 SDK'
       inputs:
         packageType: 'sdk'
         version: '3.1.x'
-        performMultiLevelLookup: true
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: UseDotNet@2
       displayName: 'Use .NET 5.0 SDK'
       inputs:
         packageType: 'sdk'
         version: '5.0.x'
-        performMultiLevelLookup: true
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: UseDotNet@2
       displayName: 'Use .NET 6.0 SDK'
       inputs:
         packageType: 'sdk'
         version: '6.0.x'
-        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 7.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '7.0.x'
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: DotNetCoreCLI@2
       displayName: 'Install GitVersion'
@@ -120,78 +132,55 @@ stages:
 - stage: 'Tests'
   jobs:
   ######################################################################################################################
-  # Job: Tests for .NET 4.8 on Windows
-  ######################################################################################################################
-  - job:
-    displayName: 'Windows Server 2022, .NET 4.8'
-    steps:
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download Pipeline Artifacts'
-      inputs:
-        artifact: 'Binaries'
-        targetPath: '$(Build.SourcesDirectory)/_build'
-        itemPattern: |
-          **/net48/*.*
-    - task: VSTest@2
-      displayName: 'Test'
-      inputs:
-        configuration: '$(BuildConfiguration)'
-        testSelector: 'testAssemblies'
-        codeCoverageEnabled: true
-        testAssemblyVer2: |
-          **\*Tests.dll
-          !**\obj\**
-        searchFolder: '$(Build.SourcesDirectory)'
-        otherConsoleOptions: '/Framework:.NETFramework,Version=v4.8'
-
-  ######################################################################################################################
-  # Job: Tests for .NET Core 3.1, .NET 5.0 and .NET 6.0 on Windows and Linux
+  # Job:
+  # - .NET Framework 4.6.1 on Windows Server 2022
+  # - .NET Core 2.2 on Windows Server 2022 and Ubuntu 22.04
+  # - .NET Core 3.1 on Windows Server 2022 and Ubuntu 22.04
+  # - .NET 5.0 on Windows Server 2022 and Ubuntu 22.04
+  # - .NET 6.0 on Windows Server 2022 and Ubuntu 22.04
+  # - .NET 7.0 on Windows Server 2022 and Ubuntu 22.04
   ######################################################################################################################
   - job:
     displayName: ''
+    timeoutInMinutes: 120
     strategy:
       matrix:
-        'Windows Server 2022, .NET Core 3.1':
+        'Windows Server 2022':
           VmImage: 'windows-2022'
-          DotNetTarget: 'netcoreapp3.1'
-        'Windows Server 2022, .NET 5.0':
-          VmImage: 'windows-2022'
-          DotNetTarget: 'net5.0'
-        'Windows Server 2022, .NET 6.0':
-          VmImage: 'windows-2022'
-          DotNetTarget: 'net6.0'
-        'Ubuntu 20.04, .NET Core 3.1':
-          VmImage: 'ubuntu-20.04'
-          DotNetTarget: 'netcoreapp3.1'
-        'Ubuntu 20.04, .NET 5.0':
-          VmImage: 'ubuntu-20.04'
-          DotNetTarget: 'net5.0'
-        'Ubuntu 20.04, .NET 6.0':
-          VmImage: 'ubuntu-20.04'
-          DotNetTarget: 'net6.0'
+        'Ubuntu 22.04':
+          VmImage: 'ubuntu-22.04'
     pool:
       vmImage: '$(VmImage)'
     steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core 2.2 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '2.2.x'
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: UseDotNet@2
       displayName: 'Use .NET Core 3.1 SDK'
       inputs:
         packageType: 'sdk'
         version: '3.1.x'
-        performMultiLevelLookup: true
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: UseDotNet@2
       displayName: 'Use .NET 5.0 SDK'
       inputs:
         packageType: 'sdk'
         version: '5.0.x'
-        performMultiLevelLookup: true
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: UseDotNet@2
       displayName: 'Use .NET 6.0 SDK'
       inputs:
         packageType: 'sdk'
         version: '6.0.x'
-        performMultiLevelLookup: true
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 7.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '7.0.x'
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifacts'
@@ -199,12 +188,48 @@ stages:
         artifact: 'Binaries'
         targetPath: '$(Build.SourcesDirectory)/_build'
     - task: DotNetCoreCLI@2
-      displayName: 'Test'
+      displayName: 'Test .NET Framework 4.6.1'
+      condition: eq(variables['agent.os'], 'Windows_NT')
       inputs:
         command: 'test'
         projects: '**/*Tests/*.csproj'
         nobuild: true
-        arguments: '--framework $(DotNetTarget)'
+        arguments: '--framework net461 --verbosity normal'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET Core 2.2'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework netcoreapp2.2'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET Core 3.1'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework netcoreapp3.1'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET 5.0'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework net5.0'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET 6.0'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework net6.0'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET 7.0'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework net7.0'
 
 ########################################################################################################################
 # Stage: Deployment
