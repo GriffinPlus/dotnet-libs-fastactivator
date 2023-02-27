@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 using Xunit;
 
@@ -24,7 +25,7 @@ namespace GriffinPlus.Lib
 		{
 			get
 			{
-				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
+				foreach (Type type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
 					for (int i = 0; i <= 16; i++)
 					{
@@ -42,12 +43,12 @@ namespace GriffinPlus.Lib
 		public void GetCreator(Type type, int parameterCount)
 		{
 			// get the creator delegate
-			Type[] parameterTypes = new Type[parameterCount + 1];
+			var parameterTypes = new Type[parameterCount + 1];
 			for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
 			parameterTypes[parameterCount] = typeof(object);
-			var delegateType = Expression.GetDelegateType(parameterTypes);
-			var fastCreatorType = typeof(FastCreator<>).MakeGenericType(delegateType);
-			var getCreatorMethod = fastCreatorType.GetMethod("GetCreator");
+			Type delegateType = Expression.GetDelegateType(parameterTypes);
+			Type fastCreatorType = typeof(FastCreator<>).MakeGenericType(delegateType);
+			MethodInfo getCreatorMethod = fastCreatorType.GetMethod("GetCreator");
 			Assert.NotNull(getCreatorMethod);
 			var getCreatorDelegate = (Delegate)getCreatorMethod.Invoke(null, new object[] { type });
 
@@ -57,11 +58,11 @@ namespace GriffinPlus.Lib
 				// call method
 				object[] parameters = new object[parameterCount];
 				for (int j = 0; j < parameterCount; j++) parameters[j] = i == j ? 1 : 0;
-				var obj = getCreatorDelegate.DynamicInvoke(parameters);
+				object obj = getCreatorDelegate.DynamicInvoke(parameters);
 
 				// check result
 				Assert.IsType(type, obj);
-				ITestData<int> testClass = (ITestData<int>)obj;
+				var testClass = (ITestData<int>)obj;
 				for (int j = 0; j < parameterCount; j++)
 				{
 					Assert.Equal(parameters[j], testClass.Values[j]);

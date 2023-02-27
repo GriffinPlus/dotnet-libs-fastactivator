@@ -27,7 +27,7 @@ namespace GriffinPlus.Lib
 		{
 			get
 			{
-				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
+				foreach (Type type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
 					yield return new object[] { type, 0 };
 					yield return new object[] { type, 1 };
@@ -43,10 +43,10 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CreateArrayTestData))]
 		public void CreateArray(Type type, int count)
 		{
-			Array expected = Array.CreateInstance(type, count);
-			var method = typeof(FastActivator<>).MakeGenericType(type).GetMethod("CreateArray");
+			var expected = Array.CreateInstance(type, count);
+			MethodInfo method = typeof(FastActivator<>).MakeGenericType(type).GetMethod("CreateArray");
 			Assert.NotNull(method);
-			Array actual = (Array)method.Invoke(null, new object[] { count });
+			var actual = (Array)method.Invoke(null, new object[] { count });
 			Assert.Equal(expected, actual);
 		}
 
@@ -61,7 +61,7 @@ namespace GriffinPlus.Lib
 		{
 			get
 			{
-				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
+				foreach (Type type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
 					for (int i = 0; i <= 16; i++)
 					{
@@ -103,7 +103,7 @@ namespace GriffinPlus.Lib
 				.Single(mi => mi.Name == "CreateInstance" && mi.GetParameters().Length == parameterCount);
 			if (parameterCount > 0)
 			{
-				Type[] parameterTypes = new Type[parameterCount];
+				var parameterTypes = new Type[parameterCount];
 				for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
 				method = method.MakeGenericMethod(parameterTypes);
 			}
@@ -125,7 +125,7 @@ namespace GriffinPlus.Lib
 
 					// check result
 					Assert.IsType(type, obj);
-					ITestData<int> data = (ITestData<int>)obj;
+					var data = (ITestData<int>)obj;
 					for (int j = 0; j < parameterCount; j++)
 					{
 						Assert.Equal(parameters[j], data.Values[j]);

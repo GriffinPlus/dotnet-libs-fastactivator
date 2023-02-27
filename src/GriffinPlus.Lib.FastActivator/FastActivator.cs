@@ -10,8 +10,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 
-// ReSharper disable UseObjectOrCollectionInitializer
 // ReSharper disable CoVariantArrayConversion
+// ReSharper disable MemberCanBePrivate.Local
+// ReSharper disable UseObjectOrCollectionInitializer
 
 namespace GriffinPlus.Lib
 {
@@ -684,14 +685,14 @@ namespace GriffinPlus.Lib
 				Type = type;
 			}
 
-			public DynamicCreatorNode GetChild(Type[] types, int index)
+			public DynamicCreatorNode GetChild(IReadOnlyList<Type> types, int index)
 			{
-				if (types.Length == index)
+				if (types.Count == index)
 					return this;
 
 				// try to find the node for the current type
 				Type type = types[index];
-				foreach (var next in NextNodes)
+				foreach (DynamicCreatorNode next in NextNodes)
 				{
 					if (next.Type == type)
 						return next.GetChild(types, index + 1);
@@ -702,7 +703,7 @@ namespace GriffinPlus.Lib
 				DynamicCreatorNode node;
 				lock (sSync)
 				{
-					foreach (var next in NextNodes)
+					foreach (DynamicCreatorNode next in NextNodes)
 					{
 						if (next.Type == type)
 							return next.GetChild(types, index + 1);
@@ -761,7 +762,7 @@ namespace GriffinPlus.Lib
 			}
 
 			// create an instance of the specified type using the specified constructor
-			var creator = CreateInstanceDynamically_GetCreator(type, constructorParameterTypes);
+			Func<object[], object> creator = CreateInstanceDynamically_GetCreator(type, constructorParameterTypes);
 			return creator(args);
 		}
 
@@ -777,7 +778,7 @@ namespace GriffinPlus.Lib
 		private static Func<object[], object> CreateInstanceDynamically_GetCreator(Type type, Type[] constructorParameterTypes)
 		{
 			// get the node of the type to create...
-			if (!sDynamicCreatorNodesByType.TryGetValue(type, out var typeToInstantiateNode))
+			if (!sDynamicCreatorNodesByType.TryGetValue(type, out DynamicCreatorNode typeToInstantiateNode))
 			{
 				// create node for the type if it does not exist, yet
 				lock (sSync)
@@ -793,7 +794,7 @@ namespace GriffinPlus.Lib
 			}
 
 			// try to look up creator node, create it, if necessary
-			var node = typeToInstantiateNode.GetChild(constructorParameterTypes, 0);
+			DynamicCreatorNode node = typeToInstantiateNode.GetChild(constructorParameterTypes, 0);
 			if (node.Creator != null) return node.Creator;
 
 			// the creator is not initialized, yet
@@ -801,7 +802,7 @@ namespace GriffinPlus.Lib
 			lock (sSync)
 			{
 				if (node.Creator != null) return node.Creator;
-				var creator = CreateInstanceDynamically_MakeCreator(type, constructorParameterTypes);
+				Func<object[], object> creator = CreateInstanceDynamically_MakeCreator(type, constructorParameterTypes);
 				Thread.MemoryBarrier();
 				node.Creator = creator;
 				return creator;
@@ -821,7 +822,7 @@ namespace GriffinPlus.Lib
 		{
 			// handle parameterless constructor of value types
 			// (value types cannot have an explicit parameterless constructor)
-			var parameterExpression = Expression.Parameter(typeof(object[]));
+			ParameterExpression parameterExpression = Expression.Parameter(typeof(object[]));
 			if (typeToInstantiate.IsValueType && constructorParameterTypes.Length == 0)
 			{
 				return (Func<object[], object>)Expression.Lambda(
@@ -832,7 +833,7 @@ namespace GriffinPlus.Lib
 			}
 
 			// try to find the constructor with the specified parameter types
-			var constructor = typeToInstantiate.GetConstructor(
+			ConstructorInfo constructor = typeToInstantiate.GetConstructor(
 				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
 				Type.DefaultBinder,
 				CallingConventions.Any,
@@ -875,7 +876,7 @@ namespace GriffinPlus.Lib
 		public static Array CreateArray(Type type, int length)
 		{
 			// query the creator cache
-			if (!sArrayCreatorsByTypeMap.TryGetValue(type, out var creator))
+			if (!sArrayCreatorsByTypeMap.TryGetValue(type, out ArrayCreatorDelegate creator))
 			{
 				InitArrayCreatorCache(type);
 				creator = sArrayCreatorsByTypeMap[type];
@@ -904,7 +905,7 @@ namespace GriffinPlus.Lib
 					parameterExpressions);
 				var creator = (ArrayCreatorDelegate)lambda.Compile();
 
-				TypeKeyedDictionary<ArrayCreatorDelegate> arrayCreatorsByTypeMap = new TypeKeyedDictionary<ArrayCreatorDelegate>(sArrayCreatorsByTypeMap) { { type, creator } };
+				var arrayCreatorsByTypeMap = new TypeKeyedDictionary<ArrayCreatorDelegate>(sArrayCreatorsByTypeMap) { { type, creator } };
 				Thread.MemoryBarrier(); // ensures everything up to this point has been actually written to memory
 				sArrayCreatorsByTypeMap = arrayCreatorsByTypeMap;
 			}

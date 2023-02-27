@@ -26,16 +26,16 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = new TypeKeyedDictionary<TValue>(data);
 			TypeKeyedDictionary<TValue>.ValueCollection collection = dict.Values;
 
 			// get an enumerator
-			var enumerator = collection.GetEnumerator();
+			TypeKeyedDictionary<TValue>.ValueCollection.Enumerator enumerator = collection.GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
-			var _ = enumerator.Current;
+			TValue _ = enumerator.Current;
 
 			// enumerate the keys in the collection
 			var enumerated = new List<TValue>();
@@ -72,7 +72,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(TestDataSetSizes))]
 		public void ValueCollection_ICollectionT_Count_Get(int count)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 			Assert.Equal(data.Count, collection.Count);
@@ -139,12 +139,12 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_ICollectionT_Contains(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 
 			// test whether values of test data are reported to be in the collection
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				bool contains = collection.Contains(kvp.Value);
 				Assert.True(contains);
@@ -161,7 +161,7 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_ICollectionT_Contains_ValueNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 
@@ -200,7 +200,7 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_ICollectionT_CopyTo(int count, int index)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 
@@ -239,7 +239,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CopyTo_TestData_IndexOutOfBounds))]
 		public void ValueCollection_ICollectionT_CopyTo_IndexOutOfRange(int count, int index)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 			var destination = new TValue[count];
@@ -259,7 +259,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CopyTo_TestData_ArrayTooSmall))]
 		public void ValueCollection_ICollectionT_CopyTo_ArrayTooSmall(int count, int arraySize, int index)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 			var destination = new TValue[arraySize];
@@ -295,13 +295,13 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_IEnumerable_GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 
 			// get an enumerator
 			var enumerable = (IEnumerable)collection;
-			var enumerator = enumerable.GetEnumerator();
+			IEnumerator enumerator = enumerable.GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
@@ -352,16 +352,16 @@ namespace GriffinPlus.Lib
 		public void ValueCollection_IEnumerableT_GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 			ICollection<TValue> collection = dict.Values;
 
 			// get an enumerator
-			var enumerator = collection.GetEnumerator();
+			IEnumerator<TValue> enumerator = collection.GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
-			var _ = enumerator.Current;
+			TValue _ = enumerator.Current;
 
 			// enumerate the values in the collection
 			var enumerated = new List<TValue>();

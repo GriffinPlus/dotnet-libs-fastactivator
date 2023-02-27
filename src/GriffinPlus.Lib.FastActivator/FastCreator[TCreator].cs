@@ -36,7 +36,7 @@ namespace GriffinPlus.Lib
 		public static TCreator GetCreator(Type type)
 		{
 			// try to get a previously generated creator
-			if (sCreators.TryGetValue(type, out var creator))
+			if (sCreators.TryGetValue(type, out TCreator creator))
 				return creator;
 
 			// the creator does not exist, yet
@@ -92,7 +92,7 @@ namespace GriffinPlus.Lib
 			}
 
 			// try to find the constructor with the specified parameter types
-			var constructor = typeOfObjectToCreate.GetConstructor(
+			ConstructorInfo constructor = typeOfObjectToCreate.GetConstructor(
 				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
 				Type.DefaultBinder,
 				CallingConventions.Any,
@@ -106,14 +106,14 @@ namespace GriffinPlus.Lib
 					throw new ArgumentException($"The type ({returnType.FullName}) does not have a parameterless constructor.");
 
 				string message = $"The type ({returnType.FullName}) does not have a constructor with the specified parameters:";
-				foreach (var parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
+				foreach (Type parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
 				throw new ArgumentException(message);
 			}
 
 			// craft a creator delegate using the constructor defined by the parameters of the creator delegate
 			if (typeOfObjectToCreate.IsValueType)
 			{
-				var parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
+				ParameterExpression[] parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
 				Expression body = parameterTypes.Length > 0
 					                  ? Expression.New(constructor, parameterExpressions)
 					                  : Expression.New(typeOfObjectToCreate);
@@ -126,7 +126,7 @@ namespace GriffinPlus.Lib
 			}
 			else
 			{
-				var parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
+				ParameterExpression[] parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
 				return (TCreator)Expression.Lambda(
 						typeof(TCreator),
 						Expression.New(constructor, parameterExpressions),

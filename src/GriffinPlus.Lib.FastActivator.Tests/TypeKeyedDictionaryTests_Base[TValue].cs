@@ -237,7 +237,7 @@ namespace GriffinPlus.Lib
 		public void Create_WithDictionary(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = new TypeKeyedDictionary<TValue>(data);
 
 			// check the dictionary itself
@@ -356,7 +356,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(TestDataSetSizes))]
 		public void Capacity_Get(int count)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = new TypeKeyedDictionary<TValue>(data);
 			int expectedCapacity = count > 0 ? HashHelpers.GetPrime(count) : 0;
 			Assert.Equal(expectedCapacity, dict.Capacity); // the capacity should always be prime
@@ -374,8 +374,8 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(TestDataSetSizes))]
 		public void Count_Get(int count)
 		{
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 			Assert.Equal(data.Count, dict.Count);
 		}
 
@@ -393,11 +393,11 @@ namespace GriffinPlus.Lib
 		public void Keys(int count)
 		{
 			// get test data and create a new dictionary with it
-			var expected = GetTestData(count);
-			var dict = GetDictionary(expected);
+			IDictionary<Type, TValue> expected = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(expected);
 
 			// enumerate the keys in the dictionary
-			var enumerated = dict.Keys.ToList();
+			List<Type> enumerated = dict.Keys.ToList();
 
 			// compare collection elements with the expected values
 			Assert.Equal(
@@ -420,11 +420,11 @@ namespace GriffinPlus.Lib
 		public void Values(int count)
 		{
 			// get test data and create a new dictionary with it
-			var expected = GetTestData(count);
-			var dict = GetDictionary(expected);
+			IDictionary<Type, TValue> expected = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(expected);
 
 			// enumerate the values in the dictionary
-			var enumerated = dict.Values.ToList();
+			List<TValue> enumerated = dict.Values.ToList();
 
 			// compare collection elements with the expected values
 			Assert.Equal(
@@ -447,11 +447,11 @@ namespace GriffinPlus.Lib
 		public void Indexer_Get_List(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether keys of test data are reported to be in the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				Assert.Equal(kvp.Value, dict[kvp.Key]);
 			}
@@ -467,8 +467,8 @@ namespace GriffinPlus.Lib
 		public void Indexer_Get_List_KeyNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether some other key is reported to be not in the dictionary
 			Assert.Throws<KeyNotFoundException>(() => dict[KeyNotInTestData]);
@@ -481,7 +481,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void Indexer_Get_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict[default]);
 			Assert.Equal("key", exception.ParamName);
@@ -497,18 +497,17 @@ namespace GriffinPlus.Lib
 		public void Indexer_Set_List_NewItem(int count)
 		{
 			// get test data and create an empty dictionary
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict[kvp.Key] = kvp.Value;
 			}
 
 			// enumerate the key/value pairs in the dictionary
-			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			List<KeyValuePair<Type, TValue>> enumerated = dict.ToList();
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -527,23 +526,22 @@ namespace GriffinPlus.Lib
 		public void Indexer_Set_List_OverwriteItem(int count)
 		{
 			// get test data and create an empty dictionary
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict[kvp.Key] = kvp.Value;
 			}
 
 			// overwrite an item
-			var key = data.First().Key;
+			Type key = data.First().Key;
 			data[key] = ValueNotInTestData;
 			dict[key] = ValueNotInTestData;
 
 			// enumerate the key/value pairs in the dictionary
-			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			List<KeyValuePair<Type, TValue>> enumerated = dict.ToList();
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -559,7 +557,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void Indexer_Set_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict[default] = default);
 			Assert.Equal("key", exception.ParamName);
@@ -578,17 +576,16 @@ namespace GriffinPlus.Lib
 		public void Add_List(int count)
 		{
 			// get test data and create an empty dictionary
-			var data = GetTestData(count);
-			var dict = GetDictionary();
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict.Add(kvp.Key, kvp.Value);
 			}
 
 			// enumerate the key/value pairs in the dictionary
-			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			List<KeyValuePair<Type, TValue>> enumerated = dict.ToList();
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -607,13 +604,13 @@ namespace GriffinPlus.Lib
 		public void Add_List_DuplicateKey(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary();
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 
 			// add data to the dictionary
 			KeyValuePair<Type, TValue>? first = null;
 			KeyValuePair<Type, TValue>? last = null;
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				if (first == null) first = kvp;
 				last = kvp;
@@ -625,8 +622,7 @@ namespace GriffinPlus.Lib
 			if (last != null) Assert.Throws<ArgumentException>(() => dict.Add(last.Value.Key, last.Value.Value));
 
 			// enumerate the key/value pairs in the dictionary
-			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			List<KeyValuePair<Type, TValue>> enumerated = dict.ToList();
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -642,7 +638,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void Add_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict.Add(default, default));
 			Assert.Equal("key", exception.ParamName); // the 'key' is actually not the name of the method parameter
@@ -661,8 +657,8 @@ namespace GriffinPlus.Lib
 		public void Clear(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// clear the dictionary
 			dict.Clear();
@@ -686,11 +682,11 @@ namespace GriffinPlus.Lib
 		public void ContainsKey_List(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether keys of test data are reported to be in the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				Assert.True(dict.ContainsKey(kvp.Key));
 			}
@@ -706,8 +702,8 @@ namespace GriffinPlus.Lib
 		public void ContainsKey_List_KeyNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether some other key is reported to be not in the dictionary
 			Assert.False(dict.ContainsKey(KeyNotInTestData));
@@ -720,7 +716,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void ContainsKey_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict.ContainsKey(default));
 			Assert.Equal("key", exception.ParamName);
@@ -742,12 +738,12 @@ namespace GriffinPlus.Lib
 			// get test data and create a new dictionary with it,
 			// replace one element with a null reference, if TValue is a reference type to check that too
 			// (last element is better than the first one as it requires to iterate over all elements => better code coverage)
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			if (data.Count > 1 && !typeof(TValue).IsValueType) data[data.Last().Key] = default;
-			var dict = GetDictionary(data);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether keys of test data are reported to be in the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				Assert.True(dict.ContainsValue(kvp.Value));
 			}
@@ -763,8 +759,8 @@ namespace GriffinPlus.Lib
 		public void ContainsValue_ValueNotFound(int count)
 		{
 			// get test data and create a new dictionary with it,
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether some other value is reported to be not in the dictionary
 			// (just take the default value of the value type, the test data does not contain the default value)
@@ -780,22 +776,22 @@ namespace GriffinPlus.Lib
 		public void GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = new TypeKeyedDictionary<TValue>(data);
 
 			// get an enumerator
-			var enumerator = dict.GetEnumerator();
+			TypeKeyedDictionary<TValue>.Enumerator enumerator = dict.GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
-			var _ = enumerator.Current;
+			KeyValuePair<Type, TValue> _ = enumerator.Current;
 
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
 			while (enumerator.MoveNext())
 			{
 				Assert.IsType<KeyValuePair<Type, TValue>>(enumerator.Current);
-				var current = enumerator.Current;
+				KeyValuePair<Type, TValue> current = enumerator.Current;
 				enumerated.Add(current);
 			}
 
@@ -832,12 +828,12 @@ namespace GriffinPlus.Lib
 		public void Remove_List(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// remove elements in random order until the dictionary is empty
 			var random = new Random();
-			var remainingData = data.ToList();
+			List<KeyValuePair<Type, TValue>> remainingData = data.ToList();
 			while (remainingData.Count > 0)
 			{
 				int index = random.Next(0, remainingData.Count - 1);
@@ -861,8 +857,8 @@ namespace GriffinPlus.Lib
 		public void Remove_List_NotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// try to remove an element that does not exist
 			Assert.False(dict.Remove(KeyNotInTestData));
@@ -875,7 +871,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void Remove_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict.Remove(default));
 			Assert.Equal("key", exception.ParamName);
@@ -894,11 +890,11 @@ namespace GriffinPlus.Lib
 		public void TryAdd_List(int count)
 		{
 			// get test data and create an empty dictionary
-			var data = GetTestData(count);
-			var dict = GetDictionary();
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				Assert.True(dict.TryAdd(kvp.Key, kvp.Value));
 			}
@@ -906,7 +902,7 @@ namespace GriffinPlus.Lib
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
 			var enumerable = (IEnumerable<KeyValuePair<Type, TValue>>)dict;
-			foreach (var kvp in enumerable) enumerated.Add(kvp);
+			foreach (KeyValuePair<Type, TValue> kvp in enumerable) enumerated.Add(kvp);
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -925,13 +921,13 @@ namespace GriffinPlus.Lib
 		public void TryAdd_List_DuplicateKey(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary();
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 
 			// add data to the dictionary
 			KeyValuePair<Type, TValue>? first = null;
 			KeyValuePair<Type, TValue>? last = null;
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				if (first == null) first = kvp;
 				last = kvp;
@@ -945,7 +941,7 @@ namespace GriffinPlus.Lib
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
 			var enumerable = (IEnumerable<KeyValuePair<Type, TValue>>)dict;
-			foreach (var kvp in enumerable) enumerated.Add(kvp);
+			foreach (KeyValuePair<Type, TValue> kvp in enumerable) enumerated.Add(kvp);
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -961,7 +957,7 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void TryAdd_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
 			var exception = Assert.Throws<ArgumentNullException>(() => dict.Add(default, default));
 			Assert.Equal("key", exception.ParamName); // the 'key' is actually not the name of the method parameter
@@ -994,18 +990,18 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Add(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary() as ICollection<KeyValuePair<Type, TValue>>;
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict.Add(new KeyValuePair<Type, TValue>(kvp.Key, kvp.Value));
 			}
 
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			foreach (KeyValuePair<Type, TValue> kvp in dict) enumerated.Add(kvp);
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -1022,13 +1018,13 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Add_DuplicateKey(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary() as ICollection<KeyValuePair<Type, TValue>>;
 
 			// add data to the dictionary
 			KeyValuePair<Type, TValue>? first = null;
 			KeyValuePair<Type, TValue>? last = null;
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				if (first == null) first = kvp;
 				last = kvp;
@@ -1041,7 +1037,7 @@ namespace GriffinPlus.Lib
 
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			foreach (KeyValuePair<Type, TValue> kvp in dict) enumerated.Add(kvp);
 
 			// compare collection elements with the expected key/value pairs
 			Assert.Equal(
@@ -1075,11 +1071,11 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Contains(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// test whether keys of test data are reported to be in the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				Assert.True(dict.Contains(new KeyValuePair<Type, TValue>(kvp.Key, kvp.Value)));
 			}
@@ -1095,7 +1091,7 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Contains_KeyNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// test whether some other key is reported to be not in the dictionary
@@ -1116,7 +1112,7 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Contains_ValueMismatch(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// test whether some other key is reported to be not in the dictionary
@@ -1153,7 +1149,7 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_CopyTo(int count, int index)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// copy the dictionary into an array
@@ -1187,7 +1183,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CopyTo_TestData_IndexOutOfBounds))]
 		public void ICollectionT_CopyTo_IndexOutOfRange(int count, int index)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 			var destination = new KeyValuePair<Type, TValue>[count];
 			var exception = Assert.Throws<ArgumentOutOfRangeException>(() => dict.CopyTo(destination, index));
@@ -1204,7 +1200,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CopyTo_TestData_ArrayTooSmall))]
 		public void ICollectionT_CopyTo_ArrayTooSmall(int count, int arraySize, int index)
 		{
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 			var destination = new KeyValuePair<Type, TValue>[arraySize];
 			Assert.Throws<ArgumentException>(() => dict.CopyTo(destination, index));
@@ -1223,12 +1219,12 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Remove(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// remove elements in random order until the dictionary is empty
 			var random = new Random();
-			var remainingData = data.ToList();
+			List<KeyValuePair<Type, TValue>> remainingData = data.ToList();
 			while (remainingData.Count > 0)
 			{
 				int index = random.Next(0, remainingData.Count - 1);
@@ -1253,7 +1249,7 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Remove_KeyNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// try to remove an element that does not exist
@@ -1271,7 +1267,7 @@ namespace GriffinPlus.Lib
 		public void ICollectionT_Remove_ValueMismatch(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as ICollection<KeyValuePair<Type, TValue>>;
 
 			// try to remove an element that does not exist
@@ -1305,13 +1301,13 @@ namespace GriffinPlus.Lib
 		public void TryGetValue_List(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether keys of test data are reported to be in the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
-				Assert.True(dict.TryGetValue(kvp.Key, out var value));
+				Assert.True(dict.TryGetValue(kvp.Key, out TValue value));
 				Assert.Equal(kvp.Value, value);
 			}
 		}
@@ -1326,11 +1322,11 @@ namespace GriffinPlus.Lib
 		public void TryGetValue_List_KeyNotFound(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
-			var dict = GetDictionary(data);
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary(data);
 
 			// test whether some other key is reported to be not in the dictionary
-			Assert.False(dict.TryGetValue(KeyNotInTestData, out _));
+			Assert.False(dict.TryGetValue(KeyNotInTestData, out TValue _));
 		}
 
 		/// <summary>
@@ -1340,9 +1336,9 @@ namespace GriffinPlus.Lib
 		[Fact]
 		public void TryGetValue_List_KeyNull()
 		{
-			var dict = GetDictionary();
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 			// ReSharper disable once AssignNullToNotNullAttribute
-			var exception = Assert.Throws<ArgumentNullException>(() => dict.TryGetValue(default, out _));
+			var exception = Assert.Throws<ArgumentNullException>(() => dict.TryGetValue(default, out TValue _));
 			Assert.Equal("key", exception.ParamName);
 		}
 
@@ -1362,18 +1358,17 @@ namespace GriffinPlus.Lib
 		public void AddAfterRemove_List(int count)
 		{
 			// get test data and create an empty dictionary
-			var data = GetTestData(count);
-			var dict = GetDictionary();
+			IDictionary<Type, TValue> data = GetTestData(count);
+			TypeKeyedDictionary<TValue> dict = GetDictionary();
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict.Add(kvp.Key, kvp.Value);
 			}
 
 			// compare collection elements with the expected key/value pairs
-			var enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			List<KeyValuePair<Type, TValue>> enumerated = dict.ToList();
 			Assert.Equal(
 				data.OrderBy(x => x.Key, KeyComparer),
 				enumerated.OrderBy(x => x.Key, KeyComparer),
@@ -1381,7 +1376,7 @@ namespace GriffinPlus.Lib
 
 			// remove elements in random order until the dictionary is empty
 			var random = new Random();
-			var remainingData = data.ToList();
+			List<KeyValuePair<Type, TValue>> remainingData = data.ToList();
 			while (remainingData.Count > 0)
 			{
 				int index = random.Next(0, remainingData.Count - 1);
@@ -1395,14 +1390,13 @@ namespace GriffinPlus.Lib
 			Assert.Empty(dict);
 
 			// add data to the dictionary
-			foreach (var kvp in data)
+			foreach (KeyValuePair<Type, TValue> kvp in data)
 			{
 				dict.Add(kvp.Key, kvp.Value);
 			}
 
 			// the dictionary should now contain the expected key/value pairs
-			enumerated = new List<KeyValuePair<Type, TValue>>();
-			foreach (var kvp in dict) enumerated.Add(kvp);
+			enumerated = dict.ToList();
 			Assert.Equal(
 				data.OrderBy(x => x.Key, KeyComparer),
 				enumerated.OrderBy(x => x.Key, KeyComparer),
@@ -1422,11 +1416,11 @@ namespace GriffinPlus.Lib
 		public void IEnumerable_GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 
 			// get an enumerator
-			var enumerator = ((IEnumerable)dict).GetEnumerator();
+			IEnumerator enumerator = ((IEnumerable)dict).GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
@@ -1491,22 +1485,22 @@ namespace GriffinPlus.Lib
 		public void IEnumerableT_GetEnumerator(int count)
 		{
 			// get test data and create a new dictionary with it
-			var data = GetTestData(count);
+			IDictionary<Type, TValue> data = GetTestData(count);
 			var dict = GetDictionary(data) as IDictionary<Type, TValue>;
 
 			// get an enumerator
-			var enumerator = dict.GetEnumerator();
+			IEnumerator<KeyValuePair<Type, TValue>> enumerator = dict.GetEnumerator();
 
 			// the enumerator should point to the position before the first valid element,
 			// but the 'Current' property should not throw an exception
-			var _ = enumerator.Current;
+			KeyValuePair<Type, TValue> _ = enumerator.Current;
 
 			// enumerate the key/value pairs in the dictionary
 			var enumerated = new List<KeyValuePair<Type, TValue>>();
 			while (enumerator.MoveNext())
 			{
 				Assert.IsType<KeyValuePair<Type, TValue>>(enumerator.Current);
-				var current = enumerator.Current;
+				KeyValuePair<Type, TValue> current = enumerator.Current;
 				enumerated.Add(current);
 			}
 
@@ -1527,7 +1521,7 @@ namespace GriffinPlus.Lib
 			while (enumerator.MoveNext())
 			{
 				Assert.IsType<KeyValuePair<Type, TValue>>(enumerator.Current);
-				var current = enumerator.Current;
+				KeyValuePair<Type, TValue> current = enumerator.Current;
 				enumerated.Add(current);
 			}
 

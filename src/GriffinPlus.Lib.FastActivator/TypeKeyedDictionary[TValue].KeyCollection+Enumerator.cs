@@ -49,7 +49,6 @@ namespace GriffinPlus.Lib
 				private TypeKeyedDictionary<TValue> mDictionary;
 				private int                         mIndex;
 				private int                         mVersion;
-				private Type                        mCurrentKey;
 
 				/// <summary>
 				/// Initializes a new instance of the <see cref="TypeKeyedDictionary{TValue}.KeyCollection.Enumerator"/> class.
@@ -60,7 +59,7 @@ namespace GriffinPlus.Lib
 					mDictionary = dictionary;
 					mVersion = dictionary.mVersion;
 					mIndex = 0;
-					mCurrentKey = default;
+					Current = default;
 				}
 
 				/// <summary>
@@ -83,29 +82,29 @@ namespace GriffinPlus.Lib
 
 					while ((uint)mIndex < (uint)mDictionary.mCount)
 					{
-						ref var entry = ref mDictionary.mEntries[mIndex++];
+						ref Entry entry = ref mDictionary.mEntries[mIndex++];
 						if (entry.Next >= -1)
 						{
-							mCurrentKey = entry.Key;
+							Current = entry.Key;
 							return true;
 						}
 					}
 
 					mIndex = mDictionary.mCount + 1;
-					mCurrentKey = default;
+					Current = default;
 					return false;
 				}
 
 				/// <summary>
 				/// Gets the current value of the enumerator.
 				/// </summary>
-				public Type Current => mCurrentKey;
+				public Type Current { get; private set; }
 
 				/// <summary>
 				/// Gets the element in the collection at the current position of the enumerator.
 				/// </summary>
 				/// <value>The element in the collection at the current position of the enumerator.</value>
-				object IEnumerator.Current => mCurrentKey;
+				object IEnumerator.Current => Current;
 
 				/// <summary>
 				/// Sets the enumerator to its initial position, which is before the first element in the collection.
@@ -117,7 +116,7 @@ namespace GriffinPlus.Lib
 						throw new InvalidOperationException("The collection was modified after the enumerator was created.");
 
 					mIndex = 0;
-					mCurrentKey = default;
+					Current = default;
 				}
 			}
 		}

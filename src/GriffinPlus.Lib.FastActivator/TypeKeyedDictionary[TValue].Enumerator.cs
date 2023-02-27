@@ -82,7 +82,7 @@ namespace GriffinPlus.Lib
 				// dictionary.count+1 could be negative if dictionary.count is Int32.MaxValue
 				while ((uint)mIndex < (uint)mDictionary.mCount)
 				{
-					ref var entry = ref mDictionary.mEntries[mIndex++];
+					ref Entry entry = ref mDictionary.mEntries[mIndex++];
 					if (entry.Next >= -1)
 					{
 						mCurrent = new KeyValuePair<Type, TValue>(entry.Key, entry.Value);

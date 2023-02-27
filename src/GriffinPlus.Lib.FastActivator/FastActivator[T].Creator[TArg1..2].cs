@@ -18,49 +18,35 @@ namespace GriffinPlus.Lib
 	partial class FastActivator<T>
 	{
 		/// <summary>
-		/// Creates instances of the specified type using a constructor with 6 parameters
+		/// Creates instances of the specified type using a constructor with 2 parameters
 		/// (generic version providing best performance gain for value types).
 		/// </summary>
 		/// <typeparam name="TArg1">Type of the first constructor parameter.</typeparam>
 		/// <typeparam name="TArg2">Type of the second constructor parameter.</typeparam>
-		/// <typeparam name="TArg3">Type of the third constructor parameter.</typeparam>
-		/// <typeparam name="TArg4">Type of the fourth constructor parameter.</typeparam>
-		/// <typeparam name="TArg5">Type of the fifth constructor parameter.</typeparam>
-		/// <typeparam name="TArg6">Type of the sixth constructor parameter.</typeparam>
-		private static class Creator<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>
+		private static class Creator<TArg1, TArg2>
 		{
-			private static readonly object                                            sInitSync = new object();
-			private static          Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T> sCreator  = null;
+			private static readonly object                sInitSync = new object();
+			private static          Func<TArg1, TArg2, T> sCreator  = null;
 
 			/// <summary>
 			/// Creates an instance of <typeparamref name="T"/> using its constructor with parameters specified by <typeparamref name="TArg1"/> to
-			/// <typeparamref name="TArg6"/>.
+			/// <typeparamref name="TArg2"/>.
 			/// </summary>
 			/// <param name="arg1">The first constructor argument.</param>
 			/// <param name="arg2">The second constructor argument.</param>
-			/// <param name="arg3">The third constructor argument.</param>
-			/// <param name="arg4">The fourth constructor argument.</param>
-			/// <param name="arg5">The fifth constructor argument.</param>
-			/// <param name="arg6">The sixth constructor argument.</param>
 			/// <returns>An instance of the specified type.</returns>
-			public static T CreateInstance(
-				TArg1 arg1,
-				TArg2 arg2,
-				TArg3 arg3,
-				TArg4 arg4,
-				TArg5 arg5,
-				TArg6 arg6)
+			public static T CreateInstance(TArg1 arg1, TArg2 arg2)
 			{
-				var creator = sCreator ?? InitCreator();
-				return creator(arg1, arg2, arg3, arg4, arg5, arg6);
+				Func<TArg1, TArg2, T> creator = sCreator ?? InitCreator();
+				return creator(arg1, arg2);
 			}
 
 			/// <summary>
 			/// Crafts a creator delegate that creates an instance of <typeparamref name="T"/> using its
-			/// constructor with the parameters specified by <typeparamref name="TArg1"/> to <typeparamref name="TArg6"/>.
+			/// constructor with the parameters specified by <typeparamref name="TArg1"/> to <typeparamref name="TArg2"/>.
 			/// </summary>
 			/// <returns>The creator delegate.</returns>
-			private static Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T> InitCreator()
+			private static Func<TArg1, TArg2, T> InitCreator()
 			{
 				// try to get a previously generated creator
 				if (sCreator != null)
@@ -74,7 +60,7 @@ namespace GriffinPlus.Lib
 						return sCreator;
 
 					// generate creator and cache it
-					var creator = MakeCreator();
+					Func<TArg1, TArg2, T> creator = MakeCreator();
 					Thread.MemoryBarrier();
 					sCreator = creator;
 					return creator;
@@ -83,20 +69,16 @@ namespace GriffinPlus.Lib
 
 			/// <summary>
 			/// Crafts a creator delegate that creates an instance of <typeparamref name="T"/> using the
-			/// constructor defined by <typeparamref name="TArg1"/> to <typeparamref name="TArg6"/>.
+			/// constructor defined by <typeparamref name="TArg1"/> to <typeparamref name="TArg2"/>.
 			/// </summary>
 			/// <returns>The creator delegate.</returns>
-			private static Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T> MakeCreator()
+			private static Func<TArg1, TArg2, T> MakeCreator()
 			{
 				// prepare list of constructor parameter types
-				Type[] parameterTypes =
-				{
-					typeof(TArg1), typeof(TArg2), typeof(TArg3), typeof(TArg4), typeof(TArg5),
-					typeof(TArg6)
-				};
+				Type[] parameterTypes = { typeof(TArg1), typeof(TArg2) };
 
 				// try to find the constructor with the specified parameter types
-				var constructor = typeof(T).GetConstructor(
+				ConstructorInfo constructor = typeof(T).GetConstructor(
 					BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
 					Type.DefaultBinder,
 					CallingConventions.Any,
@@ -107,14 +89,14 @@ namespace GriffinPlus.Lib
 				if (constructor == null)
 				{
 					string message = $"The type ({typeof(T).FullName}) does not have a constructor with the specified parameters:";
-					foreach (var parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
+					foreach (Type parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
 					throw new ArgumentException(message);
 				}
 
 				// craft a creator delegate using the constructor defined by the parameters of the creator delegate
-				var parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
-				return (Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>)Expression.Lambda(
-						typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, T>),
+				ParameterExpression[] parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
+				return (Func<TArg1, TArg2, T>)Expression.Lambda(
+						typeof(Func<TArg1, TArg2, T>),
 						Expression.New(constructor, parameterExpressions),
 						parameterExpressions)
 					.Compile();

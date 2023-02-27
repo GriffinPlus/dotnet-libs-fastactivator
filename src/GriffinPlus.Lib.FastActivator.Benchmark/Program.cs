@@ -9,15 +9,16 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.Versioning;
 using System.Threading;
 
 using GriffinPlus.Lib;
-
 using Microsoft.Win32;
 
 // ReSharper disable AccessToModifiedClosure
 // ReSharper disable ConvertClosureToMethodGroup
+// ReSharper disable MemberCanBePrivate.Local
 // ReSharper disable UnusedParameter.Local
 
 namespace GriffinPlus.Benchmark
@@ -100,7 +101,7 @@ namespace GriffinPlus.Benchmark
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// define the tests to run
-			List<MeasureBlock<TClass, TStruct>> blocks = new List<MeasureBlock<TClass, TStruct>>
+			var blocks = new List<MeasureBlock<TClass, TStruct>>
 			{
 				new MeasureBlock<TClass, TStruct>
 				{
@@ -647,11 +648,11 @@ namespace GriffinPlus.Benchmark
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// run all creator functions that will be used in the benchmark to set up the lookup tables
-			foreach (var block in blocks)
+			foreach (MeasureBlock<TClass, TStruct> block in blocks)
 			{
 				block.Reference.ClassAction();
 				block.Reference.StructAction();
-				foreach (var comparison in block.Comparisons)
+				foreach (MeasureItem<TClass, TStruct> comparison in block.Comparisons)
 				{
 					comparison.ClassAction();
 					comparison.StructAction();
@@ -661,7 +662,7 @@ namespace GriffinPlus.Benchmark
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// run the benchmark
-			foreach (var block in blocks)
+			foreach (MeasureBlock<TClass, TStruct> block in blocks)
 			{
 				int row = 0;
 
@@ -681,7 +682,7 @@ namespace GriffinPlus.Benchmark
 					structReferenceAllocFrequency);
 
 				// measure comparisons
-				foreach (var comparison in block.Comparisons)
+				foreach (MeasureItem<TClass, TStruct> comparison in block.Comparisons)
 				{
 					// clean up and calm down
 					GC.Collect();
@@ -816,7 +817,7 @@ namespace GriffinPlus.Benchmark
 #endif
 
 #if NETCOREAPP
-			var assembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly;
+			Assembly assembly = typeof(GCSettings).GetTypeInfo().Assembly;
 			string[] assemblyPath = assembly.Location.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
 			int netCoreAppIndex = Array.IndexOf(assemblyPath, "Microsoft.NETCore.App");
 			if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2)

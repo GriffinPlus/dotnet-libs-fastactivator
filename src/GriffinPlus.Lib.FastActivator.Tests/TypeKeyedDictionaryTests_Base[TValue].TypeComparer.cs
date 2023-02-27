@@ -38,8 +38,7 @@ namespace GriffinPlus.Lib
 			{
 				if (x == null && y == null) return 0;
 				if (x == null) return -1;
-				if (y == null) return 1;
-				return StringComparer.Ordinal.Compare(x.AssemblyQualifiedName, y.AssemblyQualifiedName);
+				return y != null ? StringComparer.Ordinal.Compare(x.AssemblyQualifiedName, y.AssemblyQualifiedName) : 1;
 			}
 		}
 	}

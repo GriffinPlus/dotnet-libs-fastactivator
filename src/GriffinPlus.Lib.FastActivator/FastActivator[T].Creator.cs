@@ -33,9 +33,10 @@ namespace GriffinPlus.Lib
 			/// Creates an instance of <typeparamref name="T"/> using its parameterless constructor.
 			/// </summary>
 			/// <returns>An instance of the specified type.</returns>
+			// ReSharper disable once MemberHidesStaticFromOuterClass
 			public static T CreateInstance()
 			{
-				var creator = sCreator ?? InitCreator();
+				Func<T> creator = sCreator ?? InitCreator();
 				return creator();
 			}
 
@@ -57,7 +58,7 @@ namespace GriffinPlus.Lib
 						return sCreator;
 
 					// generate creator and cache it
-					var creator = MakeCreator();
+					Func<T> creator = MakeCreator();
 					Thread.MemoryBarrier();
 					sCreator = creator;
 					return creator;
@@ -82,7 +83,7 @@ namespace GriffinPlus.Lib
 				}
 
 				// try to find the constructor with the specified parameter types
-				var constructor = typeof(T).GetConstructor(
+				ConstructorInfo constructor = typeof(T).GetConstructor(
 					BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
 					Type.DefaultBinder,
 					CallingConventions.Any,
@@ -112,9 +113,10 @@ namespace GriffinPlus.Lib
 			/// </summary>
 			/// <param name="length">Length of the array to create.</param>
 			/// <returns>An instance of the specified type.</returns>
+			// ReSharper disable once MemberHidesStaticFromOuterClass
 			public static T[] CreateArray(int length)
 			{
-				var creator = sArrayCreator ?? InitArrayCreator();
+				Func<int, T[]> creator = sArrayCreator ?? InitArrayCreator();
 				return creator(length);
 			}
 
@@ -137,7 +139,7 @@ namespace GriffinPlus.Lib
 						return sArrayCreator;
 
 					// generate creator and cache it
-					var creator = MakeArrayCreator();
+					Func<int, T[]> creator = MakeArrayCreator();
 					Thread.MemoryBarrier();
 					sArrayCreator = creator;
 					return creator;

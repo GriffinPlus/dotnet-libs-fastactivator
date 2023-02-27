@@ -21,8 +21,7 @@ namespace GriffinPlus.Lib
 		/// <returns>A new instance of the dictionary to test, populated with the specified data.</returns>
 		internal override TypeKeyedDictionary<int> GetDictionary(IDictionary<Type, int> data = null)
 		{
-			if (data != null) return new TypeKeyedDictionary<int>(data);
-			return new TypeKeyedDictionary<int>();
+			return data != null ? new TypeKeyedDictionary<int>(data) : new TypeKeyedDictionary<int>();
 		}
 
 		/// <summary>
@@ -34,10 +33,10 @@ namespace GriffinPlus.Lib
 		{
 			// generate random test data
 			var dict = new Dictionary<Type, int>(EqualityComparer<Type>.Default);
-			var types = GetTypes();
+			Type[] types = GetTypes();
 			for (int i = 0; i < count; i++)
 			{
-				var key = types[i];
+				Type key = types[i];
 				dict[key] = types[i].GetHashCode();
 			}
 

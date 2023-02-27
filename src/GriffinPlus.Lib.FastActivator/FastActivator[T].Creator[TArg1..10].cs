@@ -63,7 +63,7 @@ namespace GriffinPlus.Lib
 				TArg9  arg9,
 				TArg10 arg10)
 			{
-				var creator = sCreator ?? InitCreator();
+				Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T> creator = sCreator ?? InitCreator();
 				return creator(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
 			}
 
@@ -86,7 +86,7 @@ namespace GriffinPlus.Lib
 						return sCreator;
 
 					// generate creator and cache it
-					var creator = MakeCreator();
+					Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T> creator = MakeCreator();
 					Thread.MemoryBarrier();
 					sCreator = creator;
 					return creator;
@@ -108,7 +108,7 @@ namespace GriffinPlus.Lib
 				};
 
 				// try to find the constructor with the specified parameter types
-				var constructor = typeof(T).GetConstructor(
+				ConstructorInfo constructor = typeof(T).GetConstructor(
 					BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
 					Type.DefaultBinder,
 					CallingConventions.Any,
@@ -119,12 +119,12 @@ namespace GriffinPlus.Lib
 				if (constructor == null)
 				{
 					string message = $"The type ({typeof(T).FullName}) does not have a constructor with the specified parameters:";
-					foreach (var parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
+					foreach (Type parameterType in parameterTypes) message += Environment.NewLine + $"- {parameterType.FullName}";
 					throw new ArgumentException(message);
 				}
 
 				// craft a creator delegate using the constructor defined by the parameters of the creator delegate
-				var parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
+				ParameterExpression[] parameterExpressions = parameterTypes.Select(Expression.Parameter).ToArray();
 				return (Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>)Expression.Lambda(
 						typeof(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, T>),
 						Expression.New(constructor, parameterExpressions),

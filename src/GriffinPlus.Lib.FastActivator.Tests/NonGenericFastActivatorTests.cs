@@ -27,7 +27,7 @@ namespace GriffinPlus.Lib
 		{
 			get
 			{
-				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
+				foreach (Type type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
 					yield return new object[] { type, 0 };
 					yield return new object[] { type, 1 };
@@ -43,7 +43,7 @@ namespace GriffinPlus.Lib
 		[MemberData(nameof(CreateArrayTestData))]
 		public void CreateArray(Type type, int count)
 		{
-			Array expected = Array.CreateInstance(type, count);
+			var expected = Array.CreateInstance(type, count);
 			Array actual = FastActivator.CreateArray(type, count);
 			Assert.Equal(expected, actual);
 		}
@@ -59,7 +59,7 @@ namespace GriffinPlus.Lib
 		{
 			get
 			{
-				foreach (var type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
+				foreach (Type type in new[] { typeof(TestStruct<int>), typeof(TestClass<int>) })
 				{
 					for (int i = 0; i <= 16; i++)
 					{
@@ -99,7 +99,7 @@ namespace GriffinPlus.Lib
 				.Single(mi => mi.Name == "CreateInstance" && mi.GetParameters().Length == parameterCount + 1);
 			if (parameterCount > 0)
 			{
-				Type[] parameterTypes = new Type[parameterCount];
+				var parameterTypes = new Type[parameterCount];
 				for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
 				method = method.MakeGenericMethod(parameterTypes);
 			}
@@ -122,7 +122,7 @@ namespace GriffinPlus.Lib
 
 					// check result
 					Assert.IsType(type, obj);
-					ITestData<int> data = (ITestData<int>)obj;
+					var data = (ITestData<int>)obj;
 					for (int j = 0; j < parameterCount; j++)
 					{
 						Assert.Equal(parameters[j + 1], data.Values[j]);
@@ -143,7 +143,7 @@ namespace GriffinPlus.Lib
 		public void CreateInstanceDynamically(Type type, int parameterCount)
 		{
 			// get method to call
-			Type[] parameterTypes = new Type[parameterCount];
+			var parameterTypes = new Type[parameterCount];
 			for (int j = 0; j < parameterCount; j++) parameterTypes[j] = typeof(int);
 
 			if (parameterCount == 0)
@@ -163,7 +163,7 @@ namespace GriffinPlus.Lib
 
 					// check result
 					Assert.IsType(type, obj);
-					ITestData<int> data = (ITestData<int>)obj;
+					var data = (ITestData<int>)obj;
 					for (int j = 0; j < parameterCount; j++)
 					{
 						Assert.Equal(arguments[j], data.Values[j]);
