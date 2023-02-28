@@ -118,7 +118,7 @@ In contrast to `FastActivator` and `FastActivator<T>` the `FastCreator<TCreator>
 
 To compare the performance of the *Fast Activator* with .NET's default activator a benchmark application is part of the repository. The benchmark creates instances of a test class/struct using the default activator over 30 seconds. Then it invokes the different *Fast Activator* methods to allocate the same amount of instances of the test class/struct and compares the time it takes with the reference time (30 seconds).
 
-The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 3.1.26*, *.NET 5.0.17* and *.NET 6.0.6*.
+The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.2.8*, *.NET Core 3.1.32*, *.NET 5.0.17*, *.NET 6.0.14* and *.NET 7.0.3*.
 
 ### No Constructor Parameters (Generic)
 
@@ -126,36 +126,43 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| T Activator.CreateInstance&lt;T&gt;()                                        | 8226 allocs/ms               | 10453 allocs/ms              |
-| T FastActivator&lt;T&gt;.CreateInstance()                                    | 15525 allocs/ms (1.89x)      | 27719 allocs/ms (2.65x)      |
+| T Activator.CreateInstance&lt;T&gt;()                                        | 7493 allocs/ms               | 10144 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 15691 allocs/ms (2.09x)      | 25712 allocs/ms (2.53x)      |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| T Activator.CreateInstance&lt;T&gt;()                                        | 9475 allocs/ms               | 10839 allocs/ms              |
-| T FastActivator&lt;T&gt;.CreateInstance()                                    | 15123 allocs/ms (1.60x)      | 26276 allocs/ms (2.42x)      |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| T Activator.CreateInstance&lt;T&gt;()                                        | 13600 allocs/ms              | 43376 allocs/ms              |
-| T FastActivator&lt;T&gt;.CreateInstance()                                    | 22691 allocs/ms (1.67x)      | 41568 allocs/ms (0.96x)      |
+| T Activator.CreateInstance&lt;T&gt;()                                        | 9370 allocs/ms               | 10841 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 17641 allocs/ms (1.88x)      | 24907 allocs/ms (2.30x)      |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| T Activator.CreateInstance&lt;T&gt;()                                        | 13694 allocs/ms              | 43570 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 22868 allocs/ms (1.67x)      | 41000 allocs/ms (0.94x)      |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| T Activator.CreateInstance&lt;T&gt;()                                        | 12665 allocs/ms              | 45250 allocs/ms              |
-| T FastActivator&lt;T&gt;.CreateInstance()                                    | 23261 allocs/ms (1.84x)      | 42829 allocs/ms (0.95x)      |
+| T Activator.CreateInstance&lt;T&gt;()                                        | 12865 allocs/ms              | 44799 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 22741 allocs/ms (1.77x)      | 42938 allocs/ms (0.96x)      |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| T Activator.CreateInstance&lt;T&gt;()                                        | 22232 allocs/ms              | 46052 allocs/ms              |
-| T FastActivator&lt;T&gt;.CreateInstance()                                    | 22130 allocs/ms (1.00x)      | 43666 allocs/ms (0.95x)      |
+| T Activator.CreateInstance&lt;T&gt;()                                        | 21581 allocs/ms              | 46034 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 22961 allocs/ms (1.06x)      | 42554 allocs/ms (0.92x)      |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| T Activator.CreateInstance&lt;T&gt;()                                        | 18455 allocs/ms              | 46114 allocs/ms              |
+| T FastActivator&lt;T&gt;.CreateInstance()                                    | 21515 allocs/ms (1.17x)      | 43785 allocs/ms (0.95x)      |
 
 
 ### No Constructor Parameters (Non-Generic)
@@ -164,41 +171,49 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type)                                        | 8721 allocs/ms               | 10604 allocs/ms              |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 9507 allocs/ms (1.09x)       | 10625 allocs/ms (1.00x)      |
-| object FastActivator.CreateInstance(Type)                                    | 10214 allocs/ms (1.17x)      | 11414 allocs/ms (1.08x)      |
+| object Activator.CreateInstance(Type)                                        | 8260 allocs/ms               | 10200 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 9237 allocs/ms (1.12x)       | 10491 allocs/ms (1.03x)      |
+| object FastActivator.CreateInstance(Type)                                    | 10131 allocs/ms (1.23x)      | 11380 allocs/ms (1.12x)      |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type)                                        | 9523 allocs/ms               | 11055 allocs/ms              |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 11128 allocs/ms (1.17x)      | 11763 allocs/ms (1.06x)      |
-| object FastActivator.CreateInstance(Type)                                    | 12588 allocs/ms (1.32x)      | 13466 allocs/ms (1.22x)      |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type)                                        | 13703 allocs/ms              | 14971 allocs/ms              |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 15122 allocs/ms (1.10x)      | 15641 allocs/ms (1.04x)      |
-| object FastActivator.CreateInstance(Type)                                    | 14973 allocs/ms (1.09x)      | 15631 allocs/ms (1.04x)      |
+| object Activator.CreateInstance(Type)                                        | 9873 allocs/ms               | 10946 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 11046 allocs/ms (1.12x)      | 11597 allocs/ms (1.06x)      |
+| object FastActivator.CreateInstance(Type)                                    | 12323 allocs/ms (1.25x)      | 12808 allocs/ms (1.17x)      |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type)                                        | 13047 allocs/ms              | 14303 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 14362 allocs/ms (1.10x)      | 15404 allocs/ms (1.08x)      |
+| object FastActivator.CreateInstance(Type)                                    | 15267 allocs/ms (1.17x)      | 15767 allocs/ms (1.10x)      |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type)                                        | 12334 allocs/ms              | 15340 allocs/ms              |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 15290 allocs/ms (1.24x)      | 16389 allocs/ms (1.07x)      |
-| object FastActivator.CreateInstance(Type)                                    | 14184 allocs/ms (1.15x)      | 15827 allocs/ms (1.03x)      |
+| object Activator.CreateInstance(Type)                                        | 13057 allocs/ms              | 15451 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 14679 allocs/ms (1.12x)      | 15292 allocs/ms (0.99x)      |
+| object FastActivator.CreateInstance(Type)                                    | 13169 allocs/ms (1.01x)      | 14990 allocs/ms (0.97x)      |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type)                                        | 23352 allocs/ms              | 26868 allocs/ms              |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 15671 allocs/ms (0.67x)      | 16435 allocs/ms (0.61x)      |
-| object FastActivator.CreateInstance(Type)                                    | 15124 allocs/ms (0.65x)      | 15327 allocs/ms (0.57x)      |
+| object Activator.CreateInstance(Type)                                        | 22821 allocs/ms              | 26731 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 14895 allocs/ms (0.65x)      | 15977 allocs/ms (0.60x)      |
+| object FastActivator.CreateInstance(Type)                                    | 14869 allocs/ms (0.65x)      | 14508 allocs/ms (0.54x)      |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type)                                        | 20830 allocs/ms              | 25669 allocs/ms              |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 13518 allocs/ms (0.65x)      | 15666 allocs/ms (0.61x)      |
+| object FastActivator.CreateInstance(Type)                                    | 15260 allocs/ms (0.73x)      | 16106 allocs/ms (0.63x)      |
 
 
 ### 1 Constructor Parameter
@@ -207,46 +222,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 658 allocs/ms                | 678 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7054 allocs/ms (10.72x)      | 7339 allocs/ms (10.82x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9246 allocs/ms (14.05x)      | 9529 allocs/ms (14.05x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13605 allocs/ms (20.68x)     | 18229 allocs/ms (26.88x)     |
+| object Activator.CreateInstance(Type, object[])                              | 662 allocs/ms                | 679 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6383 allocs/ms (9.64x)       | 6612 allocs/ms (9.74x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8932 allocs/ms (13.49x)      | 9393 allocs/ms (13.84x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13407 allocs/ms (20.25x)     | 16853 allocs/ms (24.84x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 748 allocs/ms                | 752 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8487 allocs/ms (11.35x)      | 8776 allocs/ms (11.68x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11160 allocs/ms (14.92x)     | 11871 allocs/ms (15.80x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14846 allocs/ms (19.85x)     | 19684 allocs/ms (26.19x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 821 allocs/ms                | 850 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 10647 allocs/ms (12.97x)     | 11306 allocs/ms (13.30x)     |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13010 allocs/ms (15.84x)     | 13337 allocs/ms (15.69x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18383 allocs/ms (22.39x)     | 26694 allocs/ms (31.41x)     |
+| object Activator.CreateInstance(Type, object[])                              | 695 allocs/ms                | 713 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7815 allocs/ms (11.24x)      | 8194 allocs/ms (11.50x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10626 allocs/ms (15.29x)     | 11502 allocs/ms (16.14x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15244 allocs/ms (21.93x)     | 19910 allocs/ms (27.93x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 805 allocs/ms                | 833 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 10038 allocs/ms (12.47x)     | 10137 allocs/ms (12.17x)     |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12576 allocs/ms (15.62x)     | 13056 allocs/ms (15.67x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17050 allocs/ms (21.18x)     | 28327 allocs/ms (34.01x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 884 allocs/ms                | 919 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 11333 allocs/ms (12.82x)     | 11688 allocs/ms (12.72x)     |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13257 allocs/ms (14.99x)     | 13850 allocs/ms (15.07x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16934 allocs/ms (19.15x)     | 31157 allocs/ms (33.90x)     |
+| object Activator.CreateInstance(Type, object[])                              | 877 allocs/ms                | 916 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 10327 allocs/ms (11.78x)     | 10445 allocs/ms (11.40x)     |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13163 allocs/ms (15.02x)     | 13378 allocs/ms (14.60x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17207 allocs/ms (19.63x)     | 31308 allocs/ms (34.16x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 962 allocs/ms                | 994 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 11640 allocs/ms (12.10x)     | 12025 allocs/ms (12.10x)     |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13068 allocs/ms (13.58x)     | 13787 allocs/ms (13.87x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18511 allocs/ms (19.24x)     | 32597 allocs/ms (32.80x)     |
+| object Activator.CreateInstance(Type, object[])                              | 909 allocs/ms                | 938 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 10387 allocs/ms (11.43x)     | 10819 allocs/ms (11.53x)     |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13164 allocs/ms (14.49x)     | 13151 allocs/ms (14.02x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18609 allocs/ms (20.48x)     | 32464 allocs/ms (34.60x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 1187 allocs/ms               | 1234 allocs/ms               |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 9649 allocs/ms (8.13x)       | 10848 allocs/ms (8.79x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12619 allocs/ms (10.63x)     | 13081 allocs/ms (10.60x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17935 allocs/ms (15.11x)     | 30642 allocs/ms (24.82x)     |
 
 
 ### 2 Constructor Parameters
@@ -255,46 +279,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 596 allocs/ms                | 609 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5975 allocs/ms (10.02x)      | 6074 allocs/ms (9.97x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9020 allocs/ms (15.13x)      | 9507 allocs/ms (15.60x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13665 allocs/ms (22.92x)     | 17801 allocs/ms (29.21x)     |
+| object Activator.CreateInstance(Type, object[])                              | 593 allocs/ms                | 613 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5193 allocs/ms (8.75x)       | 5380 allocs/ms (8.78x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8838 allocs/ms (14.90x)      | 9412 allocs/ms (15.36x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13583 allocs/ms (22.89x)     | 16610 allocs/ms (27.11x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 675 allocs/ms                | 681 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7565 allocs/ms (11.20x)      | 7661 allocs/ms (11.26x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10777 allocs/ms (15.96x)     | 11327 allocs/ms (16.64x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14606 allocs/ms (21.63x)     | 19335 allocs/ms (28.41x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 741 allocs/ms                | 769 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 9446 allocs/ms (12.75x)      | 9800 allocs/ms (12.74x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12800 allocs/ms (17.27x)     | 13124 allocs/ms (17.06x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17988 allocs/ms (24.27x)     | 27612 allocs/ms (35.90x)     |
+| object Activator.CreateInstance(Type, object[])                              | 629 allocs/ms                | 647 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6578 allocs/ms (10.46x)      | 6622 allocs/ms (10.24x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10043 allocs/ms (15.96x)     | 11179 allocs/ms (17.29x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14765 allocs/ms (23.47x)     | 19338 allocs/ms (29.91x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 728 allocs/ms                | 756 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8083 allocs/ms (11.10x)      | 8187 allocs/ms (10.83x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12728 allocs/ms (17.48x)     | 13042 allocs/ms (17.25x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18060 allocs/ms (24.80x)     | 27767 allocs/ms (36.72x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 794 allocs/ms                | 824 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 9954 allocs/ms (12.53x)      | 10195 allocs/ms (12.37x)     |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12854 allocs/ms (16.19x)     | 13512 allocs/ms (16.40x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16875 allocs/ms (21.25x)     | 30027 allocs/ms (36.44x)     |
+| object Activator.CreateInstance(Type, object[])                              | 790 allocs/ms                | 825 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8238 allocs/ms (10.42x)      | 8461 allocs/ms (10.26x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12744 allocs/ms (16.13x)     | 13669 allocs/ms (16.57x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16880 allocs/ms (21.36x)     | 29605 allocs/ms (35.90x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 881 allocs/ms                | 903 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 10155 allocs/ms (11.53x)     | 9908 allocs/ms (10.98x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12951 allocs/ms (14.70x)     | 13466 allocs/ms (14.92x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18384 allocs/ms (20.87x)     | 30477 allocs/ms (33.76x)     |
+| object Activator.CreateInstance(Type, object[])                              | 820 allocs/ms                | 847 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8466 allocs/ms (10.33x)      | 8744 allocs/ms (10.32x)      |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12912 allocs/ms (15.75x)     | 12850 allocs/ms (15.17x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 18520 allocs/ms (22.59x)     | 31378 allocs/ms (37.03x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 1111 allocs/ms               | 1152 allocs/ms               |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7988 allocs/ms (7.19x)       | 8513 allocs/ms (7.39x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12364 allocs/ms (11.12x)     | 13569 allocs/ms (11.78x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17735 allocs/ms (15.96x)     | 28942 allocs/ms (25.12x)     |
 
 
 ### 3 Constructor Parameters
@@ -303,46 +336,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 549 allocs/ms                | 557 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5177 allocs/ms (9.44x)       | 5290 allocs/ms (9.50x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8996 allocs/ms (16.40x)      | 9461 allocs/ms (17.00x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13255 allocs/ms (24.16x)     | 17780 allocs/ms (31.94x)     |
+| object Activator.CreateInstance(Type, object[])                              | 547 allocs/ms                | 553 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4465 allocs/ms (8.16x)       | 4564 allocs/ms (8.25x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8941 allocs/ms (16.34x)      | 9292 allocs/ms (16.80x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12938 allocs/ms (23.64x)     | 15685 allocs/ms (28.37x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 615 allocs/ms                | 615 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6657 allocs/ms (10.83x)      | 6828 allocs/ms (11.11x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10449 allocs/ms (16.99x)     | 11121 allocs/ms (18.09x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14478 allocs/ms (23.54x)     | 18903 allocs/ms (30.75x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 680 allocs/ms                | 704 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8097 allocs/ms (11.91x)      | 8269 allocs/ms (11.74x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12644 allocs/ms (18.60x)     | 12955 allocs/ms (18.40x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17468 allocs/ms (25.70x)     | 26428 allocs/ms (37.53x)     |
+| object Activator.CreateInstance(Type, object[])                              | 576 allocs/ms                | 599 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5638 allocs/ms (9.80x)       | 5472 allocs/ms (9.14x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10232 allocs/ms (17.78x)     | 11439 allocs/ms (19.11x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14657 allocs/ms (25.47x)     | 18819 allocs/ms (31.44x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 671 allocs/ms                | 694 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6754 allocs/ms (10.07x)      | 6799 allocs/ms (9.79x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12454 allocs/ms (18.57x)     | 12675 allocs/ms (18.25x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17070 allocs/ms (25.45x)     | 26207 allocs/ms (37.74x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 739 allocs/ms                | 757 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8760 allocs/ms (11.86x)      | 8949 allocs/ms (11.82x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13026 allocs/ms (17.64x)     | 13649 allocs/ms (18.02x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15658 allocs/ms (21.20x)     | 27907 allocs/ms (36.85x)     |
+| object Activator.CreateInstance(Type, object[])                              | 726 allocs/ms                | 750 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6795 allocs/ms (9.36x)       | 6978 allocs/ms (9.30x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12889 allocs/ms (17.75x)     | 13547 allocs/ms (18.05x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16347 allocs/ms (22.51x)     | 27811 allocs/ms (37.06x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 809 allocs/ms                | 827 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 8759 allocs/ms (10.82x)      | 8974 allocs/ms (10.85x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12856 allocs/ms (15.89x)     | 13386 allocs/ms (16.19x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17674 allocs/ms (21.84x)     | 30001 allocs/ms (36.29x)     |
+| object Activator.CreateInstance(Type, object[])                              | 754 allocs/ms                | 777 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7131 allocs/ms (9.46x)       | 7397 allocs/ms (9.52x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12445 allocs/ms (16.50x)     | 12050 allocs/ms (15.50x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17772 allocs/ms (23.57x)     | 29850 allocs/ms (38.40x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 1041 allocs/ms               | 1077 allocs/ms               |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6805 allocs/ms (6.54x)       | 7241 allocs/ms (6.72x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12609 allocs/ms (12.12x)     | 13461 allocs/ms (12.50x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16987 allocs/ms (16.32x)     | 28192 allocs/ms (26.18x)     |
 
 
 ### 4 Constructor Parameters
@@ -351,46 +393,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 501 allocs/ms                | 516 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4506 allocs/ms (9.00x)       | 4593 allocs/ms (8.90x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8824 allocs/ms (17.62x)      | 9328 allocs/ms (18.08x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12536 allocs/ms (25.04x)     | 17069 allocs/ms (33.09x)     |
+| object Activator.CreateInstance(Type, object[])                              | 502 allocs/ms                | 513 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3780 allocs/ms (7.54x)       | 3871 allocs/ms (7.54x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8758 allocs/ms (17.46x)      | 9335 allocs/ms (18.19x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12983 allocs/ms (25.88x)     | 16039 allocs/ms (31.26x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 560 allocs/ms                | 566 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5882 allocs/ms (10.51x)      | 5964 allocs/ms (10.53x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10559 allocs/ms (18.87x)     | 10962 allocs/ms (19.36x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12990 allocs/ms (23.22x)     | 18241 allocs/ms (32.21x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 629 allocs/ms                | 648 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7131 allocs/ms (11.33x)      | 7125 allocs/ms (11.00x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11968 allocs/ms (19.02x)     | 12218 allocs/ms (18.87x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17358 allocs/ms (27.58x)     | 25584 allocs/ms (39.50x)     |
+| object Activator.CreateInstance(Type, object[])                              | 508 allocs/ms                | 530 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4837 allocs/ms (9.52x)       | 4824 allocs/ms (9.10x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9394 allocs/ms (18.49x)      | 10319 allocs/ms (19.47x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13192 allocs/ms (25.97x)     | 17187 allocs/ms (32.42x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 615 allocs/ms                | 641 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5725 allocs/ms (9.30x)       | 5845 allocs/ms (9.12x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12031 allocs/ms (19.55x)     | 12024 allocs/ms (18.77x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16806 allocs/ms (27.31x)     | 23146 allocs/ms (36.13x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 679 allocs/ms                | 695 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7521 allocs/ms (11.08x)      | 7667 allocs/ms (11.03x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12834 allocs/ms (18.91x)     | 13603 allocs/ms (19.57x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16315 allocs/ms (24.04x)     | 27230 allocs/ms (39.18x)     |
+| object Activator.CreateInstance(Type, object[])                              | 667 allocs/ms                | 693 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5831 allocs/ms (8.74x)       | 6009 allocs/ms (8.67x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 13050 allocs/ms (19.57x)     | 13456 allocs/ms (19.42x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14574 allocs/ms (21.85x)     | 27287 allocs/ms (39.38x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 753 allocs/ms                | 763 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7798 allocs/ms (10.36x)      | 7888 allocs/ms (10.34x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12698 allocs/ms (16.86x)     | 13287 allocs/ms (17.41x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17042 allocs/ms (22.63x)     | 29056 allocs/ms (38.08x)     |
+| object Activator.CreateInstance(Type, object[])                              | 700 allocs/ms                | 719 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6189 allocs/ms (8.84x)       | 6358 allocs/ms (8.84x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12767 allocs/ms (18.23x)     | 13575 allocs/ms (18.88x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17892 allocs/ms (25.55x)     | 28205 allocs/ms (39.23x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 979 allocs/ms                | 1017 allocs/ms               |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5809 allocs/ms (5.93x)       | 6226 allocs/ms (6.12x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11969 allocs/ms (12.23x)     | 13437 allocs/ms (13.22x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15961 allocs/ms (16.31x)     | 27896 allocs/ms (27.44x)     |
 
 
 ### 5 Constructor Parameters
@@ -399,46 +450,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 460 allocs/ms                | 470 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3980 allocs/ms (8.66x)       | 4115 allocs/ms (8.76x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8777 allocs/ms (19.10x)      | 9245 allocs/ms (19.69x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12864 allocs/ms (27.99x)     | 16742 allocs/ms (35.66x)     |
+| object Activator.CreateInstance(Type, object[])                              | 455 allocs/ms                | 465 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3336 allocs/ms (7.33x)       | 3407 allocs/ms (7.33x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8797 allocs/ms (19.34x)      | 8811 allocs/ms (18.96x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12711 allocs/ms (27.95x)     | 15234 allocs/ms (32.78x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 503 allocs/ms                | 510 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5299 allocs/ms (10.53x)      | 5386 allocs/ms (10.57x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10760 allocs/ms (21.39x)     | 11483 allocs/ms (22.54x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13775 allocs/ms (27.38x)     | 17914 allocs/ms (35.16x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 583 allocs/ms                | 602 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6090 allocs/ms (10.44x)      | 6128 allocs/ms (10.18x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12087 allocs/ms (20.72x)     | 12243 allocs/ms (20.34x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17121 allocs/ms (29.35x)     | 23011 allocs/ms (38.24x)     |
+| object Activator.CreateInstance(Type, object[])                              | 486 allocs/ms                | 495 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4278 allocs/ms (8.81x)       | 4330 allocs/ms (8.75x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9819 allocs/ms (20.21x)      | 10814 allocs/ms (21.86x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13384 allocs/ms (27.55x)     | 17397 allocs/ms (35.16x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 572 allocs/ms                | 590 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4924 allocs/ms (8.61x)       | 4999 allocs/ms (8.48x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12215 allocs/ms (21.37x)     | 12447 allocs/ms (21.10x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16615 allocs/ms (29.07x)     | 22401 allocs/ms (37.97x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 621 allocs/ms                | 644 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6756 allocs/ms (10.89x)      | 6825 allocs/ms (10.59x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12297 allocs/ms (19.82x)     | 12868 allocs/ms (19.98x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15732 allocs/ms (25.35x)     | 25763 allocs/ms (40.00x)     |
+| object Activator.CreateInstance(Type, object[])                              | 618 allocs/ms                | 641 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5150 allocs/ms (8.34x)       | 5194 allocs/ms (8.11x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12532 allocs/ms (20.28x)     | 12653 allocs/ms (19.75x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15965 allocs/ms (25.84x)     | 26290 allocs/ms (41.03x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 692 allocs/ms                | 703 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 7048 allocs/ms (10.18x)      | 7120 allocs/ms (10.12x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12679 allocs/ms (18.31x)     | 13361 allocs/ms (18.99x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17307 allocs/ms (25.00x)     | 28453 allocs/ms (40.45x)     |
+| object Activator.CreateInstance(Type, object[])                              | 649 allocs/ms                | 665 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5410 allocs/ms (8.33x)       | 5420 allocs/ms (8.16x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12728 allocs/ms (19.60x)     | 13607 allocs/ms (20.47x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17427 allocs/ms (26.84x)     | 28400 allocs/ms (42.73x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 903 allocs/ms                | 934 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5147 allocs/ms (5.70x)       | 5230 allocs/ms (5.60x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11574 allocs/ms (12.82x)     | 12791 allocs/ms (13.70x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16764 allocs/ms (18.57x)     | 27411 allocs/ms (29.35x)     |
 
 
 ### 6 Constructor Parameters
@@ -447,46 +507,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 429 allocs/ms                | 436 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3605 allocs/ms (8.40x)       | 3707 allocs/ms (8.51x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8621 allocs/ms (20.09x)      | 9317 allocs/ms (21.39x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12409 allocs/ms (28.92x)     | 16115 allocs/ms (37.00x)     |
+| object Activator.CreateInstance(Type, object[])                              | 428 allocs/ms                | 434 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2840 allocs/ms (6.64x)       | 2876 allocs/ms (6.62x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8640 allocs/ms (20.20x)      | 9130 allocs/ms (21.02x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12050 allocs/ms (28.17x)     | 15600 allocs/ms (35.91x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 472 allocs/ms                | 474 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4782 allocs/ms (10.12x)      | 4858 allocs/ms (10.26x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9766 allocs/ms (20.68x)      | 10522 allocs/ms (22.21x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12621 allocs/ms (26.72x)     | 17436 allocs/ms (36.81x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 538 allocs/ms                | 547 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5670 allocs/ms (10.54x)      | 5629 allocs/ms (10.29x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11422 allocs/ms (21.23x)     | 12196 allocs/ms (22.30x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16049 allocs/ms (29.84x)     | 24149 allocs/ms (44.15x)     |
+| object Activator.CreateInstance(Type, object[])                              | 444 allocs/ms                | 456 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3801 allocs/ms (8.56x)       | 3849 allocs/ms (8.44x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9448 allocs/ms (21.28x)      | 10299 allocs/ms (22.59x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13407 allocs/ms (30.19x)     | 17805 allocs/ms (39.05x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 530 allocs/ms                | 538 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4241 allocs/ms (8.00x)       | 4225 allocs/ms (7.85x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11687 allocs/ms (22.04x)     | 12528 allocs/ms (23.28x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15473 allocs/ms (29.18x)     | 24087 allocs/ms (44.76x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 579 allocs/ms                | 592 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5791 allocs/ms (10.00x)      | 6264 allocs/ms (10.58x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11842 allocs/ms (20.45x)     | 13591 allocs/ms (22.95x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15007 allocs/ms (25.91x)     | 28399 allocs/ms (47.95x)     |
+| object Activator.CreateInstance(Type, object[])                              | 576 allocs/ms                | 582 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4358 allocs/ms (7.57x)       | 4398 allocs/ms (7.56x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11806 allocs/ms (20.51x)     | 13427 allocs/ms (23.07x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13043 allocs/ms (22.66x)     | 28503 allocs/ms (48.97x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 637 allocs/ms                | 646 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 6369 allocs/ms (10.00x)      | 6399 allocs/ms (9.90x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12714 allocs/ms (19.96x)     | 13370 allocs/ms (20.69x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17588 allocs/ms (27.61x)     | 28284 allocs/ms (43.77x)     |
+| object Activator.CreateInstance(Type, object[])                              | 600 allocs/ms                | 619 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4572 allocs/ms (7.61x)       | 4699 allocs/ms (7.60x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11800 allocs/ms (19.65x)     | 12768 allocs/ms (20.64x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17631 allocs/ms (29.36x)     | 28293 allocs/ms (45.74x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 850 allocs/ms                | 896 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4413 allocs/ms (5.19x)       | 4572 allocs/ms (5.10x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12215 allocs/ms (14.38x)     | 13366 allocs/ms (14.91x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13125 allocs/ms (15.45x)     | 26703 allocs/ms (29.79x)     |
 
 
 ### 7 Constructor Parameters
@@ -495,46 +564,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 401 allocs/ms                | 408 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3181 allocs/ms (7.93x)       | 3203 allocs/ms (7.86x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8485 allocs/ms (21.15x)      | 8611 allocs/ms (21.12x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11767 allocs/ms (29.33x)     | 13798 allocs/ms (33.84x)     |
+| object Activator.CreateInstance(Type, object[])                              | 404 allocs/ms                | 408 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2588 allocs/ms (6.40x)       | 2596 allocs/ms (6.35x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8434 allocs/ms (20.86x)      | 8381 allocs/ms (20.52x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11641 allocs/ms (28.79x)     | 13001 allocs/ms (31.83x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 441 allocs/ms                | 444 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4296 allocs/ms (9.74x)       | 4406 allocs/ms (9.91x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9524 allocs/ms (21.59x)      | 9980 allocs/ms (22.45x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12804 allocs/ms (29.03x)     | 15851 allocs/ms (35.66x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 497 allocs/ms                | 508 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5134 allocs/ms (10.32x)      | 5051 allocs/ms (9.94x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11110 allocs/ms (22.33x)     | 11136 allocs/ms (21.92x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15847 allocs/ms (31.86x)     | 21473 allocs/ms (42.26x)     |
+| object Activator.CreateInstance(Type, object[])                              | 423 allocs/ms                | 429 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3322 allocs/ms (7.85x)       | 3282 allocs/ms (7.65x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9457 allocs/ms (22.34x)      | 9682 allocs/ms (22.58x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12131 allocs/ms (28.66x)     | 15847 allocs/ms (36.96x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 491 allocs/ms                | 501 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3772 allocs/ms (7.68x)       | 3755 allocs/ms (7.50x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11580 allocs/ms (23.56x)     | 11443 allocs/ms (22.85x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15422 allocs/ms (31.38x)     | 20803 allocs/ms (41.55x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 547 allocs/ms                | 557 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5440 allocs/ms (9.94x)       | 5547 allocs/ms (9.96x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11640 allocs/ms (21.26x)     | 12390 allocs/ms (22.26x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15068 allocs/ms (27.52x)     | 23571 allocs/ms (42.34x)     |
+| object Activator.CreateInstance(Type, object[])                              | 541 allocs/ms                | 553 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3962 allocs/ms (7.32x)       | 3953 allocs/ms (7.15x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11776 allocs/ms (21.76x)     | 12434 allocs/ms (22.50x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14860 allocs/ms (27.45x)     | 23310 allocs/ms (42.18x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 578 allocs/ms                | 586 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5918 allocs/ms (10.23x)      | 5983 allocs/ms (10.21x)      |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12439 allocs/ms (21.51x)     | 13110 allocs/ms (22.38x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17014 allocs/ms (29.42x)     | 27297 allocs/ms (46.60x)     |
+| object Activator.CreateInstance(Type, object[])                              | 572 allocs/ms                | 583 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4197 allocs/ms (7.34x)       | 4227 allocs/ms (7.26x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12023 allocs/ms (21.01x)     | 13192 allocs/ms (22.64x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 17176 allocs/ms (30.02x)     | 27659 allocs/ms (47.48x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 826 allocs/ms                | 856 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4108 allocs/ms (4.97x)       | 4207 allocs/ms (4.92x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 12133 allocs/ms (14.69x)     | 13185 allocs/ms (15.41x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16692 allocs/ms (20.20x)     | 26000 allocs/ms (30.38x)     |
 
 
 ### 8 Constructor Parameters
@@ -543,46 +621,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 381 allocs/ms                | 387 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2898 allocs/ms (7.61x)       | 2936 allocs/ms (7.59x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8420 allocs/ms (22.13x)      | 8646 allocs/ms (22.35x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11391 allocs/ms (29.93x)     | 13247 allocs/ms (34.24x)     |
+| object Activator.CreateInstance(Type, object[])                              | 380 allocs/ms                | 386 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2374 allocs/ms (6.25x)       | 2347 allocs/ms (6.07x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8163 allocs/ms (21.47x)      | 8229 allocs/ms (21.30x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11068 allocs/ms (29.11x)     | 11334 allocs/ms (29.33x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 420 allocs/ms                | 420 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4015 allocs/ms (9.57x)       | 4057 allocs/ms (9.66x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9679 allocs/ms (23.07x)      | 9830 allocs/ms (23.40x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12276 allocs/ms (29.26x)     | 14942 allocs/ms (35.57x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 473 allocs/ms                | 484 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4785 allocs/ms (10.11x)      | 4663 allocs/ms (9.64x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11080 allocs/ms (23.40x)     | 11409 allocs/ms (23.57x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15431 allocs/ms (32.59x)     | 19253 allocs/ms (39.79x)     |
+| object Activator.CreateInstance(Type, object[])                              | 400 allocs/ms                | 406 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3049 allocs/ms (7.62x)       | 3028 allocs/ms (7.45x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9485 allocs/ms (23.71x)      | 9514 allocs/ms (23.41x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12588 allocs/ms (31.46x)     | 14933 allocs/ms (36.74x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 469 allocs/ms                | 475 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3488 allocs/ms (7.43x)       | 3448 allocs/ms (7.26x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10452 allocs/ms (22.27x)     | 10611 allocs/ms (22.35x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15774 allocs/ms (33.61x)     | 18974 allocs/ms (39.96x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 510 allocs/ms                | 524 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5079 allocs/ms (9.96x)       | 5125 allocs/ms (9.78x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11009 allocs/ms (21.58x)     | 11553 allocs/ms (22.06x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14802 allocs/ms (29.01x)     | 21977 allocs/ms (41.96x)     |
+| object Activator.CreateInstance(Type, object[])                              | 504 allocs/ms                | 519 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3613 allocs/ms (7.17x)       | 3597 allocs/ms (6.93x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11273 allocs/ms (22.37x)     | 11712 allocs/ms (22.56x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14892 allocs/ms (29.55x)     | 22140 allocs/ms (42.64x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 548 allocs/ms                | 557 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5357 allocs/ms (9.77x)       | 5447 allocs/ms (9.79x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11537 allocs/ms (21.05x)     | 13043 allocs/ms (23.44x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15739 allocs/ms (28.71x)     | 27323 allocs/ms (49.10x)     |
+| object Activator.CreateInstance(Type, object[])                              | 549 allocs/ms                | 552 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3777 allocs/ms (6.88x)       | 3854 allocs/ms (6.98x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11476 allocs/ms (20.92x)     | 13340 allocs/ms (24.17x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 16003 allocs/ms (29.17x)     | 27597 allocs/ms (50.01x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 794 allocs/ms                | 824 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3693 allocs/ms (4.65x)       | 3966 allocs/ms (4.81x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11257 allocs/ms (14.18x)     | 12634 allocs/ms (15.33x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14872 allocs/ms (18.73x)     | 25898 allocs/ms (31.42x)     |
 
 
 ### 9 Constructor Parameters
@@ -591,46 +678,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 359 allocs/ms                | 367 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2743 allocs/ms (7.64x)       | 2753 allocs/ms (7.50x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7778 allocs/ms (21.67x)      | 8496 allocs/ms (23.14x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12001 allocs/ms (33.43x)     | 13006 allocs/ms (35.43x)     |
+| object Activator.CreateInstance(Type, object[])                              | 360 allocs/ms                | 365 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2157 allocs/ms (5.99x)       | 2220 allocs/ms (6.08x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8266 allocs/ms (22.96x)      | 8151 allocs/ms (22.32x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11278 allocs/ms (31.33x)     | 11182 allocs/ms (30.62x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 396 allocs/ms                | 398 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3595 allocs/ms (9.08x)       | 3642 allocs/ms (9.14x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9579 allocs/ms (24.20x)      | 9778 allocs/ms (24.55x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11584 allocs/ms (29.26x)     | 14380 allocs/ms (36.10x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 451 allocs/ms                | 460 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4436 allocs/ms (9.84x)       | 4272 allocs/ms (9.30x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11091 allocs/ms (24.61x)     | 11058 allocs/ms (24.06x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15540 allocs/ms (34.49x)     | 18448 allocs/ms (40.15x)     |
+| object Activator.CreateInstance(Type, object[])                              | 381 allocs/ms                | 387 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2835 allocs/ms (7.44x)       | 2767 allocs/ms (7.16x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9548 allocs/ms (25.06x)      | 9618 allocs/ms (24.88x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12054 allocs/ms (31.63x)     | 14338 allocs/ms (37.09x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 445 allocs/ms                | 454 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3230 allocs/ms (7.25x)       | 3141 allocs/ms (6.92x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11423 allocs/ms (25.65x)     | 11071 allocs/ms (24.39x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14612 allocs/ms (32.82x)     | 17702 allocs/ms (39.00x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 480 allocs/ms                | 485 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4734 allocs/ms (9.87x)       | 4764 allocs/ms (9.82x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11569 allocs/ms (24.12x)     | 12089 allocs/ms (24.92x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14367 allocs/ms (29.95x)     | 21977 allocs/ms (45.31x)     |
+| object Activator.CreateInstance(Type, object[])                              | 473 allocs/ms                | 480 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3351 allocs/ms (7.09x)       | 3311 allocs/ms (6.89x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11370 allocs/ms (24.05x)     | 11559 allocs/ms (24.07x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13561 allocs/ms (28.68x)     | 21857 allocs/ms (45.51x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 525 allocs/ms                | 529 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 5023 allocs/ms (9.57x)       | 4905 allocs/ms (9.27x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11311 allocs/ms (21.54x)     | 10790 allocs/ms (20.39x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15801 allocs/ms (30.10x)     | 22846 allocs/ms (43.17x)     |
+| object Activator.CreateInstance(Type, object[])                              | 503 allocs/ms                | 513 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3455 allocs/ms (6.87x)       | 3415 allocs/ms (6.66x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11180 allocs/ms (22.24x)     | 11449 allocs/ms (22.34x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15896 allocs/ms (31.62x)     | 21855 allocs/ms (42.64x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 747 allocs/ms                | 781 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3485 allocs/ms (4.67x)       | 3529 allocs/ms (4.52x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11316 allocs/ms (15.16x)     | 11382 allocs/ms (14.58x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14666 allocs/ms (19.64x)     | 21412 allocs/ms (27.43x)     |
 
 
 ### 10 Constructor Parameters
@@ -639,46 +735,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 343 allocs/ms                | 348 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2522 allocs/ms (7.35x)       | 2514 allocs/ms (7.22x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7845 allocs/ms (22.87x)      | 8423 allocs/ms (24.18x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11825 allocs/ms (34.47x)     | 12848 allocs/ms (36.88x)     |
+| object Activator.CreateInstance(Type, object[])                              | 342 allocs/ms                | 348 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1967 allocs/ms (5.74x)       | 2008 allocs/ms (5.77x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8226 allocs/ms (24.02x)      | 7985 allocs/ms (22.93x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10930 allocs/ms (31.92x)     | 11024 allocs/ms (31.66x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 374 allocs/ms                | 376 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3254 allocs/ms (8.71x)       | 3276 allocs/ms (8.71x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9528 allocs/ms (25.51x)      | 9603 allocs/ms (25.53x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11300 allocs/ms (30.25x)     | 13580 allocs/ms (36.11x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 427 allocs/ms                | 436 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3989 allocs/ms (9.34x)       | 3956 allocs/ms (9.07x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11246 allocs/ms (26.33x)     | 10864 allocs/ms (24.91x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14809 allocs/ms (34.67x)     | 18357 allocs/ms (42.09x)     |
+| object Activator.CreateInstance(Type, object[])                              | 361 allocs/ms                | 368 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2625 allocs/ms (7.27x)       | 2596 allocs/ms (7.05x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9081 allocs/ms (25.14x)      | 9286 allocs/ms (25.21x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12297 allocs/ms (34.05x)     | 13628 allocs/ms (37.00x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 423 allocs/ms                | 431 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2982 allocs/ms (7.04x)       | 2881 allocs/ms (6.69x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10534 allocs/ms (24.88x)     | 10564 allocs/ms (24.52x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14902 allocs/ms (35.19x)     | 18272 allocs/ms (42.42x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 458 allocs/ms                | 465 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4466 allocs/ms (9.76x)       | 4359 allocs/ms (9.38x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11295 allocs/ms (24.68x)     | 11278 allocs/ms (24.27x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14216 allocs/ms (31.06x)     | 21031 allocs/ms (45.26x)     |
+| object Activator.CreateInstance(Type, object[])                              | 454 allocs/ms                | 462 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3111 allocs/ms (6.85x)       | 3050 allocs/ms (6.60x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11412 allocs/ms (25.13x)     | 11697 allocs/ms (25.32x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14258 allocs/ms (31.40x)     | 21915 allocs/ms (47.45x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 504 allocs/ms                | 508 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4650 allocs/ms (9.23x)       | 4587 allocs/ms (9.03x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11267 allocs/ms (22.35x)     | 11274 allocs/ms (22.18x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15363 allocs/ms (30.48x)     | 20970 allocs/ms (41.26x)     |
+| object Activator.CreateInstance(Type, object[])                              | 480 allocs/ms                | 491 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3177 allocs/ms (6.62x)       | 3150 allocs/ms (6.42x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11102 allocs/ms (23.13x)     | 11402 allocs/ms (23.22x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14900 allocs/ms (31.04x)     | 21581 allocs/ms (43.96x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 727 allocs/ms                | 753 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3215 allocs/ms (4.42x)       | 3193 allocs/ms (4.24x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11218 allocs/ms (15.43x)     | 11730 allocs/ms (15.58x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14499 allocs/ms (19.94x)     | 21042 allocs/ms (27.95x)     |
 
 
 ### 11 Constructor Parameters
@@ -687,46 +792,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 326 allocs/ms                | 330 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2363 allocs/ms (7.24x)       | 2344 allocs/ms (7.10x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7713 allocs/ms (23.64x)      | 7869 allocs/ms (23.82x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11411 allocs/ms (34.98x)     | 12758 allocs/ms (38.62x)     |
+| object Activator.CreateInstance(Type, object[])                              | 327 allocs/ms                | 331 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1844 allocs/ms (5.63x)       | 1872 allocs/ms (5.66x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7805 allocs/ms (23.83x)      | 7195 allocs/ms (21.76x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10224 allocs/ms (31.22x)     | 11189 allocs/ms (33.84x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 359 allocs/ms                | 360 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3045 allocs/ms (8.49x)       | 3112 allocs/ms (8.64x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9336 allocs/ms (26.02x)      | 9428 allocs/ms (26.17x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11794 allocs/ms (32.87x)     | 13686 allocs/ms (37.99x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 408 allocs/ms                | 414 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3788 allocs/ms (9.28x)       | 3712 allocs/ms (8.96x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10843 allocs/ms (26.57x)     | 10756 allocs/ms (25.96x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13955 allocs/ms (34.19x)     | 17574 allocs/ms (42.41x)     |
+| object Activator.CreateInstance(Type, object[])                              | 344 allocs/ms                | 350 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2470 allocs/ms (7.18x)       | 2400 allocs/ms (6.86x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9071 allocs/ms (26.35x)      | 9128 allocs/ms (26.10x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12211 allocs/ms (35.47x)     | 13781 allocs/ms (39.40x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 403 allocs/ms                | 409 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2744 allocs/ms (6.81x)       | 2645 allocs/ms (6.46x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10668 allocs/ms (26.46x)     | 10024 allocs/ms (24.50x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14984 allocs/ms (37.16x)     | 17432 allocs/ms (42.60x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 438 allocs/ms                | 438 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4165 allocs/ms (9.52x)       | 4085 allocs/ms (9.32x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11259 allocs/ms (25.73x)     | 11645 allocs/ms (26.57x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13951 allocs/ms (31.88x)     | 20733 allocs/ms (47.31x)     |
+| object Activator.CreateInstance(Type, object[])                              | 432 allocs/ms                | 437 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2853 allocs/ms (6.60x)       | 2805 allocs/ms (6.42x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11434 allocs/ms (26.45x)     | 11818 allocs/ms (27.05x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13674 allocs/ms (31.63x)     | 20477 allocs/ms (46.88x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 478 allocs/ms                | 481 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4377 allocs/ms (9.16x)       | 4347 allocs/ms (9.04x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11480 allocs/ms (24.03x)     | 11409 allocs/ms (23.72x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 15023 allocs/ms (31.44x)     | 21962 allocs/ms (45.67x)     |
+| object Activator.CreateInstance(Type, object[])                              | 460 allocs/ms                | 470 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2982 allocs/ms (6.48x)       | 2941 allocs/ms (6.26x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11209 allocs/ms (24.34x)     | 11183 allocs/ms (23.80x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14399 allocs/ms (31.27x)     | 20990 allocs/ms (44.66x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 700 allocs/ms                | 726 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3001 allocs/ms (4.29x)       | 2979 allocs/ms (4.10x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11384 allocs/ms (16.27x)     | 11566 allocs/ms (15.93x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14463 allocs/ms (20.67x)     | 20742 allocs/ms (28.56x)     |
 
 
 ### 12 Constructor Parameters
@@ -735,46 +849,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 312 allocs/ms                | 318 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2226 allocs/ms (7.14x)       | 2256 allocs/ms (7.10x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8190 allocs/ms (26.28x)      | 8264 allocs/ms (26.01x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10864 allocs/ms (34.85x)     | 12462 allocs/ms (39.23x)     |
+| object Activator.CreateInstance(Type, object[])                              | 311 allocs/ms                | 317 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1719 allocs/ms (5.53x)       | 1766 allocs/ms (5.57x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8104 allocs/ms (26.10x)      | 7560 allocs/ms (23.85x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10469 allocs/ms (33.71x)     | 10938 allocs/ms (34.50x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 343 allocs/ms                | 345 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2888 allocs/ms (8.41x)       | 2924 allocs/ms (8.48x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9244 allocs/ms (26.93x)      | 9389 allocs/ms (27.24x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12180 allocs/ms (35.48x)     | 12732 allocs/ms (36.95x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 388 allocs/ms                | 397 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3558 allocs/ms (9.18x)       | 3497 allocs/ms (8.81x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11021 allocs/ms (28.44x)     | 10563 allocs/ms (26.60x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14739 allocs/ms (38.03x)     | 17213 allocs/ms (43.35x)     |
+| object Activator.CreateInstance(Type, object[])                              | 328 allocs/ms                | 334 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2269 allocs/ms (6.93x)       | 2217 allocs/ms (6.64x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9241 allocs/ms (28.21x)      | 9260 allocs/ms (27.74x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11801 allocs/ms (36.03x)     | 12836 allocs/ms (38.46x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 386 allocs/ms                | 392 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2553 allocs/ms (6.60x)       | 2409 allocs/ms (6.14x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10754 allocs/ms (27.83x)     | 10473 allocs/ms (26.71x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14482 allocs/ms (37.47x)     | 17469 allocs/ms (44.54x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 418 allocs/ms                | 423 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3925 allocs/ms (9.38x)       | 3831 allocs/ms (9.05x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11171 allocs/ms (26.71x)     | 11608 allocs/ms (27.43x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13964 allocs/ms (33.38x)     | 19240 allocs/ms (45.46x)     |
+| object Activator.CreateInstance(Type, object[])                              | 413 allocs/ms                | 420 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2667 allocs/ms (6.45x)       | 2629 allocs/ms (6.25x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11214 allocs/ms (27.12x)     | 11613 allocs/ms (27.63x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14011 allocs/ms (33.89x)     | 20608 allocs/ms (49.02x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 457 allocs/ms                | 464 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 4164 allocs/ms (9.11x)       | 4052 allocs/ms (8.74x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11457 allocs/ms (25.07x)     | 11467 allocs/ms (24.72x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14416 allocs/ms (31.54x)     | 21089 allocs/ms (45.46x)     |
+| object Activator.CreateInstance(Type, object[])                              | 440 allocs/ms                | 450 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2780 allocs/ms (6.32x)       | 2755 allocs/ms (6.12x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11118 allocs/ms (25.28x)     | 11118 allocs/ms (24.68x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13568 allocs/ms (30.85x)     | 20808 allocs/ms (46.20x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 675 allocs/ms                | 699 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2822 allocs/ms (4.18x)       | 2825 allocs/ms (4.04x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10922 allocs/ms (16.18x)     | 11390 allocs/ms (16.30x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14004 allocs/ms (20.74x)     | 19970 allocs/ms (28.57x)     |
 
 
 ### 13 Constructor Parameters
@@ -783,46 +906,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 299 allocs/ms                | 301 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2054 allocs/ms (6.88x)       | 2068 allocs/ms (6.88x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8109 allocs/ms (27.14x)      | 8096 allocs/ms (26.94x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10492 allocs/ms (35.11x)     | 8787 allocs/ms (29.24x)      |
+| object Activator.CreateInstance(Type, object[])                              | 298 allocs/ms                | 302 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1633 allocs/ms (5.47x)       | 1654 allocs/ms (5.48x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7588 allocs/ms (25.43x)      | 7686 allocs/ms (25.47x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10046 allocs/ms (33.67x)     | 10853 allocs/ms (35.96x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 325 allocs/ms                | 327 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2795 allocs/ms (8.59x)       | 2749 allocs/ms (8.40x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9339 allocs/ms (28.71x)      | 8993 allocs/ms (27.50x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11647 allocs/ms (35.80x)     | 12949 allocs/ms (39.59x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 374 allocs/ms                | 380 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3251 allocs/ms (8.69x)       | 3146 allocs/ms (8.29x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10830 allocs/ms (28.96x)     | 10076 allocs/ms (26.55x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14444 allocs/ms (38.63x)     | 16790 allocs/ms (44.24x)     |
+| object Activator.CreateInstance(Type, object[])                              | 313 allocs/ms                | 317 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2111 allocs/ms (6.75x)       | 2086 allocs/ms (6.58x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8725 allocs/ms (27.90x)      | 8638 allocs/ms (27.25x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11747 allocs/ms (37.57x)     | 12910 allocs/ms (40.72x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 370 allocs/ms                | 378 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2332 allocs/ms (6.30x)       | 2301 allocs/ms (6.09x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9081 allocs/ms (24.54x)      | 9746 allocs/ms (25.80x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14295 allocs/ms (38.62x)     | 16941 allocs/ms (44.85x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 400 allocs/ms                | 406 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3725 allocs/ms (9.31x)       | 3585 allocs/ms (8.83x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10614 allocs/ms (26.54x)     | 11219 allocs/ms (27.62x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13748 allocs/ms (34.37x)     | 19274 allocs/ms (47.44x)     |
+| object Activator.CreateInstance(Type, object[])                              | 396 allocs/ms                | 400 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2539 allocs/ms (6.41x)       | 2477 allocs/ms (6.20x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11060 allocs/ms (27.93x)     | 11221 allocs/ms (28.08x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12962 allocs/ms (32.74x)     | 20274 allocs/ms (50.73x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 438 allocs/ms                | 443 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3819 allocs/ms (8.71x)       | 3756 allocs/ms (8.47x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10879 allocs/ms (24.83x)     | 10668 allocs/ms (24.06x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14882 allocs/ms (33.96x)     | 19670 allocs/ms (44.36x)     |
+| object Activator.CreateInstance(Type, object[])                              | 422 allocs/ms                | 430 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2622 allocs/ms (6.22x)       | 2577 allocs/ms (5.99x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10971 allocs/ms (26.02x)     | 11255 allocs/ms (26.16x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14112 allocs/ms (33.47x)     | 20113 allocs/ms (46.74x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 659 allocs/ms                | 673 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2655 allocs/ms (4.03x)       | 2616 allocs/ms (3.89x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10805 allocs/ms (16.39x)     | 11158 allocs/ms (16.58x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13849 allocs/ms (21.00x)     | 19510 allocs/ms (28.99x)     |
 
 
 ### 14 Constructor Parameters
@@ -831,46 +963,55 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 286 allocs/ms                | 290 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1955 allocs/ms (6.83x)       | 1935 allocs/ms (6.68x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8036 allocs/ms (28.07x)      | 8126 allocs/ms (28.04x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11163 allocs/ms (38.99x)     | 12088 allocs/ms (41.72x)     |
+| object Activator.CreateInstance(Type, object[])                              | 286 allocs/ms                | 287 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1543 allocs/ms (5.41x)       | 1551 allocs/ms (5.39x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7576 allocs/ms (26.54x)      | 7492 allocs/ms (26.06x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 9867 allocs/ms (34.56x)      | 10887 allocs/ms (37.87x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 311 allocs/ms                | 313 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2641 allocs/ms (8.48x)       | 2657 allocs/ms (8.48x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9269 allocs/ms (29.78x)      | 9276 allocs/ms (29.61x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11308 allocs/ms (36.32x)     | 12145 allocs/ms (38.77x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 360 allocs/ms                | 359 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3059 allocs/ms (8.49x)       | 3001 allocs/ms (8.36x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10743 allocs/ms (29.81x)     | 10327 allocs/ms (28.77x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14058 allocs/ms (39.01x)     | 16499 allocs/ms (45.96x)     |
+| object Activator.CreateInstance(Type, object[])                              | 297 allocs/ms                | 304 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1990 allocs/ms (6.70x)       | 1994 allocs/ms (6.55x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8048 allocs/ms (27.10x)      | 8342 allocs/ms (27.40x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11647 allocs/ms (39.22x)     | 12015 allocs/ms (39.47x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 353 allocs/ms                | 358 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2193 allocs/ms (6.21x)       | 2167 allocs/ms (6.06x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9014 allocs/ms (25.54x)      | 9090 allocs/ms (25.41x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 12906 allocs/ms (36.56x)     | 16426 allocs/ms (45.91x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 382 allocs/ms                | 385 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3379 allocs/ms (8.84x)       | 3384 allocs/ms (8.79x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11100 allocs/ms (29.05x)     | 11463 allocs/ms (29.77x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13347 allocs/ms (34.93x)     | 19432 allocs/ms (50.46x)     |
+| object Activator.CreateInstance(Type, object[])                              | 381 allocs/ms                | 385 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2397 allocs/ms (6.30x)       | 2343 allocs/ms (6.09x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11044 allocs/ms (29.01x)     | 10863 allocs/ms (28.22x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13092 allocs/ms (34.39x)     | 19874 allocs/ms (51.62x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 420 allocs/ms                | 422 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3631 allocs/ms (8.65x)       | 3601 allocs/ms (8.53x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11067 allocs/ms (26.36x)     | 10400 allocs/ms (24.63x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14342 allocs/ms (34.17x)     | 19285 allocs/ms (45.67x)     |
+| object Activator.CreateInstance(Type, object[])                              | 408 allocs/ms                | 413 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2460 allocs/ms (6.02x)       | 2410 allocs/ms (5.84x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10756 allocs/ms (26.34x)     | 10695 allocs/ms (25.92x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 14241 allocs/ms (34.87x)     | 20230 allocs/ms (49.02x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 639 allocs/ms                | 654 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2516 allocs/ms (3.94x)       | 2466 allocs/ms (3.77x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11227 allocs/ms (17.57x)     | 11005 allocs/ms (16.84x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13993 allocs/ms (21.90x)     | 19108 allocs/ms (29.24x)     |
 
 
 ### 15 Constructor Parameters
@@ -880,45 +1021,54 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
 | object Activator.CreateInstance(Type, object[])                              | 274 allocs/ms                | 277 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1809 allocs/ms (6.62x)       | 1830 allocs/ms (6.61x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7912 allocs/ms (28.93x)      | 7992 allocs/ms (28.85x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10148 allocs/ms (37.10x)     | 11206 allocs/ms (40.46x)     |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1436 allocs/ms (5.25x)       | 1468 allocs/ms (5.30x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7818 allocs/ms (28.56x)      | 7498 allocs/ms (27.09x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 9994 allocs/ms (36.52x)      | 10658 allocs/ms (38.50x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 302 allocs/ms                | 302 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2495 allocs/ms (8.27x)       | 2495 allocs/ms (8.26x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9178 allocs/ms (30.42x)      | 9103 allocs/ms (30.13x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11138 allocs/ms (36.91x)     | 12536 allocs/ms (41.49x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 342 allocs/ms                | 349 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2829 allocs/ms (8.27x)       | 2809 allocs/ms (8.05x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10714 allocs/ms (31.33x)     | 10279 allocs/ms (29.48x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13825 allocs/ms (40.43x)     | 15893 allocs/ms (45.57x)     |
+| object Activator.CreateInstance(Type, object[])                              | 288 allocs/ms                | 292 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1921 allocs/ms (6.67x)       | 1882 allocs/ms (6.43x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8960 allocs/ms (31.11x)      | 8982 allocs/ms (30.71x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11521 allocs/ms (40.00x)     | 12355 allocs/ms (42.24x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 341 allocs/ms                | 346 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2094 allocs/ms (6.14x)       | 2061 allocs/ms (5.96x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10689 allocs/ms (31.37x)     | 10317 allocs/ms (29.84x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13705 allocs/ms (40.22x)     | 15936 allocs/ms (46.09x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 368 allocs/ms                | 373 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3170 allocs/ms (8.61x)       | 3134 allocs/ms (8.40x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10990 allocs/ms (29.86x)     | 11323 allocs/ms (30.33x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13469 allocs/ms (36.60x)     | 18854 allocs/ms (50.51x)     |
+| object Activator.CreateInstance(Type, object[])                              | 365 allocs/ms                | 370 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2269 allocs/ms (6.21x)       | 2212 allocs/ms (5.98x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10677 allocs/ms (29.22x)     | 10660 allocs/ms (28.80x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13466 allocs/ms (36.85x)     | 19224 allocs/ms (51.95x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 406 allocs/ms                | 409 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3452 allocs/ms (8.50x)       | 3435 allocs/ms (8.39x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 11176 allocs/ms (27.51x)     | 11127 allocs/ms (27.17x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13412 allocs/ms (33.01x)     | 18094 allocs/ms (44.19x)     |
+| object Activator.CreateInstance(Type, object[])                              | 392 allocs/ms                | 399 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2341 allocs/ms (5.97x)       | 2306 allocs/ms (5.79x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10506 allocs/ms (26.80x)     | 11011 allocs/ms (27.62x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13903 allocs/ms (35.47x)     | 19999 allocs/ms (50.17x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 619 allocs/ms                | 627 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2401 allocs/ms (3.88x)       | 2369 allocs/ms (3.78x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9881 allocs/ms (15.97x)      | 9879 allocs/ms (15.76x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13968 allocs/ms (22.57x)     | 17572 allocs/ms (28.03x)     |
 
 
 ### 16 Constructor Parameters
@@ -928,42 +1078,51 @@ The executing runtimes are *.NET Framework 4.8*, *.NET Core 2.1.30*, *.NET Core 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
 | object Activator.CreateInstance(Type, object[])                              | 265 allocs/ms                | 268 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1715 allocs/ms (6.48x)       | 1736 allocs/ms (6.47x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7912 allocs/ms (29.91x)      | 7672 allocs/ms (28.57x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10534 allocs/ms (39.82x)     | 11582 allocs/ms (43.14x)     |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1361 allocs/ms (5.13x)       | 1381 allocs/ms (5.14x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 7768 allocs/ms (29.29x)      | 7140 allocs/ms (26.60x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10004 allocs/ms (37.73x)     | 10580 allocs/ms (39.42x)     |
 
-#### .NET Core 2.1.30
-
-| Method                                                                       | Class                        | Struct                       |
-|------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 292 allocs/ms                | 291 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2341 allocs/ms (8.02x)       | 2407 allocs/ms (8.27x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9068 allocs/ms (31.07x)      | 8933 allocs/ms (30.70x)      |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 10766 allocs/ms (36.89x)     | 11942 allocs/ms (41.04x)     |
-
-#### .NET Core 3.1.26
+#### .NET Core 2.2.8
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 334 allocs/ms                | 338 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2728 allocs/ms (8.16x)       | 2708 allocs/ms (8.01x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10072 allocs/ms (30.12x)     | 10169 allocs/ms (30.07x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13664 allocs/ms (40.86x)     | 15627 allocs/ms (46.22x)     |
+| object Activator.CreateInstance(Type, object[])                              | 280 allocs/ms                | 282 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1833 allocs/ms (6.56x)       | 1804 allocs/ms (6.39x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 8322 allocs/ms (29.76x)      | 8316 allocs/ms (29.47x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 11590 allocs/ms (41.45x)     | 11681 allocs/ms (41.40x)     |
+
+#### .NET Core 3.1.32
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 330 allocs/ms                | 333 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 1972 allocs/ms (5.98x)       | 1956 allocs/ms (5.88x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10059 allocs/ms (30.52x)     | 9811 allocs/ms (29.48x)      |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13312 allocs/ms (40.39x)     | 15348 allocs/ms (46.12x)     |
 
 #### .NET 5.0.17
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 354 allocs/ms                | 361 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3083 allocs/ms (8.71x)       | 2973 allocs/ms (8.23x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10212 allocs/ms (28.84x)     | 10260 allocs/ms (28.41x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13158 allocs/ms (37.16x)     | 14948 allocs/ms (41.40x)     |
+| object Activator.CreateInstance(Type, object[])                              | 354 allocs/ms                | 358 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2137 allocs/ms (6.04x)       | 2105 allocs/ms (5.88x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9908 allocs/ms (28.01x)      | 10043 allocs/ms (28.07x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13315 allocs/ms (37.65x)     | 16109 allocs/ms (45.03x)     |
 
-#### .NET 6.0.6
+#### .NET 6.0.14
 
 | Method                                                                       | Class                        | Struct                       |
 |------------------------------------------------------------------------------|------------------------------|------------------------------|
-| object Activator.CreateInstance(Type, object[])                              | 390 allocs/ms                | 395 allocs/ms                |
-| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 3282 allocs/ms (8.42x)       | 3272 allocs/ms (8.29x)       |
-| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10497 allocs/ms (26.93x)     | 10348 allocs/ms (26.20x)     |
-| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13419 allocs/ms (34.42x)     | 17221 allocs/ms (43.60x)     |
+| object Activator.CreateInstance(Type, object[])                              | 380 allocs/ms                | 386 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2214 allocs/ms (5.83x)       | 2210 allocs/ms (5.73x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 10285 allocs/ms (27.08x)     | 10142 allocs/ms (26.27x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13912 allocs/ms (36.62x)     | 16675 allocs/ms (43.19x)     |
+
+#### .NET 7.0.3
+
+| Method                                                                       | Class                        | Struct                       |
+|------------------------------------------------------------------------------|------------------------------|------------------------------|
+| object Activator.CreateInstance(Type, object[])                              | 595 allocs/ms                | 615 allocs/ms                |
+| object FastActivator.CreateInstanceDynamically(Type, Type[], object[])       | 2241 allocs/ms (3.77x)       | 2240 allocs/ms (3.64x)       |
+| object FastActivator.CreateInstance&lt;...&gt;(...)                          | 9648 allocs/ms (16.22x)      | 10019 allocs/ms (16.29x)     |
+| T      FastActivator&lt;T&gt;.CreateInstance&lt;...&gt;(...)                 | 13098 allocs/ms (22.03x)     | 14842 allocs/ms (24.13x)     |
