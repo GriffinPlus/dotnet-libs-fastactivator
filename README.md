@@ -29,10 +29,10 @@ Therefore it should work on the following platforms (or higher):
 
 The library is tested automatically on the following frameworks and operating systems:
 - .NET Framework 4.6.1: Tests with library built for .NET Framework 4.6.1 (Windows Server 2022)
-- .NET Framework 4.8: Tests with library built for .NET Framework 4.8 (Windows Server 2022)
+- .NET Framework 4.8: Tests with library built for .NET Framework 4.6.1 (Windows Server 2022)
 - .NET Core 2.2: Tests with library built for .NET Standard 2.0 (Windows Server 2022 and Ubuntu 22.04)
-- .NET Core 3.1: Tests with library built for .NET Standard 2.1 (Windows Server 2022 and Ubuntu 22.04)
-- .NET 5.0/6.0/7.0: Tests with library built for .NET 5.0 (Windows Server 2022 and Ubuntu 22.04)
+- .NET Core 3.1: Tests with library built for .NET Standard 2.0 (Windows Server 2022 and Ubuntu 22.04)
+- .NET 5.0/6.0/7.0/8.0: Tests with library built for .NET Standard 2.0 (Windows Server 2022 and Ubuntu 22.04)
 
 ## Using
 

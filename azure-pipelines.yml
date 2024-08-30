@@ -5,16 +5,17 @@
 # The pipeline runs unit tests on the following target frameworks and platforms:
 #
 # - Windows Server 2022, .NET 4.6.1      (tests with build for .NET Framework 4.6.1)
+# - Windows Server 2022, .NET 4.8        (tests with build for .NET Framework 4.6.1)
 # - Windows Server 2022, .NET Core 2.2   (tests with build for .NET Standard 2.0)
-# - Windows Server 2022, .NET Core 3.1   (tests with build for .NET Standard 2.1)
-# - Windows Server 2022, .NET 5.0        (tests with build for .NET 5)
-# - Windows Server 2022, .NET 6.0        (tests with build for .NET 6)
-# - Windows Server 2022, .NET 7.0        (tests with build for .NET 6)
+# - Windows Server 2022, .NET Core 3.1   (tests with build for .NET Standard 2.0)
+# - Windows Server 2022, .NET 5.0        (tests with build for .NET Standard 2.0)
+# - Windows Server 2022, .NET 6.0        (tests with build for .NET Standard 2.0)
+# - Windows Server 2022, .NET 7.0        (tests with build for .NET Standard 2.0)
 # - Ubuntu 22.04, .NET Core 2.2          (tests with build for .NET Standard 2.0)
-# - Ubuntu 22.04, .NET Core 3.1          (tests with build for .NET Standard 2.1)
-# - Ubuntu 22.04, .NET 5.0               (tests with build for .NET 5)
-# - Ubuntu 22.04, .NET 6.0               (tests with build for .NET 6)
-# - Ubuntu 22.04, .NET 7.0               (tests with build for .NET 6)
+# - Ubuntu 22.04, .NET Core 3.1          (tests with build for .NET Standard 2.0)
+# - Ubuntu 22.04, .NET 5.0               (tests with build for .NET Standard 2.0)
+# - Ubuntu 22.04, .NET 6.0               (tests with build for .NET Standard 2.0)
+# - Ubuntu 22.04, .NET 7.0               (tests with build for .NET Standard 2.0)
 #
 # After tests have completed successfully nuget packages are created according to their specification (*.nuspec).
 # If the build was tagged with a tag starting with 'v' the nuget packages are pushed to nuget.org.
@@ -74,6 +75,16 @@ stages:
         packageType: 'sdk'
         version: '7.0.x'
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 8.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '8.0.x'
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
+      inputs:
+        versionSpec: '6.x'
     - task: DotNetCoreCLI@2
       displayName: 'Install GitVersion'
       inputs:
@@ -114,7 +125,7 @@ stages:
         script: |
           New-Item -ItemType Directory -Force -Path '$(Pipeline.Workspace)/variables'
           Set-Location -Path '$(Pipeline.Workspace)/variables'
-          '$(GitVersion.NuGetVersion)' | Out-File GitVersion.NuGetVersion -NoNewLine
+          '$(GitVersion.SemVer)' | Out-File GitVersion.SemVer -NoNewLine
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
@@ -134,11 +145,13 @@ stages:
   ######################################################################################################################
   # Job:
   # - .NET Framework 4.6.1 on Windows Server 2022
+  # - .NET Framework 4.8 on Windows Server 2022
   # - .NET Core 2.2 on Windows Server 2022 and Ubuntu 22.04
   # - .NET Core 3.1 on Windows Server 2022 and Ubuntu 22.04
   # - .NET 5.0 on Windows Server 2022 and Ubuntu 22.04
   # - .NET 6.0 on Windows Server 2022 and Ubuntu 22.04
   # - .NET 7.0 on Windows Server 2022 and Ubuntu 22.04
+  # - .NET 8.0 on Windows Server 2022 and Ubuntu 22.04
   ######################################################################################################################
   - job:
     displayName: ''
@@ -182,6 +195,16 @@ stages:
         packageType: 'sdk'
         version: '7.0.x'
         installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: UseDotNet@2
+      displayName: 'Use .NET 8.0 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '8.0.x'
+        installationPath: '$(Agent.ToolsDirectory)/dotnet'
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
+      inputs:
+        versionSpec: '6.x'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifacts'
       inputs:
@@ -194,7 +217,15 @@ stages:
         command: 'test'
         projects: '**/*Tests/*.csproj'
         nobuild: true
-        arguments: '--framework net461 --verbosity normal'
+        arguments: '--framework net461'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET Framework 4.8'
+      condition: eq(variables['agent.os'], 'Windows_NT')
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework net48'
     - task: DotNetCoreCLI@2
       displayName: 'Test .NET Core 2.2'
       inputs:
@@ -230,6 +261,13 @@ stages:
         projects: '**/*Tests/*.csproj'
         nobuild: true
         arguments: '--framework net7.0'
+    - task: DotNetCoreCLI@2
+      displayName: 'Test .NET 8.0'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests/*.csproj'
+        nobuild: true
+        arguments: '--framework net8.0'
 
 ########################################################################################################################
 # Stage: Deployment
@@ -241,6 +279,10 @@ stages:
   ######################################################################################################################
   - job: 'Pack'
     steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
+      inputs:
+        versionSpec: '6.x'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifacts'
       inputs:
@@ -275,7 +317,7 @@ stages:
               "$($file.FullName)" `
               -Symbols `
               -SymbolPackageFormat snupkg `
-              -Properties version=$(GitVersion.NuGetVersion) `
+              -Properties version=$(GitVersion.SemVer) `
               -OutputDirectory "$(Build.ArtifactStagingDirectory)" `
               -Verbosity detailed
             if ($lastexitcode -ne 0) { throw("Creating nuget package failed.") }
@@ -294,6 +336,10 @@ stages:
     condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v')
     dependsOn: 'Pack'
     steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
+      inputs:
+        versionSpec: '6.x'
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifacts'
       inputs:
