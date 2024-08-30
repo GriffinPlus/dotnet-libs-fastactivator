@@ -15,6 +15,7 @@
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<IsPackable>false</IsPackable>
 		<OmitDocumentationFile>true</OmitDocumentationFile>
+		<NoWarn>$(NoWarn);NU1902;NU1903</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
