@@ -4,7 +4,6 @@
 .\GriffinPlus.Lib.FastActivator.Tests.deps.json
 .\GriffinPlus.Lib.FastActivator.Tests.dll
 .\GriffinPlus.Lib.FastActivator.Tests.pdb
-.\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.dev.json
 .\GriffinPlus.Lib.FastActivator.Tests.runtimeconfig.json
 .\GriffinPlus.Lib.FastActivator.xml
 .\Microsoft.TestPlatform.CommunicationUtilities.dll
@@ -24,7 +23,7 @@
 .\xunit.execution.dotnet.dll
 .\xunit.runner.reporters.netcoreapp10.dll
 .\xunit.runner.utility.netcoreapp10.dll
-.\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+.\xunit.runner.visualstudio.testadapter.dll
 .\cs\Microsoft.TestPlatform.CommunicationUtilities.resources.dll
 .\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 .\cs\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
